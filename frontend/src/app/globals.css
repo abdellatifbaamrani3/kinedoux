@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-primary: #1b3a4b;
+  --brand-primary-hover: #142c3a;
+  --brand-dark: #0f2430;
+  --bg-warm: #f4f7f8;
+  --bg-surface: #ffffff;
+  --bg-sage: #e6eef2;
+  --accent-leaf: #d7e6ee;
+  --accent-argan: #c6a15a;
+  --accent-clay: #8c4e45;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--bg-warm);
+  color: var(--brand-dark);
+  font-feature-settings: "tnum" 1;
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+::selection {
+  background: #1b3a4b;
+  color: #f4f7f8;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2f5d73 #e6eef2;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #2f5d73;
+  border-radius: 99px;
+}
+*::-webkit-scrollbar-track {
+  background: #e6eef2;
+}
+
+@layer components {
+  .kd-container {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  img,
+  svg {
+    max-width: 100%;
+  }
+  .kd-h1 {
+    @apply text-3xl font-bold leading-snug tracking-tight text-brand-dark md:text-5xl md:leading-[1.15];
+  }
+  .kd-h2 {
+    @apply text-2xl font-bold leading-snug text-brand-dark md:text-[1.85rem];
+  }
+  .kd-cta {
+    @apply inline-flex w-full items-center justify-center gap-3 rounded-xl bg-brand px-6 py-4 text-lg font-bold text-white shadow-lift transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .kd-cta-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-brand/20 bg-white px-5 py-3 text-sm font-bold text-brand transition hover:border-brand/40 hover:bg-sage;
+  }
+  .kd-card {
+    @apply rounded-2xl border border-brand/10 bg-white shadow-card;
+  }
+  .kd-kicker {
+    @apply font-sans text-[11px] font-semibold tracking-[0.18em] text-leaf-deep uppercase;
+  }
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}

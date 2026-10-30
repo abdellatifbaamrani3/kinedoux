@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="ضمان استبدال 14 يوماً">
+<title>ضمان استبدال 14 يوماً</title><defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8F7F4"/><stop offset="1" stop-color="#E4EDE7"/></linearGradient>
+<linearGradient id="bgDark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1E4D3B"/><stop offset="1" stop-color="#11221A"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F7357"/><stop offset=".55" stop-color="#1E4D3B"/><stop offset="1" stop-color="#163A2C"/></linearGradient>
+<linearGradient id="greenLight" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2A6B52"/><stop offset=".45" stop-color="#58A586"/><stop offset="1" stop-color="#2A6B52"/></linearGradient>
+<linearGradient id="goldG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D4E0CC"/><stop offset=".5" stop-color="#A3B899"/><stop offset="1" stop-color="#7D9574"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".85"/><stop offset="1" stop-color="#cfe3d7" stop-opacity=".35"/></linearGradient>
+<linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16302A"/><stop offset="1" stop-color="#274B3F"/></linearGradient>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE5DA"/><stop offset="1" stop-color="#F3EEDD"/></linearGradient>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e8efe9" stop-opacity=".95"/><stop offset="1" stop-color="#e8efe9" stop-opacity="0"/></radialGradient>
+<radialGradient id="redglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff6a58" stop-opacity=".75"/><stop offset="1" stop-color="#ff6a58" stop-opacity="0"/></radialGradient>
+<filter id="shadow" x="-25%" y="-25%" width="150%" height="160%"><feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#11221A" flood-opacity=".22"/></filter>
+<filter id="soft" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#11221A" flood-opacity=".16"/></filter>
+<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#1E4D3B" stroke-opacity=".07" stroke-width="1.5"/></pattern>
+<pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#1E4D3B" fill-opacity=".13"/></pattern>
+<pattern id="mesh" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H22M0 0V22" stroke="#ffffff" stroke-opacity=".55" stroke-width="2.5" fill="none"/></pattern>
+</defs><path d="M150 20L262 62V150C262 218 210 266 150 288C90 266 38 218 38 150V62Z" fill="url(#green)" stroke="url(#goldG)" stroke-width="10"/><text x="150" y="170" font-family="'Plus Jakarta Sans', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="110" font-weight="800" fill="#F8F7F4" text-anchor="middle">14</text><text x="150" y="215" font-family="Cairo, 'Segoe UI', Tahoma, 'Noto Sans Arabic', Arial, sans-serif" font-size="30" font-weight="800" fill="#A3B899" text-anchor="middle" direction="rtl">يوماً ضمان</text></svg>
