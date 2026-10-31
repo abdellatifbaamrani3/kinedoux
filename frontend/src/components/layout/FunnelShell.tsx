@@ -1,9 +1,18 @@
 "use client";
 
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import { CheckoutPopupModal } from "@/components/cart/CheckoutPopupModal";
-import { UpsellCountdownModal } from "@/components/cart/UpsellCountdownModal";
+import dynamic from "next/dynamic";
+
 import { PixelManager } from "@/components/tracking/PixelManager";
+
+const CartDrawer = dynamic(() => import("@/components/cart/CartDrawer").then((m) => m.CartDrawer), { ssr: false });
+const CheckoutPopupModal = dynamic(
+  () => import("@/components/cart/CheckoutPopupModal").then((m) => m.CheckoutPopupModal),
+  { ssr: false },
+);
+const UpsellCountdownModal = dynamic(
+  () => import("@/components/cart/UpsellCountdownModal").then((m) => m.UpsellCountdownModal),
+  { ssr: false },
+);
 
 export function FunnelShell() {
   return (

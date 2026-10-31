@@ -11,16 +11,18 @@ import "./globals.css";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "700"],
   variable: "--font-cairo",
   display: "swap",
+  preload: true,
 });
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["600", "700"],
   variable: "--font-jakarta",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

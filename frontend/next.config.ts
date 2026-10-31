@@ -6,8 +6,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 604800,
   },
   async headers() {
     return [
@@ -23,6 +27,13 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
+      ...["/", "/products/:path*", "/collections", "/about", "/contact", "/thank-you"].map((source) => ({
+        source,
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=120, stale-while-revalidate=86400" },
+          { key: "Cloudflare-CDN-Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800" },
+        ],
+      })),
     ];
   },
 };

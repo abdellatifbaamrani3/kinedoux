@@ -15,10 +15,7 @@ const MICROS = [
 export function Hero() {
   return (
     <section className="relative bg-alabaster">
-      <div className="pointer-events-none absolute inset-0 overflow-clip">
-        <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-sage/70 blur-3xl" />
-        <div className="absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-leaf/15 blur-3xl" />
-      </div>
+      <div className="pointer-events-none absolute inset-0 overflow-clip bg-[radial-gradient(circle_at_0%_20%,#E6EEF2_0%,transparent_42%),radial-gradient(circle_at_100%_100%,#D7E6EE_0%,transparent_36%)]" />
       <div className="kd-container relative flex flex-col-reverse items-center gap-10 py-12 lg:grid lg:grid-cols-2 lg:gap-12 lg:py-16">
         <div>
           <p className="mb-4 inline-block max-w-full rounded-full border border-leaf/50 bg-sage px-3 py-1.5 text-xs font-bold text-brand sm:px-4 sm:text-sm">
@@ -48,6 +45,7 @@ export function Hero() {
           alt="مجموعة كينيدو: لومبا، بوسطا وكالما"
           className="aspect-[4/3] w-full"
           badge={HOME.hero.imageBadge}
+          priority
         />
       </div>
     </section>

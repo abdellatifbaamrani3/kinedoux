@@ -18,7 +18,7 @@ export function Header() {
   const count = selectCount(items);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand/10 bg-alabaster/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-brand/10 bg-alabaster">
       <div className="kd-container flex h-[68px] items-center justify-between gap-2 sm:gap-3 md:h-[84px]">
         <BrandLogo />
 
