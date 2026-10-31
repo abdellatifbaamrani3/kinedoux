@@ -7,10 +7,12 @@ export function OfferTierSelector({
   offers,
   selectedId,
   onSelect,
+  name = "offer",
 }: {
   offers: Offer[];
   selectedId: string;
   onSelect: (offer: Offer) => void;
+  name?: string;
 }) {
   return (
     <fieldset>
@@ -29,7 +31,7 @@ export function OfferTierSelector({
             >
               <input
                 type="radio"
-                name="offer"
+                name={name}
                 className="mt-1 accent-brand"
                 checked={selected}
                 onChange={() => onSelect(offer)}

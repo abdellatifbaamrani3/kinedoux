@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PRODUCTS, getProduct } from "@/data/products";
-import { HonestyBox, ProductLandingView } from "@/components/product/ProductLandingView";
+import { ProductLandingView } from "@/components/product/ProductLandingView";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -25,10 +25,5 @@ export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
   const product = getProduct(slug);
   if (!product) notFound();
-  return (
-    <>
-      <ProductLandingView product={product} />
-      <HonestyBox />
-    </>
-  );
+  return <ProductLandingView product={product} />;
 }

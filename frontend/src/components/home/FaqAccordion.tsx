@@ -9,11 +9,12 @@ import { cn } from "@/lib/utils";
 export function FaqAccordion({ items = FAQS }: { items?: typeof FAQS }) {
   const [open, setOpen] = useState(0);
   return (
-    <section className="kd-container py-16" id="faq">
-      <p className="kd-kicker mb-2">FAQ</p>
-      <h2 className="kd-h2 mb-2">أسئلة شائعة، بجواب واضح</h2>
-      <p className="mb-8 text-muted">التوصيل، الخلاص، القياس، ومن خاصو يشاور الطبيب قبل الاستعمال.</p>
-      <div className="space-y-3">
+    <section className="kd-section bg-alabaster" id="faq">
+      <div className="kd-container">
+      <p className="kd-kicker mb-2 text-center">FAQ</p>
+      <h2 className="kd-h2 mb-2 text-center">أسئلة شائعة، بجواب واضح</h2>
+      <p className="mx-auto mb-8 max-w-2xl text-center text-muted">التوصيل، الخلاص، القياس، ومن خاصو يشاور الطبيب قبل الاستعمال.</p>
+      <div className="mx-auto max-w-2xl space-y-3">
         {items.map((item, i) => {
           const isOpen = open === i;
           return (
@@ -31,6 +32,7 @@ export function FaqAccordion({ items = FAQS }: { items?: typeof FAQS }) {
             </div>
           );
         })}
+      </div>
       </div>
     </section>
   );

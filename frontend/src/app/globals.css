@@ -79,6 +79,9 @@ body {
   .kd-kicker {
     @apply font-sans text-[11px] font-semibold tracking-[0.18em] text-brand uppercase;
   }
+  .kd-section {
+    @apply py-16 lg:py-20;
+  }
 }
 
 input,
