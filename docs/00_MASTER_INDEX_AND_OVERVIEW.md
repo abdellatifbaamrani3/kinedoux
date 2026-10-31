@@ -1,7 +1,7 @@
 # 00 — MASTER INDEX & PROJECT OVERVIEW: KINÉDOUX™ (كينيدو)
 
 ## 1. Project Mission
-Build **KINÉDOUX™ (`kenidoux.com` — كينيدو)**, a premium, clinical-natural Direct-to-Consumer (DTC) Cash-On-Delivery (COD) e-commerce store in **Arabic (Moroccan High-Trust Darija + Modern Standard Arabic)** engineered to sell 3 proprietary-looking ergonomic & physical comfort products at **high prices and high Average Order Value (AOV)**.
+Build **KINÉDOUX™ (`kinedoux.com` — كينيدو)**, a premium, clinical-natural Direct-to-Consumer (DTC) Cash-On-Delivery (COD) e-commerce store in **Arabic (Moroccan High-Trust Darija + Modern Standard Arabic)** engineered to sell 3 proprietary-looking ergonomic & physical comfort products at **high prices and high Average Order Value (AOV)**.
 
 The store must look, feel, and convert like an established **French-Moroccan Parapharmacie & Biomechanical Comfort Laboratory** (*Laboratoire de Confort Dorsal & Corporel*)—never like a generic dropshipping store. Every section is designed for **12/10 Conversion Rate Optimization (CRO)**, **maximum AOV** (tiered bundles + in-cart cross-sells + 10–15s post-checkout one-click upsells), **high call-center confirmation rate**, and **high courier delivery rate**.
 
@@ -14,11 +14,11 @@ The store must look, feel, and convert like an established **French-Moroccan Par
 | **Brand Name (Arabic)** | **كينيدو** |
 | **Brand Name (Latin)** | **kenidoux** / **KINÉDOUX™** |
 | **Brand Monogram** | **KD** inside a circular emblem with the primary brand color (`#1E4D3B`) |
-| **Frontend Domain** | `https://kenidoux.com` (and `https://www.kenidoux.com`) |
-| **Backend API Domain** | `https://api.kenidoux.com.shop` |
+| **Frontend Domain** | `https://kinedoux.com` (and `https://www.kinedoux.com`) |
+| **Backend API Domain** | `https://api.kinedoux.com` |
 | **Hosting Platform** | **EasyPanel** (Docker-based deployment from GitHub repository) |
 | **Database Engine** | PostgreSQL (Hosted on EasyPanel internal network) |
-| **Database Name / URL** | Logical DB: `kenidoux` \| Internal EasyPanel URL: `postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable` *(Backend must auto-normalize `postgres://` to `postgresql+asyncpg://` and `postgresql+psycopg2://` so the exact EasyPanel string works out of the box)* |
+| **Database Name / URL** | Logical DB: `kinedoux` \| Internal EasyPanel URL: `postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable` *(Backend converts `postgres://` to `postgresql+psycopg2://` and keeps `sslmode=disable`)* |
 | **Payment Method** | **100% Cash on Delivery (COD — الدفع عند الاستلام)** |
 | **Currency** | Moroccan Dirham (`MAD` / `د.م`) |
 | **Direction & Locale** | `dir="rtl"` `lang="ar-MA"` (Right-to-Left Arabic interface throughout) |
@@ -108,4 +108,4 @@ Read all documents in `docs/` before writing code:
 6. **`docs/05_BACKEND_FASTAPI_DATABASE_AND_MIGRATIONS.md`** — FastAPI backend, PostgreSQL schema, automatic startup migrations, order lifecycle (`pending_upsell` -> `confirmed`), and webhook background scheduling.
 7. **`docs/06_PIXELS_CAPI_AND_DEDUPLICATION_SPEC.md`** — Deferred Web Pixels + Server-Side CAPI payloads, SHA-256 hashing rules, phone formatting (`+` for TikTok vs. digits-only for Meta/Snap), and `event_id` deduplication.
 8. **`docs/07_GOOGLE_SHEETS_WEBHOOK_AND_TEMPLATES.md`** — Google Apps Script `.js` webhook code and `.csv` template specification.
-9. **`docs/08_DOCKER_EASYPANEL_DEPLOYMENT_AND_ENVS.md`** — Dockerfiles, `.env.example` files, CORS configuration for `kenidoux.com` & `api.kenidoux.com.shop`, and EasyPanel deployment guide.
+9. **`docs/08_DOCKER_EASYPANEL_DEPLOYMENT_AND_ENVS.md`** — Dockerfiles, `.env.example` files, CORS configuration for `kinedoux.com` & `api.kinedoux.com`, and EasyPanel deployment guide.

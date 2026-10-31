@@ -30,7 +30,7 @@ def morocco_time(dt: datetime | None) -> str:
 
 def whatsapp_link(snap: OrderSnapshot) -> str:
     first = (snap.customer_name.split() or [""])[0]
-    text = f"السلام عليكم {first}، معاك فريق كينيدو (kenidoux.com) لتأكيد طلبك رقم {snap.order_number}"
+    text = f"السلام عليكم {first}، معاك فريق كينيدو (kinedoux.com) لتأكيد طلبك رقم {snap.order_number}"
     return f"https://wa.me/{snap.phone_digits}?text={quote(text)}"
 
 

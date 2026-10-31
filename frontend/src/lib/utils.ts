@@ -14,7 +14,7 @@ export function formatClock(totalSeconds: number): string {
   return `${mm}:${ss}`;
 }
 
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://kenidoux.com").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://kinedoux.com").replace(/\/$/, "");
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
 export const UPSELL_SECONDS = Math.max(
   5,

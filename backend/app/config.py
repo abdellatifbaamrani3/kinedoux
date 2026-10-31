@@ -26,12 +26,12 @@ class Settings(BaseSettings):
     # 1. Server & environment
     APP_ENV: str = "production"
     PORT: int = 8000
-    SITE_URL: str = "https://kenidoux.com"
-    FRONTEND_URL: str = "https://kenidoux.com"
+    SITE_URL: str = "https://kinedoux.com"
+    FRONTEND_URL: str = "https://kinedoux.com"
     CORS_ORIGINS: str = ""
 
     # 2. Database (EasyPanel internal URL; `postgres://` prefix and `sslmode=disable` are supported)
-    DATABASE_URL: str = "postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable"
+    DATABASE_URL: str = "postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable"
 
     # 3. Google Sheets webhook + upsell safety net
     GOOGLE_SHEETS_WEBHOOK_URL: str = ""
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     FORWARD_CONTACT_TO_SHEET: bool = False
 
     # 4. Phone validation: KSA | MA | BOTH (mirrors NEXT_PUBLIC_PHONE_VALIDATION_MODE)
-    PHONE_VALIDATION_MODE: str = "BOTH"
+    PHONE_VALIDATION_MODE: str = "MA"
 
     # 5. Meta Conversions API
     META_PIXEL_ID: str = ""
@@ -67,9 +67,9 @@ class Settings(BaseSettings):
     @property
     def cors_origin_list(self) -> list[str]:
         defaults = [
-            "https://kenidoux.com",
-            "https://www.kenidoux.com",
-            "https://api.kenidoux.com.shop",
+            "https://kinedoux.com",
+            "https://www.kinedoux.com",
+            "https://api.kinedoux.com",
             "http://localhost:3000",
         ]
         extra = [o.strip().rstrip("/") for o in self.CORS_ORIGINS.split(",") if o.strip()]

@@ -146,7 +146,7 @@ export const CONTACT = {
     },
     {
       title: "البريد الإلكتروني",
-      body: "contact@kenidoux.com",
+      body: "contact@kinedoux.com",
     },
   ],
   subjects: ["تتبع طلب", "استفسار عن منتج", "طلب استبدال"] as const,

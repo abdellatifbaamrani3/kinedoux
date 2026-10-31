@@ -84,7 +84,7 @@ def _bootstrap(database_url, sheet_server):
         GOOGLE_SHEETS_WEBHOOK_SECRET="s3cret",
         UPSELL_AUTO_FINALIZE_SECONDS="2",
         PHONE_VALIDATION_MODE="BOTH",
-        SITE_URL="https://kenidoux.com",
+        SITE_URL="https://kinedoux.com",
         META_PIXEL_ID="",
         TIKTOK_PIXEL_ID="",
         SNAP_PIXEL_ID="",

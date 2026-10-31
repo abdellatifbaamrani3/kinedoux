@@ -4,9 +4,9 @@
 
 | Service | Domain | Internal EasyPanel Port | Dockerfile Path |
 |---|---|---|---|
-| **Frontend (Next.js 15)** | `https://kenidoux.com` (`www.kenidoux.com`) | `3000` | `frontend/Dockerfile` |
-| **Backend (Python FastAPI)** | `https://api.kenidoux.com.shop` | `8000` | `backend/Dockerfile` |
-| **Database (PostgreSQL)** | Internal: `kenidoux_database:5432` | `5432` | Pre-installed on EasyPanel |
+| **Frontend (Next.js 15)** | `https://kinedoux.com` (`www.kinedoux.com`) | `3000` | `frontend/Dockerfile` |
+| **Backend (Python FastAPI)** | `https://api.kinedoux.com` | `8000` | `backend/Dockerfile` |
+| **Database (PostgreSQL)** | Internal: `kinedoux_database:5432` | `5432` | Created in EasyPanel, not public |
 
 ---
 
@@ -14,7 +14,7 @@
 
 The user provided their exact EasyPanel internal database connection link:
 ```text
-postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable
+postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable
 ```
 *(Or if using database name `kenidoux`: `postgres://kenidoux:kenidoux@kenidoux_database:5432/kenidoux?sslmode=disable`)*
 
@@ -26,7 +26,7 @@ Therefore, `backend/app/config.py` MUST include a property `sqlalchemy_database_
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable"
+    DATABASE_URL: str = "postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable"
     
     @property
     def sqlalchemy_database_url(self) -> str:
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
             url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
         return url
 ```
-This guarantees that pasting `postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable` or `postgres://kenidoux:kenidoux@kenidoux_database:5432/kenidoux?sslmode=disable` in EasyPanel works on the very first boot with zero errors!
+This guarantees that pasting `postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable` or `postgres://kenidoux:kenidoux@kenidoux_database:5432/kenidoux?sslmode=disable` in EasyPanel works on the very first boot with zero errors!
 
 ---
 
@@ -46,16 +46,16 @@ This guarantees that pasting `postgres://kenidoux:kenidoux@kenidoux_database:543
 ### 3.1 `frontend/.env.example` (Variables to add in EasyPanel Frontend Service)
 ```env
 # ============================================================================
-# KINÉDOUX™ (kenidoux.com) — FRONTEND ENVIRONMENT VARIABLES (EASYPANEL)
+# KINÉDOUX™ (kinedoux.com) — FRONTEND ENVIRONMENT VARIABLES (EASYPANEL)
 # ============================================================================
 
 # 1. Public URLs
-NEXT_PUBLIC_SITE_URL=https://kenidoux.com
-NEXT_PUBLIC_API_URL=https://api.kenidoux.com.shop
+NEXT_PUBLIC_SITE_URL=https://kinedoux.com
+NEXT_PUBLIC_API_URL=https://api.kinedoux.com
 
 # 2. Phone Validation Mode
 # Options: "KSA" (only valid 05/+966 numbers), "MA" (only valid 06/07/+212 numbers), or "BOTH" (accepts valid KSA & Moroccan numbers)
-NEXT_PUBLIC_PHONE_VALIDATION_MODE=BOTH
+NEXT_PUBLIC_PHONE_VALIDATION_MODE=MA
 
 # 3. WhatsApp Customer Support Number (International format without '+')
 NEXT_PUBLIC_WHATSAPP_NUMBER=212600000000
@@ -73,22 +73,22 @@ NEXT_PUBLIC_UPSELL_TIMER_SECONDS=15
 ### 3.2 `backend/.env.example` (Variables to add in EasyPanel Backend Service)
 ```env
 # ============================================================================
-# KINÉDOUX™ (api.kenidoux.com.shop) — BACKEND ENVIRONMENT VARIABLES (EASYPANEL)
+# KINÉDOUX™ (api.kinedoux.com) — BACKEND ENVIRONMENT VARIABLES (EASYPANEL)
 # ============================================================================
 
 # 1. Server & Environment
 APP_ENV=production
 PORT=8000
-FRONTEND_URL=https://kenidoux.com
-CORS_ORIGINS=https://kenidoux.com,https://www.kenidoux.com,https://api.kenidoux.com.shop,http://localhost:3000
+FRONTEND_URL=https://kinedoux.com
+CORS_ORIGINS=https://kinedoux.com,https://www.kinedoux.com,https://api.kinedoux.com,http://localhost:3000
 
 # 2. PostgreSQL Database Connection (EasyPanel Internal URL)
-# Note: Both `/namabeauty` and `/kenidoux` database names and `postgres://` prefix are automatically supported
-DATABASE_URL=postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable
+# Paste the EasyPanel internal URL. postgres:// is converted automatically.
+DATABASE_URL=postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable
 
 # 3. Google Sheets Apps Script Webhook URL (Deploy google_apps_script_webhook.js and paste Web App URL here)
 GOOGLE_SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
-GOOGLE_SHEETS_WEBHOOK_SECRET=kenidoux_sheet_secret_2026
+GOOGLE_SHEETS_WEBHOOK_SECRET=
 # Fallback seconds before auto-sending order to Sheet if customer closes browser tab during the 15s upsell
 UPSELL_AUTO_FINALIZE_SECONDS=20
 
@@ -129,9 +129,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build-time NEXT_PUBLIC_ variables (can be passed as build args in EasyPanel or runtime config)
-ARG NEXT_PUBLIC_SITE_URL=https://kenidoux.com
-ARG NEXT_PUBLIC_API_URL=https://api.kenidoux.com.shop
-ARG NEXT_PUBLIC_PHONE_VALIDATION_MODE=BOTH
+ARG NEXT_PUBLIC_SITE_URL=https://kinedoux.com
+ARG NEXT_PUBLIC_API_URL=https://api.kinedoux.com
+ARG NEXT_PUBLIC_PHONE_VALIDATION_MODE=MA
 ARG NEXT_PUBLIC_WHATSAPP_NUMBER=212600000000
 ARG NEXT_PUBLIC_META_PIXEL_ID=""
 ARG NEXT_PUBLIC_TIKTOK_PIXEL_ID=""
@@ -207,13 +207,13 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 ## 5. Step-by-Step EasyPanel Deployment Checklist
 
 1. **Push Repository to GitHub**: Push the root repository containing `frontend/`, `backend/`, `sheets/`, and `docs/`.
-2. **Backend Service on EasyPanel (`api.kenidoux.com.shop`)**:
+2. **Backend Service on EasyPanel (`api.kinedoux.com`)**:
    - Create an **App** service -> Connect GitHub Repo -> Set Build Path to `/backend` and Dockerfile to `Dockerfile`.
-   - Under **Environment**, paste the contents of `backend/.env.example` and set `DATABASE_URL=postgres://kenidoux:kenidoux@kenidoux_database:5432/namabeauty?sslmode=disable` (or `/kenidoux?sslmode=disable`).
-   - Under **Domains**, add `api.kenidoux.com.shop` pointing to container port `8000` with HTTPS enabled.
+   - Under **Environment**, paste the contents of `backend/.env.example` and set `DATABASE_URL=postgres://kinedoux:kinedoux@kinedoux_database:5432/kinedoux?sslmode=disable` (or `/kenidoux?sslmode=disable`).
+   - Under **Domains**, add `api.kinedoux.com` pointing to container port `8000` with HTTPS enabled.
    - Click **Deploy** — the container will automatically run `alembic upgrade head`, create all tables, and seed the 3 Kinédoux products!
-3. **Frontend Service on EasyPanel (`kenidoux.com`)**:
+3. **Frontend Service on EasyPanel (`kinedoux.com`)**:
    - Create an **App** service -> Connect GitHub Repo -> Set Build Path to `/frontend` and Dockerfile to `Dockerfile`.
    - Under **Environment**, paste the contents of `frontend/.env.example` (enable "Pass as Build Arguments" in EasyPanel so `NEXT_PUBLIC_*` variables are baked into the client bundle).
-   - Under **Domains**, add `kenidoux.com` and `www.kenidoux.com` pointing to container port `3000` with HTTPS enabled.
+   - Under **Domains**, add `kinedoux.com` and `www.kinedoux.com` pointing to container port `3000` with HTTPS enabled.
    - Click **Deploy**.

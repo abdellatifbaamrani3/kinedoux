@@ -54,7 +54,7 @@ export function Footer() {
         <div>
           <h3 className="mb-4 text-sm font-bold text-leaf">مواكبة الزبناء</h3>
           <p className="text-sm leading-7 text-alabaster/75">الدار البيضاء · الإثنين–الأحد 09:00–21:00</p>
-          <p className="mt-2 text-sm">contact@kenidoux.com</p>
+          <p className="mt-2 text-sm">contact@kinedoux.com</p>
           <a
             href={whatsappLink("السلام عليكم، بغيت معلومات على منتجات كينيدو")}
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-wa px-4 py-2 text-sm font-bold text-brand-dark"

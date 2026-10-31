@@ -95,7 +95,7 @@ def test_health_and_seed(client):
 
 
 def test_cors_allows_site_and_api_origins(client):
-    for origin in ("https://kenidoux.com", "https://www.kenidoux.com", "http://localhost:3000"):
+    for origin in ("https://kinedoux.com", "https://www.kinedoux.com", "http://localhost:3000"):
         r = client.options(
             f"{API}/orders",
             headers={"Origin": origin, "Access-Control-Request-Method": "POST"},
