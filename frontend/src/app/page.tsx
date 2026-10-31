@@ -4,7 +4,6 @@ import { Check } from "lucide-react";
 import { HOME } from "@/data/content";
 import { Hero } from "@/components/home/Hero";
 import { TrustBar } from "@/components/home/TrustBar";
-import { CredentialsStrip } from "@/components/home/CredentialsStrip";
 import { ProductGrid } from "@/components/home/ProductGrid";
 import { QuickDiagnosis } from "@/components/home/QuickDiagnosis";
 import { HomeComparison } from "@/components/home/HomeComparison";
@@ -19,31 +18,13 @@ export default function HomePage() {
     <>
       <Hero />
       <TrustBar />
-      <CredentialsStrip />
-
-      <section className="kd-section bg-alabaster">
-        <div className="kd-container">
-          <SectionHeading title={HOME.recognition.title} />
-          <ul className="mx-auto mt-8 max-w-[38rem] space-y-4">
-            {HOME.recognition.lines.map((line) => (
-              <li key={line} className="flex gap-3 text-base leading-8 text-muted md:text-lg">
-                <Check className="mt-1 h-5 w-5 shrink-0 text-action" aria-hidden />
-                {line}
-              </li>
-            ))}
-          </ul>
-          <p className="mx-auto mt-8 max-w-[38rem] text-center text-base leading-8 text-muted md:text-lg">
-            {HOME.recognition.close}
-          </p>
-        </div>
-      </section>
 
       <SplitSection
         eyebrow="اللي كيبان كل نهار"
         title={HOME.struggle.title}
         imageSrc={HOME.struggle.image}
         imageAlt="العياء اليومي ديال الظهر فالخدمة والسياقة"
-        className="bg-sage/70"
+        className="bg-alabaster"
       >
         <p>{HOME.struggle.body}</p>
         <ul className="space-y-2">
@@ -55,32 +36,6 @@ export default function HomePage() {
           ))}
         </ul>
       </SplitSection>
-
-      <section id="causes" className="kd-section bg-brand-dark">
-        <div className="kd-container">
-          <SectionHeading
-            eyebrow={HOME.causes.eyebrow}
-            title={HOME.causes.title}
-            sub={HOME.causes.sub}
-            tone="dark"
-          />
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {HOME.causes.items.map((c) => (
-              <Link
-                key={c.n}
-                href={`/products/${c.slug}`}
-                className="rounded-2xl border border-leaf/25 bg-brand-dark p-6 ring-1 ring-white/10 transition hover:-translate-y-0.5"
-              >
-                <p className="font-sans text-3xl font-bold text-action">{c.n}</p>
-                <h3 className="mt-3 text-lg font-bold text-white">{c.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-leaf/80">{c.body}</p>
-                <p className="mt-5 text-sm font-bold text-leaf">{c.link} ←</p>
-              </Link>
-            ))}
-          </div>
-          <p className="mt-8 text-center text-sm text-leaf/80">{HOME.causes.footer}</p>
-        </div>
-      </section>
 
       <QuickDiagnosis />
 
@@ -97,22 +52,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      <SplitSection
-        eyebrow={HOME.failed.eyebrow}
-        title={HOME.failed.title}
-        imageSrc={HOME.failed.image}
-        imageAlt={HOME.science.title}
-        className="bg-sage/70"
-      >
-        <div className="space-y-4">
-          {HOME.failed.rows.map((row) => (
-            <div key={row.tried} className="rounded-xl bg-white p-4 ring-1 ring-brand/10">
-              <p className="font-bold text-brand-dark">{row.tried}</p>
-              <p className="mt-1 text-sm text-muted">{row.why}</p>
-            </div>
-          ))}
+      <section className="kd-section bg-sage/70">
+        <div className="kd-container">
+          <SectionHeading eyebrow={HOME.failed.eyebrow} title={HOME.failed.title} />
+          <div className="mx-auto mt-10 grid max-w-4xl gap-4 md:grid-cols-2">
+            {HOME.failed.rows.map((row) => (
+              <div key={row.tried} className="rounded-2xl bg-white p-5 ring-1 ring-brand/10">
+                <p className="font-bold text-brand-dark">{row.tried}</p>
+                <p className="mt-1 text-sm leading-7 text-muted">{row.why}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </SplitSection>
+      </section>
 
       <SplitSection
         id="how"
@@ -130,101 +82,16 @@ export default function HomePage() {
               </span>
               <span>
                 <span className="block font-bold text-brand-dark">{s.title}</span>
-                <span className="mt-1 block text-base text-muted">{s.body}</span>
+                <span className="mt-1 block text-sm text-muted">{s.body}</span>
               </span>
             </li>
           ))}
         </ol>
         <p className="rounded-xl bg-sage p-4 text-sm text-muted">{HOME.system.note}</p>
-        <Link href="/collections" className="kd-cta-secondary mt-2">
-          {HOME.system.cta}
-        </Link>
       </SplitSection>
-
-      <section id="materials" className="kd-section bg-brand-dark">
-        <div className="kd-container">
-          <SectionHeading
-            eyebrow="Matières & usage"
-            title="خامات مختارة لراحة يومية"
-            sub="كل طبقة عندها سبب: ثبات، تهوية، وسهولة استعمال فالدار فالمغرب."
-            tone="dark"
-          />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {HOME.materials.map((m) => (
-              <article key={m.title} className="rounded-2xl border border-leaf/20 bg-white/5 p-6">
-                <p className="font-sans text-sm font-bold tracking-wide text-action">{m.latin}</p>
-                <h3 className="mt-2 text-lg font-bold text-white">{m.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-leaf/80">{m.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <HomeComparison />
-
-      <SplitSection
-        eyebrow={HOME.insight.eyebrow}
-        title={HOME.insight.title}
-        imageSrc={HOME.insight.image}
-        imageAlt={HOME.insight.title}
-        dark
-      >
-        <p>{HOME.insight.body}</p>
-      </SplitSection>
-
-      <section id="proof" className="kd-section bg-sage/70">
-        <div className="kd-container">
-          <SectionHeading eyebrow={HOME.proof.eyebrow} title={HOME.proof.title} />
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {HOME.proof.cards.map((card) => (
-              <article key={card.claim} className="rounded-2xl bg-white p-6 ring-1 ring-brand/10">
-                <p className="font-sans text-3xl font-bold text-action">{card.number}</p>
-                <p className="mt-3 font-bold text-brand-dark">{card.claim}</p>
-                <p className="mt-2 text-sm text-muted">{card.source}</p>
-                <p className="mt-4 rounded-xl border border-brand/10 bg-alabaster p-3 text-sm text-muted">
-                  {card.limit}
-                </p>
-              </article>
-            ))}
-          </div>
-          <p className="mx-auto mt-8 max-w-[38rem] text-center text-sm text-muted">{HOME.proof.footer}</p>
-          <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-action/30 bg-sage p-6 text-center">
-            <p className="text-xl font-bold text-brand-dark">{HOME.proof.calloutTitle}</p>
-            <p className="mt-2 text-muted">{HOME.proof.calloutBody}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="kd-section bg-alabaster">
-        <div className="kd-container">
-          <SectionHeading eyebrow={HOME.authority.eyebrow} title={HOME.authority.title} />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {HOME.authority.points.map((p) => (
-              <article key={p.title} className="rounded-2xl bg-sage p-6 ring-1 ring-brand/10">
-                <h3 className="text-lg font-bold text-brand-dark">{p.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted">{p.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <ReviewsSection />
-
-      <SplitSection
-        eyebrow={HOME.founder.eyebrow}
-        title={HOME.founder.title}
-        imageSrc={HOME.founder.image}
-        imageAlt={HOME.founder.title}
-      >
-        {HOME.founder.paragraphs.map((p) => (
-          <p key={p}>{p}</p>
-        ))}
-        <Link href="/about" className="font-bold text-brand hover:underline">
-          {HOME.founder.cta} ←
-        </Link>
-      </SplitSection>
 
       <section className="kd-section bg-alabaster">
         <div className="kd-container">
@@ -253,14 +120,6 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <ol className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row sm:justify-between">
-            {HOME.expectations.timeline.map((t) => (
-              <li key={t.when} className="flex-1 rounded-xl bg-sage px-4 py-3 text-center">
-                <p className="kd-kicker">{t.when}</p>
-                <p className="mt-1 text-sm text-muted">{t.what}</p>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 
@@ -270,7 +129,7 @@ export default function HomePage() {
         eyebrow="14 jours · échange gratuit"
         title={HOME.guarantee.title}
         imageSrc={HOME.guarantee.image}
-        imageAlt={HOME.guarantee.title}
+        imageAlt="كتفتح الكولية قدام الليفرور قبل الخلاص"
         className="bg-sage/70"
       >
         <p>{HOME.guarantee.body}</p>
@@ -282,6 +141,9 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+        <Link href="/about" className="font-bold text-brand hover:underline">
+          {HOME.founder.cta} ←
+        </Link>
       </SplitSection>
 
       <FaqAccordion />

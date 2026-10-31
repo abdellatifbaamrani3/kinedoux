@@ -12,7 +12,7 @@ export type ProductImageSet = {
 };
 
 const set = (key: "lumba" | "posta" | "calma"): ProductImageSet => ({
-  main: `/images/${key}/main.svg`,
+  main: `/images/${key}/main.webp`,
   mechanism: `/images/${key}/mechanism.svg`,
   lifestyle: `/images/${key}/lifestyle.svg`,
   kit: `/images/${key}/kit-contents.svg`,
@@ -20,11 +20,13 @@ const set = (key: "lumba" | "posta" | "calma"): ProductImageSet => ({
 });
 
 export const IMAGES = {
-  hero: "/images/hero-kenidoux-collection.svg",
+  hero: "/images/hero-kenidoux-collection.webp",
   bundle: "/images/bundle-kit.svg",
   home: {
-    struggle: "/images/home-section-1.svg",
+    struggle: "/images/home-section-1.webp",
     compare: "/images/home-section-2.svg",
+    /** Homepage unboxing — replace with /images/about-guarantee.webp when ready. */
+    unboxing: "/images/about-trust.svg",
   },
   about: {
     hub: "/images/about-hub.svg",
@@ -38,7 +40,7 @@ export const IMAGES = {
   },
   products: {
     "kenidoux-lumba": set("lumba"),
-    "kenidoux-posta": set("posta"),
+    "kenidoux-posta": { ...set("posta"), main: "/images/posta/office.webp" },
     "kenidoux-calma": set("calma"),
   } as Record<string, ProductImageSet>,
 };

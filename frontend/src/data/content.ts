@@ -136,7 +136,7 @@ export const HOME = {
       "تأكيد من الدار البيضاء قبل ما تمشي الكولية",
       "تبديل فابور فـ 14 يوم عبر الواتساب — بلا جدال",
     ],
-    image: IMAGES.about.trust,
+    image: IMAGES.home.unboxing,
   },
   causes: {
     eyebrow: "ثلاثة حلول، حاجة واحدة مزيان",
