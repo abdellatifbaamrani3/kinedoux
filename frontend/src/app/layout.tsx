@@ -19,10 +19,10 @@ const cairo = Cairo({
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["600", "700"],
   variable: "--font-jakarta",
   display: "swap",
-  preload: true,
+  preload: false,
 });
 
 export const metadata: Metadata = {

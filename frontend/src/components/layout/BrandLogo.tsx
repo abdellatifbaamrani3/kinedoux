@@ -17,7 +17,7 @@ export function BrandLogo({ compact = false, light = false }: { compact?: boolea
       <div className="flex flex-col items-center justify-center leading-none">
         <span
           dir="ltr"
-          className={`font-sans font-extrabold tracking-[-0.03em] ${light ? "text-white" : "text-brand-dark"} ${compact ? "text-xl" : "text-xl sm:text-[1.65rem] md:text-[1.85rem]"}`}
+          className={`font-sans font-bold tracking-[-0.03em] ${light ? "text-white" : "text-brand-dark"} ${compact ? "text-xl" : "text-xl sm:text-[1.65rem] md:text-[1.85rem]"}`}
         >
           Kinédoux
         </span>
