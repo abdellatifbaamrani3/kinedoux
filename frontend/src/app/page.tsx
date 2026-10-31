@@ -1,6 +1,7 @@
 import { HOME } from "@/data/content";
 import { PRODUCTS } from "@/data/products";
 import { BundleBanner } from "@/components/home/BundleBanner";
+import { ConfirmationSection } from "@/components/home/ConfirmationSection";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { GuaranteeSection } from "@/components/home/GuaranteeSection";
 import { Hero } from "@/components/home/Hero";
@@ -62,6 +63,7 @@ export default function HomePage() {
       </section>
 
       <BundleBanner />
+      <ConfirmationSection />
       <ReviewsSection />
       <FaqAccordion />
       <GuaranteeSection />

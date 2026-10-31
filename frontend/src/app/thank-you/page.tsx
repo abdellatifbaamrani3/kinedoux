@@ -59,7 +59,8 @@ function ThankYouInner() {
       <p className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage text-3xl text-brand">✓</p>
       <h1 className="kd-h1 mt-4">شكراً ليك. طلبك تسجّل.</h1>
       <p className="mt-4 leading-8 text-muted">
-        فريق كينيدو فالدار البيضاء غادي يعيط ليك لتأكيد العنوان ووقت التوصيل. الدفع كيكون عند الاستلام بعد ما تفحص الكولية.
+        خلّي التيليفون حداك. فريق كينيدو من الدار البيضاء غادي يعيط ليك اليوم باش نأكدو المدينة، العنوان ووقت التوصيل.
+        الطلب ما كيمشيش حتى تجاوب. الخلاص كيكون عند الباب، بعد ما تفتح الكولية.
       </p>
       {number ? (
         <div className="kd-card mx-auto mt-8 p-6 text-right">

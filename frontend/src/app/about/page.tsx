@@ -18,8 +18,8 @@ export default function AboutPage() {
         <p className="kd-kicker mb-3">Kinédoux · Casablanca</p>
         <h1 className="kd-h1">{ABOUT.heroTitle}</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{ABOUT.heroSubtitle}</p>
-        <Link href="/collections" className="kd-cta mt-8 max-w-sm">
-          اكتشف خط كينيدو
+        <Link href="/products/kenidoux-lumba" className="kd-cta mt-8 max-w-sm">
+          اطلب لومبا — الخلاص عند الاستلام
         </Link>
       </header>
       {ABOUT.sections.map((s, i) => (

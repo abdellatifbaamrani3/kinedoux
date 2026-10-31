@@ -78,7 +78,7 @@ const lumba: Product = {
   latinSubtitle: "Kinédoux Lumba™ — Ceinture de Décompression Lombaire",
   category: "الأكثر طلباً — راحة أسفل الظهر",
   rating: 4.9,
-  reviewCount: 48,
+  reviewCount: 3,
   cardHeading: "كينيدو لومبا — حزام أسفل الظهر",
   cardSubheading:
     "دعم وتمدد خفيف بعد السياقة، الجلسة الطويلة أو الوقوف. تنتفخ الأعمدة الهوائية بضغطات بسيطة، وأنت جالس أو سايق.",
@@ -102,8 +102,8 @@ const lumba: Product = {
     },
     {
       id: "lumba-2",
-      title: "حزامين — ليك وللوالدين",
-      subtitle: "واحد ليك وواحد للواليد أو الواليدة. التاني بـ 350 د.م، فنفس الكولية.",
+      title: "حزامين — ليك وهديّة للوالدين",
+      subtitle: "واحد ليك وواحد للواليد أو الواليدة. التاني بـ 350 د.م بدل 499، ونفس الكولية.",
       units: 2,
       price: 849,
       compareAt: 998,
@@ -215,7 +215,7 @@ const posta: Product = {
   latinSubtitle: "Kinédoux Posta™ — Pack Posture Intelligente & Nuque",
   category: "وقفة خفيفة وراحة الرقبة",
   rating: 4.8,
-  reviewCount: 36,
+  reviewCount: 1,
   cardHeading: "كينيدو بوسطا — وقفة ووسادة رقبة",
   cardSubheading:
     "منبّه اهتزاز لطيف بالنهار + وسادة تمدد للرقبة بالعشية. وقف بثقة، بلا أحزمة قاصحة تحت الإبط.",
@@ -240,7 +240,7 @@ const posta: Product = {
     {
       id: "posta-2",
       title: "باقتين — ليك ولشريكك",
-      subtitle: "للزوجين، أو ليك وولدك مع القراية. التانية بسعر تفضيلي فنفس الكولية.",
+      subtitle: "للزوجين، أو ليك وولدك مع القراية. التانية بـ 270 د.م بدل 379، فنفس الكولية.",
       units: 2,
       price: 649,
       compareAt: 758,
@@ -352,7 +352,7 @@ const calma: Product = {
   latinSubtitle: "Kinédoux Calma™ — Ventouse Thermique Intelligente",
   category: "طقس الاسترخاء المسائي",
   rating: 4.9,
-  reviewCount: 41,
+  reviewCount: 2,
   cardHeading: "كينيدو كالما — كاسات دافئة بلا جرح",
   cardSubheading:
     "النسخة العصرية ديال الكاسات: دفء مريح وشفط ناعم لكتافك وظهرك فـ 15 دقيقة، بلا نار وبلا فوضى.",
@@ -377,7 +377,7 @@ const calma: Product = {
     {
       id: "calma-2",
       title: "جهازين — للكتفين أو هدية",
-      subtitle: "جهازين للاستعمال فنفس الوقت، أو واحد ليك وواحد للوالدين.",
+      subtitle: "واحد ليك وواحد للوالدين. التاني بـ 250 د.م بدل 349، فنفس الكولية.",
       units: 2,
       price: 599,
       compareAt: 698,

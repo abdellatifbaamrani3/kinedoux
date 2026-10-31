@@ -26,7 +26,7 @@ export function RatingRow({
     <div className={cn("flex flex-wrap items-center gap-2 text-sm", className)}>
       <Stars rating={rating} />
       <span className="font-bold tabular-nums text-brand-dark">{rating.toFixed(1)}</span>
-      <span className="text-muted">({count} تجربة زبون)</span>
+      <span className="text-muted">آراء زبناء من المغرب{count > 0 ? ` · ${count} مكتوبة` : ""}</span>
     </div>
   );
 }

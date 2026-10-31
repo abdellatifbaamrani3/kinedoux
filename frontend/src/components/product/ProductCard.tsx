@@ -48,7 +48,9 @@ export function ProductCard({ product }: { product: Product }) {
             )}
           </div>
           <p className="mt-2 text-xs font-bold text-brand">
-            عرض {popular.units === 1 ? "الفردي" : `${popular.units} قطع`} بـ {formatMad(popular.price)} · توصيل مجاني
+            {popular.units > 1
+              ? `الأكثر طلباً: ${popular.units} قطع بـ ${formatMad(popular.price)} · هدية فنفس الكولية`
+              : `عرض فردي بـ ${formatMad(popular.price)} · توصيل مجاني`}
           </p>
         </div>
         <button type="button" className="kd-cta py-3 text-base" onClick={() => add(product, popular)}>

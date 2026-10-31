@@ -9,6 +9,7 @@ import { formatMad } from "@/lib/utils";
 import { trackEvent } from "@/lib/tracking";
 import { AlternatingSection } from "@/components/ui/AlternatingSection";
 import { RatingRow } from "@/components/ui/Stars";
+import { ConfirmationSection } from "@/components/home/ConfirmationSection";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { ProductCard } from "./ProductCard";
@@ -63,14 +64,23 @@ export function ProductLandingView({ product }: { product: Product }) {
             ))}
           </ul>
 
+          {offer.units > 1 && offer.compareAt > offer.price ? (
+            <p className="mt-4 rounded-xl bg-white p-3 text-sm font-bold text-brand shadow-card">
+              هدية أوفر: كتوفر {(offer.compareAt - offer.price).toLocaleString("en-US")} د.م، والكولية وحدة.
+            </p>
+          ) : null}
+
           <button type="button" className="kd-cta mt-6" onClick={addSelected}>
-            أضف للسلة واطلب الآن — الخلاص عند الاستلام ({formatMad(offer.price)})
+            أضف للسلة — {formatMad(offer.price)} · الخلاص عند الاستلام
           </button>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-muted">
             {CTA_TRUST.map((t) => (
               <span key={t}>{t}</span>
             ))}
           </div>
+          <p className="mt-3 text-xs leading-6 text-muted">
+            كنعيطو من الدار البيضاء قبل التوصيل. كتفتح الكولية قدام الليفرور. منتوجات كينيدو للراحة اليومية، ما كتعوّضش الطبيب.
+          </p>
         </div>
 
         <div className="-order-1 lg:order-none">
@@ -164,6 +174,7 @@ export function ProductLandingView({ product }: { product: Product }) {
       </section>
 
       <ReviewsSection reviews={shownReviews} compact />
+      <ConfirmationSection />
       <FaqAccordion items={productFaqs} />
 
       <section className="kd-container py-16">
@@ -177,7 +188,7 @@ export function ProductLandingView({ product }: { product: Product }) {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-brand/10 bg-white/95 p-3 shadow-lift backdrop-blur md:hidden">
         <button type="button" className="kd-cta py-3 text-base" onClick={addSelected}>
-          اطلب الآن — الخلاص عند الاستلام ({formatMad(offer.price)})
+          اطلب الآن — {formatMad(offer.price)}
         </button>
       </div>
       <div className="h-20 md:hidden" />
@@ -190,8 +201,8 @@ export function HonestyBox() {
     <aside className="kd-container mb-10 rounded-2xl border border-brand/15 bg-white p-5 text-sm leading-7">
       <p className="font-bold text-brand">شفافية كينيدو</p>
       <p className="mt-2 text-muted">
-        منتوجات كينيدو مخصصة للراحة اليومية والدعم الميكانيكي واسترخاء العضلات، وما كتعوّضش الاستشارة الطبية. يُنصح
-        بمراجعة الطبيب قبل الاستعمال فحالة الحمل، كسر حديث، أو عملية حديثة على العمود الفقري.
+        كينيدو كتبيع حلول راحة ودعم ميكانيكي، ما كتعالجش وما كتعوّضش الطبيب. شاور طبيبك قبل الاستعمال فحالة الحمل، كسر
+        حديث، أو عملية حديثة على العمود الفقري.
       </p>
       <Link href="/contact" className="mt-2 inline-block font-bold text-brand">
         تواصل مع فريق كينيدو

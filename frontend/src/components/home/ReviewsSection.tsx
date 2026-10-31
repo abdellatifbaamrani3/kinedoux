@@ -13,8 +13,10 @@ export function ReviewsSection({
     <section className="bg-sage/60 py-16" id="reviews">
       <div className="kd-container">
         <p className="kd-kicker mb-2">Avis clients</p>
-        <h2 className="kd-h2 mb-2">تجارب من مدن المغرب</h2>
-        <p className="mb-8 text-muted">دار البيضاء، الرباط، طنجة، مراكش، فاس وأكادير — بنفس الثمن ونفس التوصيل.</p>
+        <h2 className="kd-h2 mb-2">آراء مكتوبة من مدن المغرب</h2>
+        <p className="mb-8 text-muted">
+          كازا، الرباط، طنجة، مراكش، فاس وأكادير. نفس الثمن، نفس التوصيل، ونفس التأكيد من الدار البيضاء.
+        </p>
         {!compact ? (
           <div className="mb-10 grid gap-4 md:grid-cols-3">
             {HOME.ugc.map((u) => (

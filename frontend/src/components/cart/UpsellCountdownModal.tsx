@@ -80,7 +80,7 @@ export function UpsellCountdownModal() {
       <div className="absolute inset-0 bg-brand-dark/70" />
       <div className="relative max-h-[96vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white p-6 shadow-lift animate-pop-in sm:rounded-3xl">
         <p className="rounded-xl bg-brand px-3 py-2 text-sm font-bold text-white">
-          تسجّل طلبك. قبل ما نوجدو الكولية، عرض يتشحن معاك فنفس الطرد.
+          تسجّل طلبك. عرض يتشحن فنفس الكولية، بلا توصيل زايد. تقدر ترفضو بهدوء.
         </p>
         <div className="mt-4">
           <div className="mb-2 flex items-center justify-between text-sm font-bold text-brand">

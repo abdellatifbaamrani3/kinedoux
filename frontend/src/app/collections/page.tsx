@@ -18,7 +18,7 @@ export default function CollectionsPage() {
         <p className="kd-kicker">Confort Dorsal & Posture</p>
         <h1 className="kd-h1 mt-2">منتجات كينيدو الثلاثة</h1>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
-          خط متخصص: حزام هوائي لأسفل الظهر، وقفة خفيفة مع وسادة رقبة، وكاسات دافئة مسائية. كل العروض بالتوصيل المجاني والخلاص عند الاستلام.
+          خط متخصص: حزام هوائي لأسفل الظهر، وقفة خفيفة مع وسادة رقبة، وكاسات دافئة مسائية. كل العروض بالتوصيل المجاني، التأكيد من الدار البيضاء، والخلاص بعد فتح الكولية.
         </p>
       </header>
       <section className="kd-container grid gap-6 pb-12 md:grid-cols-3">

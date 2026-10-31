@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function BrandLogo({ compact = false, light = false }: { compact?: boolean; light?: boolean }) {
   return (
-    <Link href="/" className="flex min-w-0 items-center gap-2 group sm:gap-3" aria-label="كينيدو Kinédoux — الصفحة الرئيسية">
+    <Link href="/" className="flex min-w-0 items-center gap-2.5 group sm:gap-3" aria-label="Kinédoux — الصفحة الرئيسية">
       <div
         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 shadow-sm transition-transform group-hover:scale-105 md:h-12 md:w-12 ${
           light ? "border-leaf bg-brand" : "border-leaf bg-brand"
@@ -16,17 +16,15 @@ export function BrandLogo({ compact = false, light = false }: { compact?: boolea
       </div>
       <div className="flex flex-col items-start justify-center leading-none">
         <span
-          className={`font-bold tracking-tight ${light ? "text-alabaster" : "text-brand-dark"} ${compact ? "text-lg" : "text-lg sm:text-xl md:text-2xl"}`}
+          dir="ltr"
+          className={`font-sans font-extrabold tracking-[-0.03em] ${light ? "text-alabaster" : "text-brand-dark"} ${compact ? "text-xl" : "text-xl sm:text-[1.65rem] md:text-[1.85rem]"}`}
         >
-          كينيدو
-        </span>
-        <span
-          className={`mt-0.5 hidden font-sans text-[10px] font-semibold tracking-[0.22em] sm:block md:mt-1 md:text-[11px] ${light ? "text-leaf" : "text-brand"}`}
-        >
-          KINÉDOUX
+          Kinédoux
         </span>
         {!compact ? (
-          <span className={`mt-0.5 hidden font-sans text-[9px] tracking-[0.14em] lg:block ${light ? "text-alabaster/55" : "text-muted"}`}>
+          <span
+            className={`mt-1 hidden font-sans text-[10px] font-semibold tracking-[0.18em] uppercase lg:block ${light ? "text-alabaster/55" : "text-muted"}`}
+          >
             Confort Dorsal & Posture
           </span>
         ) : null}

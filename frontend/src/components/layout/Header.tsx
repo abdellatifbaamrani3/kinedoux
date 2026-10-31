@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, Phone, ShoppingBag, X } from "lucide-react";
 
 import { NAV } from "@/data/content";
-import { cn } from "@/lib/utils";
+import { cn, whatsappLink } from "@/lib/utils";
 import { selectCount, useCartStore } from "@/store/useCartStore";
 import { BrandLogo } from "./BrandLogo";
 
@@ -39,6 +39,14 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <a
+            href={whatsappLink("السلام عليكم، بغيت نأكد طلب أو نسأل على كينيدو")}
+            className="hidden items-center gap-2 rounded-full border border-brand/15 bg-white px-3 py-2.5 text-sm font-bold text-brand transition hover:bg-sage md:flex"
+            aria-label="واتساب كينيدو"
+          >
+            <Phone className="h-4 w-4" />
+            واتساب
+          </a>
           <button
             type="button"
             onClick={openCart}
@@ -80,6 +88,12 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            <a
+              href={whatsappLink("السلام عليكم، بغيت نأكد طلب أو نسأل على كينيدو")}
+              className="py-3 text-base font-bold text-brand"
+            >
+              واتساب كينيدو — من الدار البيضاء
+            </a>
           </div>
         </nav>
       ) : null}

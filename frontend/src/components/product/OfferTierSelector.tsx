@@ -53,8 +53,15 @@ export function OfferTierSelector({
                     <>
                       <span className="text-sm tabular-nums text-muted line-through">{formatMad(offer.compareAt)}</span>
                       <span className="text-xs font-bold text-brand">وفّر {save.toLocaleString("en-US")} د.م</span>
+                      {offer.units > 1 ? (
+                        <span className="text-xs text-muted">
+                          ({formatMad(Math.round(offer.price / offer.units))} للقطعة)
+                        </span>
+                      ) : null}
                     </>
-                  ) : null}
+                  ) : (
+                    <span className="text-xs font-bold text-muted">التوصيل مشمول</span>
+                  )}
                 </p>
               </div>
             </label>

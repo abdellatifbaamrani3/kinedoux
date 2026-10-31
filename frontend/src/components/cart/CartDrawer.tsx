@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 
-import { formatClock, formatMad } from "@/lib/utils";
+import { formatMad } from "@/lib/utils";
 import {
   getCrossSells,
   selectCount,
@@ -20,20 +19,11 @@ export function CartDrawer() {
   const removeItem = useCartStore((s) => s.removeItem);
   const addCross = useCartStore((s) => s.addCrossSellItem);
   const checkout = useCartStore((s) => s.openCheckoutFromCart);
-  const reservedUntil = useCartStore((s) => s.reservedUntil);
-  const [now, setNow] = useState(Date.now());
-
-  useEffect(() => {
-    if (!open) return;
-    const t = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(t);
-  }, [open]);
 
   if (!open) return null;
 
   const total = selectTotal(items);
   const count = selectCount(items);
-  const remain = reservedUntil ? Math.max(0, Math.floor((reservedUntil - now) / 1000)) : 0;
   const crosses = getCrossSells(items);
 
   return (
@@ -43,9 +33,7 @@ export function CartDrawer() {
         <header className="flex items-center justify-between border-b border-brand/10 bg-white px-5 py-4">
           <div>
             <h2 className="text-lg font-bold">سلة طلباتك من كينيدو</h2>
-            {remain > 0 ? (
-              <p className="mt-1 text-xs font-bold text-brand">طلبك محجوز مع التوصيل المجاني لمدة {formatClock(remain)}</p>
-            ) : null}
+            <p className="mt-1 text-xs font-bold text-brand">توصيل مجاني · تأكيد من الدار البيضاء قبل الإرسال</p>
           </div>
           <button type="button" onClick={close} className="rounded-full p-2 hover:bg-sage" aria-label="إغلاق">
             <X className="h-5 w-5" />
@@ -54,10 +42,7 @@ export function CartDrawer() {
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
           <div className="mb-4 rounded-xl bg-sage p-3 text-sm font-bold text-brand">
-            التوصيل مجاني + دليل الروتين اليومي مع كل طلب
-            <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
-              <div className="h-full w-full bg-brand" />
-            </div>
+            التوصيل مجاني + دليل الروتين بالدارجة مع كل طلب. الإضافات تحت تشحن فنفس الكولية.
           </div>
 
           {items.length === 0 ? (
@@ -94,8 +79,8 @@ export function CartDrawer() {
 
           {crosses.length > 0 ? (
             <div className="mt-6">
-              <h3 className="mb-3 text-sm font-bold text-brand">كمّل نفس الكولية، بلا توصيل زايد</h3>
-              <p className="mb-3 text-xs text-muted">إضافات تُشحن مع طلبك الحالي</p>
+              <h3 className="mb-3 text-sm font-bold text-brand">كمّل نفس الكولية — بلا توصيل زايد</h3>
+              <p className="mb-3 text-xs text-muted">زيادة صغيرة دابا أوفر من طلب ثاني من بعد</p>
               <div className="space-y-3">
                 {crosses.map((p) => (
                   <div key={p.slug} className="flex gap-3 rounded-xl border border-leaf/50 bg-white p-3">

@@ -16,7 +16,7 @@ export function normalizeDigits(input: string): string {
 }
 
 export function validateAndFormatPhone(rawInput: string): PhoneValidationResult {
-  const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "BOTH"; // 'KSA' | 'MA' | 'BOTH'
+  const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "MA"; // 'KSA' | 'MA' | 'BOTH'
   const cleaned = normalizeDigits(rawInput.trim());
 
   // 1. KSA: 05XXXXXXXX, 5XXXXXXXX, +9665XXXXXXXX, 009665XXXXXXXX, 9665XXXXXXXX
@@ -54,13 +54,15 @@ export function validateAndFormatPhone(rawInput: string): PhoneValidationResult 
     errorMessage:
       mode === "KSA"
         ? "يرجى إدخال رقم جوال سعودي صحيح (مثال: 0512345678)"
-        : "يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0612345678 أو 0512345678)",
+        : mode === "MA"
+          ? "دخل رقم مغربي صحيح (مثال: 0612345678 أو 0712345678)"
+          : "يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0612345678 أو 0512345678)",
   };
 }
 
 export function phonePlaceholder(): string {
-  const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "BOTH";
+  const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "MA";
   if (mode === "KSA") return "05XXXXXXXX";
   if (mode === "MA") return "06XXXXXXXX أو 07XXXXXXXX";
-  return "05XXXXXXXX أو 06XXXXXXXX";
+  return "06XXXXXXXX أو 07XXXXXXXX";
 }

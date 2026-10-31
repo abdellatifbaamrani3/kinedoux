@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 
+import { CITIES } from "@/data/cities";
 import { api } from "@/lib/api";
 import { phonePlaceholder, validateAndFormatPhone } from "@/lib/phone";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId } from "@/lib/tracking";
@@ -17,12 +18,14 @@ export function CheckoutPopupModal() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const phoneResult = useMemo(() => validateAndFormatPhone(phone), [phone]);
   const nameOk = name.trim().length >= 3;
-  const canSubmit = nameOk && phoneResult.isValid && items.length > 0 && !submitting;
+  const cityOk = (CITIES as readonly string[]).includes(city);
+  const canSubmit = nameOk && phoneResult.isValid && cityOk && items.length > 0 && !submitting;
 
   if (!open) return null;
 
@@ -35,7 +38,7 @@ export function CheckoutPopupModal() {
       identifyUserOnWebPixels(phoneResult, name.trim());
       const eventId = makeEventId("Purchase");
       const order = await api.createOrder({
-        customer_name: name.trim(),
+        customer_name: `${name.trim()} — ${city}`,
         customer_phone: phone,
         items: items.map((i) => ({
           product_slug: i.productSlug,
@@ -60,7 +63,7 @@ export function CheckoutPopupModal() {
       <div className="relative max-h-[94vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white p-6 shadow-lift animate-pop-in sm:rounded-3xl">
         <h2 className="text-xl font-bold">إتمام الطلب — الخلاص عند الاستلام</h2>
         <p className="mt-2 rounded-xl bg-sage px-3 py-2 text-sm font-bold text-brand">
-          تفحص الكولية قبل ما تخلّص · تبديل فابور فـ 14 يوم · توصيل مجاني
+          كنعيطو من الدار البيضاء باش نأكدو المدينة والعنوان · كتفتح الكولية قبل الخلاص
         </p>
 
         <div className="mt-4 rounded-2xl bg-sage p-4 text-sm">
@@ -116,13 +119,36 @@ export function CheckoutPopupModal() {
                 {phoneResult.isValid ? "✔ رقم هاتف صحيح" : phoneResult.errorMessage}
               </p>
             ) : (
-              <p className="mt-1 text-xs text-muted">05XXXXXXXX أو 06XXXXXXXX</p>
+              <p className="mt-1 text-xs text-muted">06XXXXXXXX أو 07XXXXXXXX — رقم مغربي باش نأكدو الطلب</p>
             )}
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-sm font-extrabold">المدينة *</span>
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className={cn(
+                "w-full rounded-xl border-2 bg-alabaster px-4 py-3 outline-none",
+                city.length === 0 ? "border-brand/15" : cityOk ? "border-brand" : "border-coral",
+              )}
+              required
+            >
+              <option value="">اختار مدينتك</option>
+              {CITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted">العنوان الكامل كنأخذوه فالتليفون، باش ما تكتبش بزاف دابا.</p>
           </label>
           {error ? <p className="rounded-xl bg-coral/10 p-3 text-sm font-bold text-coral">{error}</p> : null}
           <button type="submit" className="kd-cta" disabled={!canSubmit}>
-            {submitting ? "جاري تأكيد الطلب..." : "تأكيد الطلب — الخلاص عند الاستلام"}
+            {submitting ? "جاري تأكيد الطلب..." : "أكّد الطلب — غادي نعيطو ليك من كازا"}
           </button>
+          <p className="text-center text-xs leading-6 text-muted">
+            خلّي التيليفون حداك. الطلب ما كيتصيفطش حتى نأكدو معاك المدينة والعنوان.
+          </p>
         </form>
       </div>
     </div>
