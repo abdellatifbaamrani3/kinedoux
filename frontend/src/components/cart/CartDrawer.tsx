@@ -99,7 +99,7 @@ export function CartDrawer() {
                       </p>
                       <button
                         type="button"
-                        className="mt-2 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white"
+                        className="mt-2 rounded-full bg-[#F97316] px-3 py-1 text-xs font-bold text-white hover:bg-[#EA580C]"
                         onClick={() => addCross(p)}
                       >
                         + أضف للسلة

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { COMPARISON_FAKE } from "@/data/content";
 import { PRODUCTS } from "@/data/products";
 import { BundleBanner } from "@/components/home/BundleBanner";
-import { ProductCard } from "@/components/product/ProductCard";
+import { ProductGrid } from "@/components/home/ProductGrid";
 
 export const metadata: Metadata = {
   title: "منتجاتنا",
@@ -21,11 +21,7 @@ export default function CollectionsPage() {
           خط متخصص: حزام هوائي لأسفل الظهر، وقفة خفيفة مع وسادة رقبة، وكاسات دافئة مسائية. كل العروض بالتوصيل المجاني، التأكيد من الدار البيضاء، والخلاص بعد فتح الكولية.
         </p>
       </header>
-      <section className="kd-container grid gap-6 pb-12 md:grid-cols-3">
-        {PRODUCTS.map((p) => (
-          <ProductCard key={p.slug} product={p} />
-        ))}
-      </section>
+      <ProductGrid showIntro={false} />
       <BundleBanner />
       <section className="kd-container pb-16">
         <h2 className="kd-h2 mb-6">مقارنة سريعة مع السوق</h2>

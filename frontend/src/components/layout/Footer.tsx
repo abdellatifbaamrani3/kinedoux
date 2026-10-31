@@ -9,7 +9,7 @@ import { BrandLogo } from "./BrandLogo";
 export function Footer() {
   return (
     <footer className="mt-8 bg-brand-dark text-alabaster">
-      <div className="grid grid-cols-2 gap-px bg-brand sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-px bg-white/10 sm:grid-cols-4">
         {TRUST_PILLS.map((p) => (
           <div key={p.title} className="bg-brand-dark px-4 py-5 text-center">
             <p className="text-sm font-bold text-leaf">{p.title}</p>
@@ -23,7 +23,7 @@ export function Footer() {
           <p className="mt-4 text-sm leading-7 text-alabaster/75">{TAGLINE}</p>
         </div>
         <div>
-          <h3 className="mb-4 text-sm font-bold text-leaf">تصفح كينيدو</h3>
+          <h3 className="mb-4 text-sm font-bold text-leaf">تصفح Kinédoux</h3>
           <ul className="space-y-2 text-sm">
             {NAV.map((n) => (
               <li key={n.href}>

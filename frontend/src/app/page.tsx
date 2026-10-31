@@ -1,13 +1,12 @@
 import { HOME } from "@/data/content";
-import { PRODUCTS } from "@/data/products";
 import { BundleBanner } from "@/components/home/BundleBanner";
 import { ConfirmationSection } from "@/components/home/ConfirmationSection";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { GuaranteeSection } from "@/components/home/GuaranteeSection";
 import { Hero } from "@/components/home/Hero";
+import { ProductGrid } from "@/components/home/ProductGrid";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { TrustBar } from "@/components/home/TrustBar";
-import { ProductCard } from "@/components/product/ProductCard";
 import { AlternatingSection } from "@/components/ui/AlternatingSection";
 
 export default function HomePage() {
@@ -16,18 +15,7 @@ export default function HomePage() {
       <Hero />
       <TrustBar />
 
-      <section className="kd-container py-16" id="products">
-        <p className="kd-kicker mb-2">Trois soins, une marque</p>
-        <h2 className="kd-h2 mb-2">خط كينيدو المتخصص</h2>
-        <p className="mb-8 max-w-2xl text-muted">
-          ثلاثة حلول واضحة: دعم أسفل الظهر، وقفة خفيفة مع وسادة رقبة، واسترخاء مسائي. كل العروض بالتوصيل المجاني والخلاص عند الاستلام.
-        </p>
-        <div className="grid gap-6 md:grid-cols-3">
-          {PRODUCTS.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
-      </section>
+      <ProductGrid />
 
       <AlternatingSection
         index={1}

@@ -28,7 +28,7 @@ export function BundleBanner() {
             </p>
             <button
               type="button"
-              className="kd-cta mt-6 bg-leaf text-brand-dark hover:bg-leaf-deep hover:text-white sm:w-auto"
+              className="kd-cta mt-6 sm:w-auto"
               onClick={() => add(product, offer)}
             >
               {HOME.bundle.cta}

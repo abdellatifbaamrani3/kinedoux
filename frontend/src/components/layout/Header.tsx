@@ -18,21 +18,21 @@ export function Header() {
   const count = selectCount(items);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand/10 bg-alabaster">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-dark">
       <div className="kd-container flex h-[68px] items-center justify-between gap-2 sm:gap-3 md:h-[84px]">
-        <BrandLogo />
+        <BrandLogo light />
 
-        <nav className="hidden items-center gap-6 text-sm font-bold text-brand-dark lg:flex" aria-label="القائمة الرئيسية">
+        <nav className="hidden items-center gap-6 text-sm font-bold text-white/80 lg:flex" aria-label="القائمة الرئيسية">
           {NAV.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={cn("relative py-1 transition hover:text-brand", active && "text-brand")}
+                className={cn("relative py-1 transition hover:text-white", active && "text-leaf")}
               >
                 {item.label}
-                {active ? <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-leaf-deep" /> : null}
+                {active ? <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-brand" /> : null}
               </Link>
             );
           })}
@@ -41,7 +41,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <a
             href={whatsappLink("السلام عليكم، بغيت نأكد طلب أو نسأل على كينيدو")}
-            className="hidden items-center gap-2 rounded-full border border-brand/15 bg-white px-3 py-2.5 text-sm font-bold text-brand transition hover:bg-sage md:flex"
+            className="hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-bold text-white transition hover:bg-white/10 md:flex"
             aria-label="واتساب كينيدو"
           >
             <Phone className="h-4 w-4" />
@@ -50,20 +50,20 @@ export function Header() {
           <button
             type="button"
             onClick={openCart}
-            className="flex items-center gap-2 rounded-full bg-brand px-3 py-2.5 text-white transition hover:bg-brand-hover md:px-4"
+            className="flex items-center gap-2 rounded-full bg-[#F97316] px-3 py-2.5 text-white transition hover:bg-[#EA580C] md:px-4"
             aria-label="فتح السلة"
           >
             <ShoppingBag className="h-5 w-5" />
             <span className="hidden font-bold md:inline">سلتي</span>
             {count > 0 ? (
-              <span className="rounded-full bg-leaf px-2 py-0.5 text-xs font-extrabold text-brand-dark tabular-nums">
+              <span className="rounded-full bg-white px-2 py-0.5 text-xs font-extrabold text-[#F97316] tabular-nums">
                 {count}
               </span>
             ) : null}
           </button>
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand/15 bg-white lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white lg:hidden"
             onClick={() => setMobileNav(!navOpen)}
             aria-label={navOpen ? "إغلاق القائمة" : "فتح القائمة"}
           >
@@ -73,7 +73,7 @@ export function Header() {
       </div>
 
       {navOpen ? (
-        <nav className="border-t border-brand/10 bg-alabaster lg:hidden" aria-label="قائمة الجوال">
+        <nav className="border-t border-white/10 bg-brand-dark lg:hidden" aria-label="قائمة الجوال">
           <div className="kd-container flex flex-col py-3">
             {NAV.map((item) => (
               <Link
@@ -81,8 +81,8 @@ export function Header() {
                 href={item.href}
                 onClick={() => setMobileNav(false)}
                 className={cn(
-                  "border-b border-brand/5 py-3 text-base font-bold",
-                  pathname === item.href ? "text-brand" : "text-brand-dark",
+                  "border-b border-white/5 py-3 text-base font-bold",
+                  pathname === item.href ? "text-leaf" : "text-white",
                 )}
               >
                 {item.label}
@@ -90,7 +90,7 @@ export function Header() {
             ))}
             <a
               href={whatsappLink("السلام عليكم، بغيت نأكد طلب أو نسأل على كينيدو")}
-              className="py-3 text-base font-bold text-brand"
+              className="py-3 text-base font-bold text-leaf"
             >
               واتساب كينيدو — من الدار البيضاء
             </a>

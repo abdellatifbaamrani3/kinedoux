@@ -6,26 +6,30 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#1B3A4B",
-          hover: "#142C3A",
-          dark: "#0F2430",
+          DEFAULT: "#0D9488",
+          hover: "#0F766E",
+          dark: "#1E293B",
         },
-        alabaster: "#F8F7F4",
-        sage: { DEFAULT: "#E8EEE8", deep: "#D5DFD4" },
-        leaf: { DEFAULT: "#D7E6EE", deep: "#2F5D73" },
-        gold: { DEFAULT: "#D7E6EE", deep: "#2F5D73", star: "#C6A15A" },
-        argan: "#C6A15A",
-        coral: "#8C4E45",
+        action: {
+          DEFAULT: "#F97316",
+          hover: "#EA580C",
+        },
+        alabaster: "#F8FAFC",
+        sage: { DEFAULT: "#CCFBF1", deep: "#99F6E4" },
+        leaf: { DEFAULT: "#99F6E4", deep: "#0D9488" },
+        gold: { DEFAULT: "#CCFBF1", deep: "#0D9488", star: "#F59E0B" },
+        argan: "#F59E0B",
+        coral: "#C2410C",
         wa: "#25D366",
-        muted: "#5A6B73",
+        muted: "#475569",
       },
       fontFamily: {
         sans: ["var(--font-jakarta)", "system-ui", "sans-serif"],
         arabic: ["var(--font-cairo)", "Tahoma", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        card: "0 1px 2px rgba(15,36,48,.04), 0 10px 28px -12px rgba(15,36,48,.12)",
-        lift: "0 18px 40px -14px rgba(27,58,75,.30)",
+        card: "0 1px 2px rgba(30,41,59,.04), 0 12px 28px -14px rgba(30,41,59,.16)",
+        lift: "0 18px 40px -14px rgba(249,115,22,.38)",
       },
       keyframes: {
         "fade-up": { from: { opacity: "0", transform: "translateY(12px)" }, to: { opacity: "1", transform: "translateY(0)" } },

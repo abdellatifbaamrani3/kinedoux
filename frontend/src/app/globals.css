@@ -3,15 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --brand-primary: #1b3a4b;
-  --brand-primary-hover: #142c3a;
-  --brand-dark: #0f2430;
-  --bg-warm: #f8f7f4;
+  --brand-primary: #0d9488;
+  --brand-primary-hover: #0f766e;
+  --brand-dark: #1e293b;
+  --bg-warm: #f8fafc;
   --bg-surface: #ffffff;
-  --bg-sage: #e8eee8;
-  --accent-leaf: #d7e6ee;
-  --accent-argan: #c6a15a;
-  --accent-clay: #8c4e45;
+  --bg-sage: #ccfbf1;
+  --accent-leaf: #99f6e4;
+  --accent-argan: #f59e0b;
+  --accent-clay: #c2410c;
+  --cta: #f97316;
 }
 
 html {
@@ -28,24 +29,24 @@ body {
 }
 
 ::selection {
-  background: #1b3a4b;
-  color: #f4f7f8;
+  background: #0d9488;
+  color: #f8fafc;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2f5d73 #e6eef2;
+  scrollbar-color: #0d9488 #ccfbf1;
 }
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 *::-webkit-scrollbar-thumb {
-  background: #2f5d73;
+  background: #0d9488;
   border-radius: 99px;
 }
 *::-webkit-scrollbar-track {
-  background: #e6eef2;
+  background: #ccfbf1;
 }
 
 @layer components {
@@ -63,16 +64,20 @@ body {
     @apply text-2xl font-bold leading-snug text-brand-dark md:text-[1.85rem];
   }
   .kd-cta {
-    @apply inline-flex w-full items-center justify-center gap-3 rounded-xl bg-brand px-6 py-4 text-lg font-bold text-white shadow-lift transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex w-full items-center justify-center gap-3 rounded-xl px-6 py-4 text-lg font-bold text-white shadow-lift transition disabled:cursor-not-allowed disabled:opacity-60;
+    background-color: #f97316;
+  }
+  .kd-cta:hover {
+    background-color: #ea580c;
   }
   .kd-cta-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-brand/20 bg-white px-5 py-3 text-sm font-bold text-brand transition hover:border-brand/40 hover:bg-sage;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-brand/25 bg-white px-5 py-3 text-sm font-bold text-brand transition hover:border-brand hover:bg-sage;
   }
   .kd-card {
     @apply rounded-2xl border border-brand/10 bg-white shadow-card;
   }
   .kd-kicker {
-    @apply font-sans text-[11px] font-semibold tracking-[0.18em] text-leaf-deep uppercase;
+    @apply font-sans text-[11px] font-semibold tracking-[0.18em] text-brand uppercase;
   }
 }
 
