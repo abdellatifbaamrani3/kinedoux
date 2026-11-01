@@ -25,12 +25,11 @@ export const IMAGES = {
   home: {
     struggle: "/images/home-section-1.webp",
     compare: "/images/home-section-2.svg",
-    /** Homepage unboxing — replace with /images/about-guarantee.webp when ready. */
-    unboxing: "/images/about-trust.svg",
+    unboxing: "/images/about-unbox.webp",
   },
   about: {
     hub: "/images/about-hub.svg",
-    pillars: "/images/about-pillars.svg",
+    pillars: "/images/about-pillars.webp",
     trust: "/images/about-trust.svg",
   },
   ugc: ["/images/ugc-1.svg", "/images/ugc-2.svg", "/images/ugc-3.svg"],
@@ -41,7 +40,7 @@ export const IMAGES = {
   products: {
     "kenidoux-lumba": set("lumba"),
     "kenidoux-posta": { ...set("posta"), main: "/images/posta/office.webp" },
-    "kenidoux-calma": set("calma"),
+    "kenidoux-calma": { ...set("calma"), main: "/images/calma/studio.webp" },
   } as Record<string, ProductImageSet>,
 };
 
