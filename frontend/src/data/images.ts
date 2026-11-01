@@ -38,7 +38,13 @@ export const IMAGES = {
     guarantee: "/images/badges/guarantee-14d.svg",
   },
   products: {
-    "kenidoux-lumba": set("lumba"),
+    "kenidoux-lumba": {
+      ...set("lumba"),
+      mechanism: "/images/lumba/how.webp",
+      lifestyle: "/images/lumba/drive.webp",
+      kit: "/images/lumba/kit.webp",
+      sections: ["/images/lumba/salon.webp", "/images/lumba/how.webp", "/images/lumba/kit.webp"],
+    },
     "kenidoux-posta": { ...set("posta"), main: "/images/posta/office.webp" },
     "kenidoux-calma": { ...set("calma"), main: "/images/calma/studio.webp" },
   } as Record<string, ProductImageSet>,
