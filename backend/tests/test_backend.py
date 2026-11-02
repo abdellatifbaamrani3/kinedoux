@@ -146,6 +146,25 @@ def test_order_accept_upsell_flow(client, sheet_calls):
     assert "customer_phone_e164" not in pub
 
 
+def test_thank_you_offer_can_be_added_after_decline(client):
+    order = client.post(f"{API}/orders", json=order_payload()).json()
+    client.post(f"{API}/orders/{order['id']}/upsell", json={"accepted": False})
+    pub = client.get(f"{API}/orders/{order['id']}").json()
+    assert pub["upsell_added"] is False
+    assert (pub["upsell_offer"]["product_slug"], pub["upsell_offer"]["price_mad"]) == ("kenidoux-calma", 199)
+
+    done = client.post(
+        f"{API}/orders/{order['id']}/upsell",
+        json={"accepted": True, "upsell_price_mad": 1},
+    ).json()
+    assert done["upsell_added"] is True and done["upsell_price_mad"] == 199
+    assert done["total_mad"] == order["total_mad"] + 199
+
+    again = client.get(f"{API}/orders/{order['id']}").json()
+    assert again["upsell_added"] is True and again["upsell_offer"] is None
+    assert again["total_mad"] == order["total_mad"] + 199
+
+
 def test_order_decline_flow(client, sheet_calls):
     order = client.post(
         f"{API}/orders",

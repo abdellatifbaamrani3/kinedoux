@@ -59,6 +59,7 @@ export type ApiOrderPublic = {
   upsell_added: boolean;
   items: ApiOrderItem[];
   event_id: string | null;
+  upsell_offer: ApiUpsellOffer | null;
 };
 
 export type TrackingContextPayload = {

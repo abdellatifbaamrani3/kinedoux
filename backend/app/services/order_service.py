@@ -29,7 +29,9 @@ from app.services.tasks import spawn
 
 log = logging.getLogger("kenidoux.orders")
 
-LATE_UPSELL_GRACE_SECONDS = 120
+# Thank-you page can still add the one same-box offer after the countdown closes,
+# until the Casablanca confirmation call. The sheet row is updated in place.
+LATE_UPSELL_GRACE_SECONDS = 18 * 60 * 60
 
 
 class OrderError(ValueError):

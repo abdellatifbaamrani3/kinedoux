@@ -89,6 +89,7 @@ async def get_order(order_id: uuid.UUID):
     snap = await run_in_threadpool(_load)
     if snap is None:
         raise HTTPException(status_code=404, detail="الطلب غير موجود")
+    offer = None if snap.upsell_added else recommend_upsell(snap.items)
     return OrderPublicOut(
         id=snap.id,
         order_number=snap.order_number,
@@ -99,4 +100,5 @@ async def get_order(order_id: uuid.UUID):
         upsell_added=snap.upsell_added,
         items=_items_out(snap.items),
         event_id=snap.event_id,
+        upsell_offer=UpsellOfferOut(**offer.as_dict()) if offer else None,
     )

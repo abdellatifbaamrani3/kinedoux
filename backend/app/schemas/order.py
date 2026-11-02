@@ -120,3 +120,4 @@ class OrderPublicOut(BaseModel):
     upsell_added: bool
     items: list[OrderItemOut]
     event_id: str | None
+    upsell_offer: UpsellOfferOut | None = None
