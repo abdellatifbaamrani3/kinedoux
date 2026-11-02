@@ -4,10 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Phone, ShoppingBag, X } from "lucide-react";
 
-import { NAV } from "@/data/content";
+import { useLocale } from "@/i18n/locale-context";
+import { localePath, stripLocale } from "@/i18n/locale";
+import { uiCopy } from "@/i18n/ui";
 import { cn, whatsappLink } from "@/lib/utils";
 import { selectCount, useCartStore } from "@/store/useCartStore";
 import { BrandLogo } from "./BrandLogo";
+import { LanguageSwitch } from "./LanguageSwitch";
 
 export function Header() {
   const pathname = usePathname();
@@ -16,19 +19,22 @@ export function Header() {
   const navOpen = useCartStore((s) => s.isMobileNavOpen);
   const setMobileNav = useCartStore((s) => s.setMobileNav);
   const count = selectCount(items);
+  const locale = useLocale();
+  const ui = uiCopy(locale);
+  const barePath = stripLocale(pathname);
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-dark">
       <div className="kd-container flex h-[68px] items-center justify-between gap-2 sm:gap-3 md:h-[84px]">
         <BrandLogo light />
 
-        <nav className="hidden items-center gap-6 text-sm font-bold text-white/80 lg:flex" aria-label="القائمة الرئيسية">
-          {NAV.map((item) => {
-            const active = pathname === item.href;
+        <nav className="hidden items-center gap-6 text-sm font-bold text-white/80 lg:flex" aria-label={ui.mainNav}>
+          {ui.nav.map((item) => {
+            const active = barePath === item.href;
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={localePath(item.href, locale)}
                 className={cn("relative py-1 transition hover:text-white", active && "text-leaf")}
               >
                 {item.label}
@@ -39,22 +45,23 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitch />
           <a
-            href={whatsappLink("السلام عليكم، بغيت نأكد طلب أو نسأل على كينيدو")}
-            className="hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-bold text-white transition hover:bg-white/10 md:flex"
-            aria-label="واتساب كينيدو"
+            href={whatsappLink(ui.whatsappMessage)}
+            className="hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-bold text-white transition hover:bg-white/10 lg:flex"
+            aria-label={ui.whatsapp}
           >
             <Phone className="h-4 w-4" />
-            واتساب
+            {ui.whatsapp}
           </a>
           <button
             type="button"
             onClick={openCart}
             className="flex items-center gap-2 rounded-full bg-[#F97316] px-3 py-2.5 text-white transition hover:bg-[#EA580C] md:px-4"
-            aria-label="فتح السلة"
+            aria-label={ui.openCart}
           >
             <ShoppingBag className="h-5 w-5" />
-            <span className="hidden font-bold md:inline">سلتي</span>
+            <span className="hidden font-bold md:inline">{ui.cart}</span>
             {count > 0 ? (
               <span className="rounded-full bg-white px-2 py-0.5 text-xs font-extrabold text-[#F97316] tabular-nums">
                 {count}
@@ -65,7 +72,7 @@ export function Header() {
             type="button"
             className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white lg:hidden"
             onClick={() => setMobileNav(!navOpen)}
-            aria-label={navOpen ? "إغلاق القائمة" : "فتح القائمة"}
+            aria-label={navOpen ? ui.closeMenu : ui.openMenu}
           >
             {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -73,26 +80,23 @@ export function Header() {
       </div>
 
       {navOpen ? (
-        <nav className="border-t border-white/10 bg-brand-dark lg:hidden" aria-label="قائمة الجوال">
+        <nav className="border-t border-white/10 bg-brand-dark lg:hidden" aria-label={ui.mobileNav}>
           <div className="kd-container flex flex-col py-3">
-            {NAV.map((item) => (
+            {ui.nav.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={localePath(item.href, locale)}
                 onClick={() => setMobileNav(false)}
                 className={cn(
                   "border-b border-white/5 py-3 text-base font-bold",
-                  pathname === item.href ? "text-leaf" : "text-white",
+                  barePath === item.href ? "text-leaf" : "text-white",
                 )}
               >
                 {item.label}
               </Link>
             ))}
-            <a
-              href={whatsappLink("السلام عليكم، بغيت نأكد طلب أو نسأل على كينيدو")}
-              className="py-3 text-base font-bold text-leaf"
-            >
-              واتساب كينيدو — من الدار البيضاء
+            <a href={whatsappLink(ui.whatsappMessage)} className="py-3 text-base font-bold text-leaf">
+              {ui.whatsappLong}
             </a>
           </div>
         </nav>

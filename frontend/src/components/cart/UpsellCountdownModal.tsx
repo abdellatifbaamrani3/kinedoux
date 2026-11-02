@@ -4,9 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { getProduct } from "@/data/products";
+import { useLocale } from "@/i18n/locale-context";
+import { localePath } from "@/i18n/locale";
+import { money } from "@/i18n/money";
+import { uiCopy } from "@/i18n/ui";
 import { api } from "@/lib/api";
 import { fireBrowserPurchase } from "@/lib/tracking";
-import { UPSELL_SECONDS, formatClock, formatMad } from "@/lib/utils";
+import { UPSELL_SECONDS, formatClock } from "@/lib/utils";
 import { useCartStore } from "@/store/useCartStore";
 
 export function UpsellCountdownModal() {
@@ -14,6 +18,8 @@ export function UpsellCountdownModal() {
   const active = useCartStore((s) => s.activeOrder);
   const mark = useCartStore((s) => s.markOrderConfirmed);
   const router = useRouter();
+  const locale = useLocale();
+  const ui = uiCopy(locale);
   const [seconds, setSeconds] = useState(UPSELL_SECONDS);
   const [busy, setBusy] = useState(false);
   const finishing = useRef(false);
@@ -68,10 +74,10 @@ export function UpsellCountdownModal() {
         /* private mode */
       }
       mark(done);
-      router.push(`/thank-you?order_id=${done.id}`);
+      router.push(localePath(`/thank-you?order_id=${done.id}`, locale));
     } catch {
       useCartStore.getState().closeUpsell();
-      router.push(`/thank-you?order_id=${active.id}`);
+      router.push(localePath(`/thank-you?order_id=${active.id}`, locale));
     }
   }
 
@@ -79,12 +85,10 @@ export function UpsellCountdownModal() {
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4">
       <div className="absolute inset-0 bg-brand-dark/70" />
       <div className="relative max-h-[96vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white p-6 shadow-lift animate-pop-in sm:rounded-3xl">
-        <p className="rounded-xl bg-brand px-3 py-2 text-sm font-bold text-white">
-          تسجّل طلبك. عرض يتشحن فنفس الكولية، بلا توصيل زايد. تقدر ترفضو بهدوء.
-        </p>
+        <p className="rounded-xl bg-brand px-3 py-2 text-sm font-bold text-white">{ui.upsellBanner}</p>
         <div className="mt-4">
           <div className="mb-2 flex items-center justify-between text-sm font-bold text-brand">
-            <span>العرض كيسالي فـ {formatClock(seconds)} — بلا توصيل زايد</span>
+            <span>{ui.upsellTimer(formatClock(seconds))}</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-sage">
             <div
@@ -103,12 +107,12 @@ export function UpsellCountdownModal() {
             <h3 className="text-lg font-extrabold leading-7">{offer.headline_ar}</h3>
             <p className="mt-2 text-sm leading-7 text-[#24323A]">{offer.pitch_ar}</p>
             <p className="mt-3 text-2xl font-extrabold tabular-nums text-brand">
-              +{formatMad(offer.price_mad)} فقط
-              <span className="mr-2 text-sm font-medium text-muted line-through">{formatMad(offer.compare_at_mad)}</span>
+              +{money(offer.price_mad, locale)} {ui.upsellOnly}
+              <span className="ms-2 text-sm font-medium text-muted line-through">{money(offer.compare_at_mad, locale)}</span>
             </p>
           </div>
         ) : (
-          <p className="mt-5 text-sm">كنوجدو الكولية ديالك دابا...</p>
+          <p className="mt-5 text-sm">{ui.upsellPreparing}</p>
         )}
 
         <button
@@ -117,7 +121,7 @@ export function UpsellCountdownModal() {
           disabled={busy}
           onClick={() => void decide(true)}
         >
-          نعم، زيدو لطلبي بـ +{offer ? formatMad(offer.price_mad) : "199 د.م"} (نفس الكولية)
+          {ui.upsellYes(offer ? money(offer.price_mad, locale) : money(199, locale))}
         </button>
         <button
           type="button"
@@ -125,7 +129,7 @@ export function UpsellCountdownModal() {
           disabled={busy}
           onClick={() => void decide(false)}
         >
-          لا شكراً، كمّل طلبي الحالي فقط
+          {ui.upsellNo}
         </button>
       </div>
     </div>

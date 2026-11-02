@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 
-import { HOME } from "@/data/content";
+import { localeFromParams } from "@/i18n/get-locale";
+import { faqCopy, homeCopy } from "@/i18n/home-copy";
+import { localizeProducts } from "@/i18n/products-copy";
+import { singleOffer } from "@/data/products";
+import { localePath } from "@/i18n/locale";
+import { uiCopy } from "@/i18n/ui";
 import { Hero } from "@/components/home/Hero";
 import { TrustBar } from "@/components/home/TrustBar";
 import { ProductGrid } from "@/components/home/ProductGrid";
@@ -13,17 +18,20 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SplitSection } from "@/components/ui/SplitSection";
 import { StickyMobileCta } from "@/components/layout/StickyMobileCta";
 
-export default function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const locale = await localeFromParams(params);
+  const HOME = homeCopy(locale);
+  const ui = uiCopy(locale);
   return (
     <>
       <Hero />
       <TrustBar />
 
       <SplitSection
-        eyebrow="اللي كيبان كل نهار"
+        eyebrow={ui.struggleEyebrow}
         title={HOME.struggle.title}
         imageSrc={HOME.struggle.image}
-        imageAlt="العياء اليومي ديال الظهر فالخدمة والسياقة"
+        imageAlt={ui.struggleAlt}
         className="bg-alabaster"
       >
         <p>{HOME.struggle.body}</p>
@@ -37,15 +45,34 @@ export default function HomePage() {
         </ul>
       </SplitSection>
 
-      <QuickDiagnosis />
+      <QuickDiagnosis
+        quiz={HOME.quiz}
+        fromLabel={locale === "fr" ? "dès" : locale === "en" ? "from" : "من"}
+        picks={Object.fromEntries(
+          localizeProducts(locale).map((product) => [
+            product.slug,
+            {
+              slug: product.slug,
+              nameAr: product.nameAr,
+              cardSubheading: product.cardSubheading,
+              price: singleOffer(product).price,
+            },
+          ]),
+        )}
+      />
 
       <section className="bg-alabaster">
-        <ProductGrid kicker={HOME.products.eyebrow} title={HOME.products.title} />
+        <ProductGrid
+          products={localizeProducts(locale)}
+          kicker={HOME.products.eyebrow}
+          title={HOME.products.title}
+          subtitle={ui.productsSubtitle}
+        />
         <div className="kd-container pb-16">
           <div className="rounded-2xl bg-sage p-6 text-center ring-1 ring-brand/15 md:p-8">
             <h3 className="text-xl font-bold text-brand-dark">{HOME.bundle.title}</h3>
             <p className="mt-2 text-muted">{HOME.bundle.subtitle}</p>
-            <Link href="/collections" className="kd-cta mx-auto mt-5 sm:w-auto">
+            <Link href={localePath("/collections", locale)} className="kd-cta mx-auto mt-5 sm:w-auto">
               {HOME.bundle.cta}
             </Link>
           </div>
@@ -126,10 +153,10 @@ export default function HomePage() {
       <SplitSection
         id="guarantee"
         reverse
-        eyebrow="14 jours · échange gratuit"
+        eyebrow={ui.guaranteeEyebrow}
         title={HOME.guarantee.title}
         imageSrc={HOME.guarantee.image}
-        imageAlt="كتفتح الكولية قدام الليفرور قبل الخلاص"
+        imageAlt={ui.guaranteeAlt}
         className="bg-sage/70"
       >
         <p>{HOME.guarantee.body}</p>
@@ -141,25 +168,25 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-        <Link href="/about" className="font-bold text-brand hover:underline">
+        <Link href={localePath("/about", locale)} className="font-bold text-brand hover:underline">
           {HOME.founder.cta} ←
         </Link>
       </SplitSection>
 
-      <FaqAccordion />
+      <FaqAccordion items={faqCopy(locale)} title={ui.faqTitle} subtitle={ui.faqSub} />
 
       <section className="bg-brand-dark py-20 lg:py-28">
         <div className="kd-container text-center">
           <h2 className="text-3xl font-bold text-white md:text-4xl">{HOME.finalCta.title}</h2>
           <p className="mx-auto mt-4 max-w-lg text-lg text-leaf/80">{HOME.finalCta.sub}</p>
-          <Link href="/collections" className="kd-cta mx-auto mt-8 sm:w-auto">
+          <Link href={localePath("/collections", locale)} className="kd-cta mx-auto mt-8 sm:w-auto">
             {HOME.finalCta.cta}
           </Link>
           <p className="mt-5 text-sm text-leaf/70">{HOME.finalCta.reassurance}</p>
         </div>
       </section>
 
-      <StickyMobileCta href="#quiz" label="جاوب سؤالين واختار المنتوج" note="ترشيح واضح · بلا وعود طبية" />
+      <StickyMobileCta href="#quiz" label={HOME.quiz.title} note={HOME.quiz.resultNote} />
     </>
   );
 }

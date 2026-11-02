@@ -3,9 +3,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Check, ShieldCheck, Truck, Wallet } from "lucide-react";
 
-import { CTA_TRUST, HOME } from "@/data/content";
+import { useLocale } from "@/i18n/locale-context";
+import { money } from "@/i18n/money";
+import { uiCopy } from "@/i18n/ui";
 import { defaultOffer, type Product } from "@/data/products";
-import { formatMad } from "@/lib/utils";
 import { trackEvent } from "@/lib/tracking";
 import { RatingRow } from "@/components/ui/Stars";
 import { ProductGallery } from "./ProductGallery";
@@ -13,9 +14,27 @@ import { OfferTierSelector } from "./OfferTierSelector";
 import { StickyAddToCart } from "./StickyAddToCart";
 import { useCartStore } from "@/store/useCartStore";
 
-export function ProductOfferShell({ product, children }: { product: Product; children: ReactNode }) {
+export function ProductOfferShell({
+  product,
+  children,
+  guaranteeTitle,
+  finalTitle,
+  finalSub,
+  finalNote,
+  trustPills,
+}: {
+  product: Product;
+  children: ReactNode;
+  guaranteeTitle: string;
+  finalTitle: string;
+  finalSub: string;
+  finalNote: string;
+  trustPills: readonly string[];
+}) {
   const add = useCartStore((s) => s.addOfferAndOpenCart);
   const isCartOpen = useCartStore((s) => s.isCartOpen);
+  const locale = useLocale();
+  const ui = uiCopy(locale);
   const [offer, setOffer] = useState(() => defaultOffer(product));
 
   useEffect(() => {
@@ -36,9 +55,9 @@ export function ProductOfferShell({ product, children }: { product: Product; chi
             <div className="order-1 lg:order-2">
               <ProductGallery product={product} />
               <div className="mt-6 hidden grid-cols-3 gap-3 sm:grid">
-                <TrustMini icon={Truck} title="توصيل مجاني" sub="24–48 ساعة لجميع المدن" />
-                <TrustMini icon={Wallet} title="الخلاص عند الاستلام" sub="نقداً بعد فتح الكولية" />
-                <TrustMini icon={ShieldCheck} title="تبديل 14 يوم" sub="عبر الواتساب بلا جدال" />
+                <TrustMini icon={Truck} title={ui.trustDelivery} sub={ui.trustDeliverySub} />
+                <TrustMini icon={Wallet} title={ui.trustPay} sub={ui.trustPaySub} />
+                <TrustMini icon={ShieldCheck} title={ui.trustSwap} sub={ui.trustSwapSub} />
               </div>
             </div>
 
@@ -70,24 +89,24 @@ export function ProductOfferShell({ product, children }: { product: Product; chi
 
               {offer.units > 1 && offer.compareAt > offer.price ? (
                 <p className="mt-4 rounded-xl bg-white p-3 text-sm font-bold text-brand shadow-card">
-                  هدية أوفر: كتوفر {(offer.compareAt - offer.price).toLocaleString("en-US")} د.م، والكولية وحدة.
+                  {ui.giftNote((offer.compareAt - offer.price).toLocaleString("en-US"))}
                 </p>
               ) : null}
 
               <button type="button" className="kd-cta mt-5" onClick={addSelected}>
-                أضف للسلة — {formatMad(offer.price)} · الخلاص عند الاستلام
+                {ui.addCta(money(offer.price, locale))}
               </button>
               <p className="mt-3 flex items-center justify-center gap-2 text-sm font-bold text-brand">
                 <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden />
-                {HOME.guarantee.title}
+                {guaranteeTitle}
               </p>
               <div className="mt-4 grid grid-cols-3 gap-2 sm:hidden">
-                <TrustMini icon={Wallet} title="خلاص عند الباب" compact />
-                <TrustMini icon={Truck} title="توصيل فابور" compact />
-                <TrustMini icon={ShieldCheck} title="تبديل 14 يوم" compact />
+                <TrustMini icon={Wallet} title={ui.trustPayShort} compact />
+                <TrustMini icon={Truck} title={ui.trustShipShort} compact />
+                <TrustMini icon={ShieldCheck} title={ui.trustSwap} compact />
               </div>
               <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-muted">
-                {CTA_TRUST.map((t) => (
+                {trustPills.map((t) => (
                   <span key={t}>{t}</span>
                 ))}
               </div>
@@ -101,17 +120,17 @@ export function ProductOfferShell({ product, children }: { product: Product; chi
       <section className="bg-brand-dark py-20 lg:py-28">
         <div className="kd-container text-center">
           <span className="mb-3 inline-block rounded-full bg-action px-3 py-1 text-xs font-bold text-white">
-            تبديل فابور 14 يوم
+            {ui.swapPill}
           </span>
-          <h2 className="text-3xl font-bold text-white">{HOME.finalCta.title}</h2>
-          <p className="mx-auto mt-4 max-w-lg text-lg text-leaf/80">{HOME.finalCta.sub}</p>
-          <div className="mx-auto mt-8 max-w-3xl rounded-2xl bg-white p-5 text-right">
+          <h2 className="text-3xl font-bold text-white">{finalTitle}</h2>
+          <p className="mx-auto mt-4 max-w-lg text-lg text-leaf/80">{finalSub}</p>
+          <div className="mx-auto mt-8 max-w-3xl rounded-2xl bg-white p-5 text-start">
             <OfferTierSelector name="final-offer" offers={product.offers} selectedId={offer.id} onSelect={setOffer} />
           </div>
           <button type="button" className="kd-cta mx-auto mt-8 sm:w-auto" onClick={addSelected}>
-            أضف للسلة — {formatMad(offer.price)} · الخلاص عند الاستلام
+            {ui.addCta(money(offer.price, locale))}
           </button>
-          <p className="mt-5 text-sm text-leaf/70">{HOME.finalCta.reassurance}</p>
+          <p className="mt-5 text-sm text-leaf/70">{finalNote}</p>
         </div>
       </section>
 

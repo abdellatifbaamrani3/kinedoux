@@ -1,7 +1,10 @@
 "use client";
 
 import type { Offer } from "@/data/products";
-import { cn, formatMad } from "@/lib/utils";
+import { useLocale } from "@/i18n/locale-context";
+import { money } from "@/i18n/money";
+import { uiCopy } from "@/i18n/ui";
+import { cn } from "@/lib/utils";
 
 export function OfferTierSelector({
   offers,
@@ -14,9 +17,11 @@ export function OfferTierSelector({
   onSelect: (offer: Offer) => void;
   name?: string;
 }) {
+  const locale = useLocale();
+  const ui = uiCopy(locale);
   return (
     <fieldset>
-      <legend className="mb-3 text-base font-bold text-brand-dark">اختر العرض المناسب ليك ولدارك</legend>
+      <legend className="mb-3 text-base font-bold text-brand-dark">{ui.offerLegend}</legend>
       <div className="space-y-3">
         {offers.map((offer) => {
           const selected = offer.id === selectedId;
@@ -50,19 +55,19 @@ export function OfferTierSelector({
                 </div>
                 <p className="mt-1 text-sm leading-6 text-muted">{offer.subtitle}</p>
                 <p className="mt-2 flex flex-wrap items-baseline gap-2">
-                  <span className="text-xl font-bold tabular-nums text-brand">{formatMad(offer.price)}</span>
+                  <span className="text-xl font-bold tabular-nums text-brand">{money(offer.price, locale)}</span>
                   {save > 0 ? (
                     <>
-                      <span className="text-sm tabular-nums text-muted line-through">{formatMad(offer.compareAt)}</span>
-                      <span className="text-xs font-bold text-brand">وفّر {save.toLocaleString("en-US")} د.م</span>
+                      <span className="text-sm tabular-nums text-muted line-through">{money(offer.compareAt, locale)}</span>
+                      <span className="text-xs font-bold text-brand">{ui.offerSave(save.toLocaleString("en-US"))}</span>
                       {offer.units > 1 ? (
                         <span className="text-xs text-muted">
-                          ({formatMad(Math.round(offer.price / offer.units))} للقطعة)
+                          ({money(Math.round(offer.price / offer.units), locale)} {ui.perPiece})
                         </span>
                       ) : null}
                     </>
                   ) : (
-                    <span className="text-xs font-bold text-muted">التوصيل مشمول</span>
+                    <span className="text-xs font-bold text-muted">{ui.shippingIncluded}</span>
                   )}
                 </p>
               </div>

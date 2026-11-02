@@ -1,14 +1,9 @@
 "use client";
 
 import type { ProductSlug } from "@/data/products";
+import { useLocale } from "@/i18n/locale-context";
+import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
-
-export const CATEGORY_FILTERS = [
-  { id: "all", label: "الكل", en: "All kits" },
-  { id: "kenidoux-lumba", label: "لومبا", en: "Relief Belts" },
-  { id: "kenidoux-posta", label: "بوسطا", en: "Posture Support" },
-  { id: "kenidoux-calma", label: "كالما", en: "Support Cushions" },
-] as const;
 
 export type CategoryFilterId = "all" | ProductSlug;
 
@@ -19,9 +14,22 @@ export function CategoryPills({
   active: CategoryFilterId;
   onChange: (id: CategoryFilterId) => void;
 }) {
+  const locale = useLocale();
+  const ui = uiCopy(locale);
+  const names =
+    locale === "ar"
+      ? { lumba: "لومبا", posta: "بوسطا", calma: "كالما" }
+      : { lumba: "Lumba", posta: "Posta", calma: "Calma" };
+  const tabs: { id: CategoryFilterId; label: string }[] = [
+    { id: "all", label: ui.catAll },
+    { id: "kenidoux-lumba", label: names.lumba },
+    { id: "kenidoux-posta", label: names.posta },
+    { id: "kenidoux-calma", label: names.calma },
+  ];
+
   return (
-    <div className="mb-8 flex flex-wrap gap-2" role="tablist" aria-label="تصنيف المنتجات">
-      {CATEGORY_FILTERS.map((tab) => {
+    <div className="mb-8 flex flex-wrap gap-2" role="tablist" aria-label={ui.catAria}>
+      {tabs.map((tab) => {
         const selected = tab.id === active;
         return (
           <button
@@ -35,10 +43,7 @@ export function CategoryPills({
               selected ? "bg-brand text-white shadow-card" : "bg-sage text-brand hover:bg-sage-deep",
             )}
           >
-            <span className="block leading-5">{tab.label}</span>
-            <span dir="ltr" className="block font-sans text-[10px] font-semibold tracking-wide opacity-80">
-              {tab.en}
-            </span>
+            {tab.label}
           </button>
         );
       })}

@@ -1,8 +1,16 @@
+"use client";
+
 import Link from "next/link";
 
+import { useLocale } from "@/i18n/locale-context";
+import { localePath } from "@/i18n/locale";
+import { uiCopy } from "@/i18n/ui";
+
 export function BrandLogo({ compact = false, light = false }: { compact?: boolean; light?: boolean }) {
+  const locale = useLocale();
+  const ui = uiCopy(locale);
   return (
-    <Link href="/" className="flex min-w-0 items-center gap-2.5 group sm:gap-3" aria-label="Kinédoux — الصفحة الرئيسية">
+    <Link href={localePath("/", locale)} className="flex min-w-0 items-center gap-2.5 group sm:gap-3" aria-label={ui.logoHome}>
       <div
         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 shadow-sm transition-transform group-hover:scale-105 md:h-12 md:w-12 ${
           light ? "border-leaf bg-brand" : "border-brand bg-brand"

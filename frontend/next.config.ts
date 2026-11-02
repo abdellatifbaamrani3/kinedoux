@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
-      ...["/", "/products/:path*", "/collections", "/about", "/contact", "/thank-you"].map((source) => ({
+      ...["/", "/products/:path*", "/collections", "/about", "/contact", "/thank-you", "/fr", "/fr/:path*", "/en", "/en/:path*", "/ar", "/ar/:path*"].map((source) => ({
         source,
         headers: [
           { key: "Cache-Control", value: "public, max-age=120, stale-while-revalidate=86400" },

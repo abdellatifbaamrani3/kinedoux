@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 
-import { CONTACT } from "@/data/content";
+import { localeFromParams } from "@/i18n/get-locale";
+import { contactCopy, faqCopy } from "@/i18n/home-copy";
+import { uiCopy } from "@/i18n/ui";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { ContactForm } from "./ContactForm";
 
-export const metadata: Metadata = {
-  title: "اتصل بنا",
-  description: CONTACT.heroSubtitle,
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const contact = contactCopy(await localeFromParams(params));
+  return {
+    title: contact.heroTitle,
+    description: contact.heroSubtitle,
+  };
+}
 
 const ICONS = [Phone, MapPin, Mail];
 
-export default function ContactPage() {
+export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
+  const locale = await localeFromParams(params);
+  const CONTACT = contactCopy(locale);
+  const ui = uiCopy(locale);
   return (
     <>
       <header className="kd-container py-12">
@@ -35,7 +43,7 @@ export default function ContactPage() {
       <section className="kd-container pb-8">
         <ContactForm />
       </section>
-      <FaqAccordion />
+      <FaqAccordion items={faqCopy(locale)} title={ui.faqTitle} subtitle={ui.faqSub} />
     </>
   );
 }

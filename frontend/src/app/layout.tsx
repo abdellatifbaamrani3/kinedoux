@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Cairo, Plus_Jakarta_Sans } from "next/font/google";
+import Script from "next/script";
 
-import { TAGLINE } from "@/data/content";
 import { SITE_URL } from "@/lib/utils";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
-import { Footer } from "@/components/layout/Footer";
-import { FunnelShell } from "@/components/layout/FunnelShell";
-import { Header } from "@/components/layout/Header";
 import "./globals.css";
 
 const cairo = Cairo({
@@ -27,35 +23,27 @@ const jakarta = Plus_Jakarta_Sans({
   preload: false,
 });
 
+const DIR_SCRIPT = `(function(){var p=location.pathname;var fr=p==="/fr"||p.indexOf("/fr/")===0;var en=p==="/en"||p.indexOf("/en/")===0;document.documentElement.lang=fr?"fr":en?"en":"ar-MA";document.documentElement.dir=fr||en?"ltr":"rtl";})();`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: "كينيدو | Kinédoux™ — راحة الظهر والوقفة بالمغرب",
-    template: "%s | كينيدو Kinédoux™",
-  },
-  description: TAGLINE,
+  title: { default: "كينيدو | Kinédoux™ — راحة الظهر والوقفة بالمغرب", template: "%s | Kinédoux™" },
+  description: "الماركة المتخصصة فراحة الظهر والوقفة فالمغرب.",
   openGraph: {
     type: "website",
-    locale: "ar_MA",
-    url: SITE_URL,
-    siteName: "كينيدو Kinédoux™",
-    title: "كينيدو | Kinédoux™ — راحة الظهر والوقفة بالمغرب",
-    description: TAGLINE,
-    images: [{ url: "/images/hero-kenidoux-collection.svg", width: 1200, height: 900, alt: "كينيدو" }],
+    siteName: "Kinédoux™",
+    images: [{ url: "/images/hero-kenidoux-collection.svg", width: 1200, height: 900, alt: "Kinédoux" }],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar-MA" dir="rtl" className={`${cairo.variable} ${jakarta.variable}`}>
+    <html lang="ar-MA" dir="rtl" className={`${cairo.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <body className="font-arabic min-h-screen antialiased">
-        <div className="sticky top-0 z-40 overflow-x-clip">
-          <AnnouncementBar />
-          <Header />
-        </div>
-        <main>{children}</main>
-        <Footer />
-        <FunnelShell />
+        <Script id="kd-dir" strategy="beforeInteractive">
+          {DIR_SCRIPT}
+        </Script>
+        {children}
       </body>
     </html>
   );

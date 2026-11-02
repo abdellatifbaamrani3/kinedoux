@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { Wallet } from "lucide-react";
 
 import type { Offer, Product } from "@/data/products";
-import { formatMad } from "@/lib/utils";
+import { useLocale } from "@/i18n/locale-context";
+import { money } from "@/i18n/money";
+import { uiCopy } from "@/i18n/ui";
 
 export function StickyAddToCart({
   product,
@@ -15,6 +17,8 @@ export function StickyAddToCart({
   offer: Offer;
   onAdd: () => void;
 }) {
+  const locale = useLocale();
+  const ui = uiCopy(locale);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -47,11 +51,11 @@ export function StickyAddToCart({
           </p>
           <p className="flex items-center gap-1 text-xs font-bold text-brand">
             <Wallet className="h-3 w-3" aria-hidden />
-            {formatMad(offer.price)} · الخلاص عند الاستلام
+            {money(offer.price, locale)} · {ui.payOnDelivery}
           </p>
         </div>
         <button type="button" className="kd-cta w-auto shrink-0 px-5 py-3 text-sm" onClick={onAdd}>
-          أضف للسلة
+          {ui.stickyAdd}
         </button>
       </div>
     </div>

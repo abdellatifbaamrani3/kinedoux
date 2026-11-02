@@ -15,7 +15,7 @@ export function normalizeDigits(input: string): string {
     .replace(/[\s\-().]/g, "");
 }
 
-export function validateAndFormatPhone(rawInput: string): PhoneValidationResult {
+export function validateAndFormatPhone(rawInput: string, locale: "ar" | "fr" | "en" = "ar"): PhoneValidationResult {
   const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "MA"; // 'KSA' | 'MA' | 'BOTH'
   const cleaned = normalizeDigits(rawInput.trim());
 
@@ -52,17 +52,22 @@ export function validateAndFormatPhone(rawInput: string): PhoneValidationResult 
     digitsOnlyNoPlus: "",
     localDisplay: cleaned,
     errorMessage:
-      mode === "KSA"
-        ? "يرجى إدخال رقم جوال سعودي صحيح (مثال: 0512345678)"
-        : mode === "MA"
-          ? "دخل رقم مغربي صحيح (مثال: 0612345678 أو 0712345678)"
-          : "يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0612345678 أو 0512345678)",
+      locale === "fr"
+        ? "Entrez un numéro marocain valide (exemple : 0612345678 ou 0712345678)"
+        : locale === "en"
+          ? "Enter a valid Moroccan number (example: 0612345678 or 0712345678)"
+          : mode === "KSA"
+            ? "يرجى إدخال رقم جوال سعودي صحيح (مثال: 0512345678)"
+            : mode === "MA"
+              ? "دخل رقم مغربي صحيح (مثال: 0612345678 أو 0712345678)"
+              : "يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0612345678 أو 0512345678)",
   };
 }
 
-export function phonePlaceholder(): string {
+export function phonePlaceholder(locale: "ar" | "fr" | "en" = "ar"): string {
   const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "MA";
+  if (locale === "fr") return mode === "KSA" ? "05XXXXXXXX" : "06XXXXXXXX ou 07XXXXXXXX";
+  if (locale === "en") return mode === "KSA" ? "05XXXXXXXX" : "06XXXXXXXX or 07XXXXXXXX";
   if (mode === "KSA") return "05XXXXXXXX";
-  if (mode === "MA") return "06XXXXXXXX أو 07XXXXXXXX";
   return "06XXXXXXXX أو 07XXXXXXXX";
 }

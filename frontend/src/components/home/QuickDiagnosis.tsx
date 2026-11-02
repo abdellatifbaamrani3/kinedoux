@@ -4,12 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { Check, RotateCcw } from "lucide-react";
 
-import { HOME } from "@/data/content";
-import { getProduct, singleOffer } from "@/data/products";
-import { formatMad } from "@/lib/utils";
+import { useLocale } from "@/i18n/locale-context";
+import { localePath } from "@/i18n/locale";
+import { money } from "@/i18n/money";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-
-const { quiz } = HOME;
 
 const LUMBA = "kenidoux-lumba";
 const POSTA = "kenidoux-posta";
@@ -48,7 +46,7 @@ function OptionButton({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`flex min-h-14 w-full items-center gap-3 rounded-xl border p-4 text-right text-sm transition ${
+      className={`flex min-h-14 w-full items-center gap-3 rounded-xl border p-4 text-start text-sm transition ${
         selected
           ? "border-brand bg-sage font-bold text-brand-dark"
           : "border-brand/10 bg-white text-muted hover:border-brand/30"
@@ -67,11 +65,35 @@ function OptionButton({
   );
 }
 
-export function QuickDiagnosis() {
+type Quiz = {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  q1: { label: string; options: { id: string; label: string }[] };
+  q2: { label: string; options: { id: string; label: string }[] };
+  resultTitle: string;
+  resultNote: string;
+  cta: string;
+  restart: string;
+  bundleLabel: string;
+};
+
+type Pick = { slug: string; nameAr: string; cardSubheading: string; price: number };
+
+export function QuickDiagnosis({
+  quiz,
+  picks,
+  fromLabel,
+}: {
+  quiz: Quiz;
+  picks: Record<string, Pick>;
+  fromLabel: string;
+}) {
+  const locale = useLocale();
   const [a1, setA1] = useState<string | null>(null);
   const [a2, setA2] = useState<string | null>(null);
   const answered = a1 !== null && a2 !== null;
-  const product = answered ? getProduct(recommend(a1, a2)) : undefined;
+  const product = answered ? picks[recommend(a1!, a2!)] : undefined;
   const step = a1 === null ? 1 : a2 === null ? 2 : 3;
 
   return (
@@ -113,12 +135,12 @@ export function QuickDiagnosis() {
               <p className="kd-kicker text-brand">{quiz.resultTitle}</p>
               <h3 className="mt-2 text-2xl font-bold text-brand-dark">{product.nameAr}</h3>
               <p className="mt-1 text-sm text-muted">{product.cardSubheading}</p>
-              <p className="mt-3 font-bold text-brand-dark">من {formatMad(singleOffer(product).price)}</p>
+              <p className="mt-3 font-bold text-brand-dark">{fromLabel} {money(product.price, locale)}</p>
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <Link href={`/products/${product.slug}`} className="kd-cta sm:w-auto">
+                <Link href={localePath(`/products/${product.slug}`, locale)} className="kd-cta sm:w-auto">
                   {quiz.cta}
                 </Link>
-                <Link href="/collections" className="kd-cta-secondary">
+                <Link href={localePath("/collections", locale)} className="kd-cta-secondary">
                   {quiz.bundleLabel}
                 </Link>
               </div>

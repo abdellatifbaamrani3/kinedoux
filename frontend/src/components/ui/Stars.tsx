@@ -1,9 +1,14 @@
+"use client";
+
+import { useLocale } from "@/i18n/locale-context";
+import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
 
 export function Stars({ rating = 5, className }: { rating?: number; className?: string }) {
+  const ui = uiCopy(useLocale());
   const full = Math.round(rating);
   return (
-    <span className={cn("inline-flex items-center gap-0.5 text-argan", className)} aria-label={`${rating} من 5`}>
+    <span className={cn("inline-flex items-center gap-0.5 text-argan", className)} aria-label={ui.starsOf(rating)}>
       {Array.from({ length: 5 }).map((_, i) => (
         <span key={i} className={i < full ? "text-argan" : "text-sage-deep"}>
           ★
@@ -22,11 +27,12 @@ export function RatingRow({
   count: number;
   className?: string;
 }) {
+  const ui = uiCopy(useLocale());
   return (
     <div className={cn("flex flex-wrap items-center gap-2 text-sm", className)}>
       <Stars rating={rating} />
       <span className="font-bold tabular-nums text-brand-dark">{rating.toFixed(1)}</span>
-      <span className="text-muted">آراء زبناء من المغرب{count > 0 ? ` · ${count} مكتوبة` : ""}</span>
+      <span className="text-muted">{ui.reviewsLine(count)}</span>
     </div>
   );
 }

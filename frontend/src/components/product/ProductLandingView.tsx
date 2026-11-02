@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { Check, ShieldCheck } from "lucide-react";
 
-import { COMPARISON_FAKE, FAQS, HOME, REVIEWS } from "@/data/content";
-import { PRODUCTS, type Product } from "@/data/products";
+import { getLocale } from "@/i18n/get-locale";
+import { comparisonFake, ctaTrust, faqCopy, homeCopy, reviewCopy } from "@/i18n/home-copy";
+import { localePath } from "@/i18n/locale";
+import { localizeProduct, localizeProducts } from "@/i18n/products-copy";
+import { uiCopy } from "@/i18n/ui";
+import type { Product } from "@/data/products";
 import { ConfirmationSection } from "@/components/home/ConfirmationSection";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { TrustBar } from "@/components/home/TrustBar";
@@ -19,45 +23,57 @@ const CAUSE_INDEX: Record<string, number> = {
   "kenidoux-calma": 3,
 };
 
-export function ProductLandingView({ product }: { product: Product }) {
-  const related = PRODUCTS.filter((p) => p.slug !== product.slug);
-  const reviews = REVIEWS.filter((r) => r.slug === product.slug);
-  const shownReviews = reviews.length ? reviews : REVIEWS.slice(0, 3);
+export async function ProductLandingView({ product: source }: { product: Product }) {
+  const locale = await getLocale();
+  const ui = uiCopy(locale);
+  const HOME = homeCopy(locale);
+  const product = localizeProduct(source, locale);
+  const related = localizeProducts(locale).filter((p) => p.slug !== product.slug);
+  const reviews = reviewCopy(locale).filter((r) => r.slug === product.slug);
+  const shownReviews = reviews.length ? reviews : reviewCopy(locale).slice(0, 3);
   const emotional = product.sections.find((s) => s.kind === "emotional");
   const science = product.sections.find((s) => s.kind === "science");
   const materials = product.sections.find((s) => s.kind === "materials");
   const causeNumber = CAUSE_INDEX[product.slug] ?? 1;
+  const fake = comparisonFake(locale);
 
   return (
     <>
       <div className="border-b border-brand/10 bg-alabaster">
         <div className="kd-container py-2.5 text-sm text-muted">
-          <Link href="/" className="hover:text-brand">
-            الرئيسية
+          <Link href={localePath("/", locale)} className="hover:text-brand">
+            {ui.home}
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/collections" className="hover:text-brand">
-            منتجاتنا
+          <Link href={localePath("/collections", locale)} className="hover:text-brand">
+            {ui.productsNav}
           </Link>
           <span className="mx-2">/</span>
           <span className="font-bold text-brand-dark">{product.nameAr}</span>
         </div>
       </div>
 
-      <ProductOfferShell product={product}>
+      <ProductOfferShell
+        product={product}
+        guaranteeTitle={HOME.guarantee.title}
+        finalTitle={HOME.finalCta.title}
+        finalSub={HOME.finalCta.sub}
+        finalNote={HOME.finalCta.reassurance}
+        trustPills={ctaTrust(locale)}
+      >
         <TrustBar />
 
         <section className="kd-section bg-alabaster">
           <div className="kd-container">
             <SectionHeading
-              eyebrow="إلا هادشي وضعك"
+              eyebrow={ui.problem}
               title={product.heroHook.title}
               sub={product.heroHook.body}
             />
             <div className="mx-auto mt-10 grid max-w-5xl items-stretch gap-6 lg:grid-cols-2">
               <div className="flex flex-col justify-between rounded-2xl bg-coral/10 p-6 ring-1 ring-coral/20 lg:p-8">
                 <div>
-                  <p className="kd-kicker text-coral">المشكلة اليومية</p>
+                  <p className="kd-kicker text-coral">{ui.problem}</p>
                   <ul className="mt-5 space-y-4">
                     {(emotional?.bullets ?? []).map((line) => (
                       <li key={line} className="flex gap-3 text-sm text-muted">
@@ -71,7 +87,7 @@ export function ProductLandingView({ product }: { product: Product }) {
               </div>
               <div className="flex flex-col justify-between rounded-2xl bg-sage p-6 ring-1 ring-brand/10 lg:p-8">
                 <div>
-                  <p className="kd-kicker">حل كينيدو</p>
+                  <p className="kd-kicker">{ui.solution}</p>
                   <h3 className="mt-3 text-lg font-bold text-brand-dark">{science?.title ?? product.nameAr}</h3>
                   <ul className="mt-5 space-y-3">
                     {product.bonuses.map((b) => (
@@ -83,7 +99,7 @@ export function ProductLandingView({ product }: { product: Product }) {
                   </ul>
                 </div>
                 <a href="#offer" className="mt-8 inline-flex items-center gap-2 font-bold text-brand">
-                  اختار العرض دابا ←
+                  {ui.chooseOffer}
                 </a>
               </div>
             </div>
@@ -93,7 +109,7 @@ export function ProductLandingView({ product }: { product: Product }) {
         {science ? (
           <SplitSection
             id="mechanism"
-            eyebrow="كيفاش كتخدم"
+            eyebrow={ui.howEyebrow}
             title={science.title}
             imageSrc={science.image}
             imageAlt={science.title}
@@ -115,7 +131,7 @@ export function ProductLandingView({ product }: { product: Product }) {
         {materials?.cards ? (
           <section id="materials" className="kd-section bg-sage/70">
             <div className="kd-container">
-              <SectionHeading eyebrow="الخامات" title={materials.title} sub={materials.body} />
+              <SectionHeading eyebrow={ui.materialsEyebrow} title={materials.title} sub={materials.body} />
               <div className="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-2">
                 {materials.cards.map((ing) => (
                   <div key={ing.title} className="rounded-2xl bg-white p-6 ring-1 ring-brand/10">
@@ -158,18 +174,18 @@ export function ProductLandingView({ product }: { product: Product }) {
 
         <section id="comparison" className="kd-section bg-sage/70">
           <div className="kd-container">
-            <SectionHeading eyebrow="مقارنة صريحة" title="علاش تختار كينيدو عوض حزام السوق العادي؟" />
+            <SectionHeading eyebrow={ui.compareEyebrow} title={ui.compareTitle} />
             <div className="mx-auto mt-10 max-w-3xl overflow-hidden rounded-2xl bg-white ring-1 ring-brand/10">
               <div className="grid grid-cols-3 bg-brand-dark text-sm font-bold text-white">
-                <div className="p-4">المعيار</div>
-                <div className="p-4 text-center text-leaf">كينيدو</div>
-                <div className="p-4 text-center">السوق العام</div>
+              <div className="p-4">{ui.criterion}</div>
+              <div className="p-4 text-center text-leaf">{ui.brand}</div>
+              <div className="p-4 text-center">{ui.market}</div>
               </div>
               {product.comparisonOriginal.map((row, i) => (
                 <div key={row} className="grid grid-cols-3 border-t border-brand/10 text-sm">
                   <div className="p-3.5 font-bold text-brand-dark">{i + 1}</div>
                   <div className="bg-sage/40 p-3.5 text-center font-bold text-brand">✔ {row}</div>
-                  <div className="p-3.5 text-center text-muted">— {COMPARISON_FAKE[i]}</div>
+                  <div className="p-3.5 text-center text-muted">— {fake[i]}</div>
                 </div>
               ))}
             </div>
@@ -210,12 +226,12 @@ export function ProductLandingView({ product }: { product: Product }) {
 
         <section id="timeline" className="kd-section bg-sage">
           <div className="kd-container">
-            <SectionHeading eyebrow="طريقة الاستعمال" title="كيفاش تستعملو، خطوة بخطوة" />
+            <SectionHeading eyebrow={ui.stepsEyebrow} title={ui.stepsTitle} />
             <ol className="mx-auto mt-10 grid max-w-4xl gap-4 md:grid-cols-3">
               {product.steps.map((t, i) => (
                 <li key={t.title} className="rounded-2xl bg-white p-5 ring-1 ring-brand/10">
                   <span className="inline-block rounded-full bg-sage px-3 py-1 text-xs font-bold text-brand">
-                    الخطوة {i + 1}
+                    {ui.step(i + 1)}
                   </span>
                   <h3 className="mt-3 font-bold text-brand-dark">{t.title}</h3>
                   <p className="mt-2 text-sm leading-7 text-muted">{t.body}</p>
@@ -223,10 +239,10 @@ export function ProductLandingView({ product }: { product: Product }) {
               ))}
             </ol>
             <p className="mt-8 text-center text-sm font-medium text-muted">
-              الاستمرارية اليومية هي السر.{" "}
-              <a href="#offer" className="font-bold text-brand underline underline-offset-4">
-                اختار العرض دابا
-              </a>
+            {ui.consistency}{" "}
+            <a href="#offer" className="font-bold text-brand underline underline-offset-4">
+              {ui.chooseOffer}
+            </a>
             </p>
           </div>
         </section>
@@ -234,7 +250,7 @@ export function ProductLandingView({ product }: { product: Product }) {
         <SplitSection
           id="howto"
           reverse
-          eyebrow="فدارك، بلا تعقيد"
+          eyebrow={ui.atHome}
           title={emotional?.title ?? product.nameAr}
           imageSrc={emotional?.image ?? product.image}
           imageAlt={product.nameAr}
@@ -269,7 +285,7 @@ export function ProductLandingView({ product }: { product: Product }) {
                 return (
                   <Link
                     key={c.n}
-                    href={`/products/${c.slug}`}
+                    href={localePath(`/products/${c.slug}`, locale)}
                     className={`rounded-2xl p-6 ${
                       active
                         ? "border-2 border-action bg-white/10"
@@ -278,7 +294,7 @@ export function ProductLandingView({ product }: { product: Product }) {
                   >
                     {active ? (
                       <span className="mb-3 inline-block rounded-full bg-action px-3 py-1 text-xs font-bold text-white">
-                        هاد المنتوج
+                        {ui.thisProduct}
                       </span>
                     ) : null}
                     <p className="font-sans text-3xl font-bold text-action">{c.n}</p>
@@ -293,7 +309,7 @@ export function ProductLandingView({ product }: { product: Product }) {
 
         <section id="system" className="kd-section bg-sage">
           <div className="kd-container">
-            <SectionHeading eyebrow="الخط الكامل" title="كمّل راحة جسمك مع باقي خط كينيدو" />
+            <SectionHeading eyebrow={ui.lineEyebrow} title={ui.lineTitle} />
             <div className="mt-10 grid gap-6 md:grid-cols-2">
               {related.map((p) => (
                 <ProductCard key={p.slug} product={p} />
@@ -306,7 +322,7 @@ export function ProductLandingView({ product }: { product: Product }) {
 
         <SplitSection
           id="guarantee"
-          eyebrow="14 jours · échange gratuit"
+          eyebrow={ui.guaranteeEyebrow}
           title={HOME.guarantee.title}
           imageSrc={HOME.guarantee.image}
           imageAlt={HOME.guarantee.title}
@@ -323,27 +339,26 @@ export function ProductLandingView({ product }: { product: Product }) {
           </ul>
         </SplitSection>
 
-        <FaqAccordion items={FAQS} />
+        <FaqAccordion items={faqCopy(locale)} title={ui.faqTitle} subtitle={ui.faqSub} />
       </ProductOfferShell>
     </>
   );
 }
 
-export function HonestyBox() {
+export async function HonestyBox() {
+  const locale = await getLocale();
+  const ui = uiCopy(locale);
   return (
     <section id="safety" className="kd-section bg-alabaster">
       <div className="kd-container">
         <div className="mx-auto max-w-2xl rounded-2xl bg-sage p-8 ring-1 ring-brand/10">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-6 w-6 text-brand" aria-hidden />
-            <h2 className="text-lg font-bold text-brand-dark">شفافية كينيدو</h2>
+            <h2 className="text-lg font-bold text-brand-dark">{ui.honestyTitle}</h2>
           </div>
-          <p className="mt-4 text-sm leading-7 text-muted">
-            كينيدو كتبيع حلول راحة ودعم ميكانيكي، ما كتعالجش وما كتعوّضش الطبيب. شاور طبيبك قبل الاستعمال فحالة الحمل، كسر
-            حديث، أو عملية حديثة على العمود الفقري.
-          </p>
-          <Link href="/contact" className="mt-3 inline-block font-bold text-brand">
-            تواصل مع فريق كينيدو
+          <p className="mt-4 text-sm leading-7 text-muted">{ui.honestyBody}</p>
+          <Link href={localePath("/contact", locale)} className="mt-3 inline-block font-bold text-brand">
+            {ui.honestyLink}
           </Link>
         </div>
       </div>

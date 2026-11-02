@@ -2,25 +2,30 @@
 
 import { useMemo, useState } from "react";
 
-import { PRODUCTS } from "@/data/products";
+import type { Product } from "@/data/products";
+import { uiCopy } from "@/i18n/ui";
+import { useLocale } from "@/i18n/locale-context";
 import { CategoryPills, type CategoryFilterId } from "./CategoryPills";
 import { ProductCard } from "@/components/product/ProductCard";
 
 export function ProductGrid({
-  kicker = "Trois soins, une marque",
-  title = "خط كينيدو المتخصص",
-  subtitle = "ثلاثة حلول واضحة: حزام راحة الظهر، مصحح الوقفة، ووسادة/استرخاء للكتاف. كل العروض بالتوصيل المجاني والخلاص عند الاستلام.",
+  products,
+  kicker,
+  title,
+  subtitle,
   showIntro = true,
 }: {
+  products: Product[];
   kicker?: string;
   title?: string;
   subtitle?: string;
   showIntro?: boolean;
 }) {
+  const ui = uiCopy(useLocale());
   const [filter, setFilter] = useState<CategoryFilterId>("all");
   const items = useMemo(
-    () => (filter === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.slug === filter)),
-    [filter],
+    () => (filter === "all" ? products : products.filter((p) => p.slug === filter)),
+    [filter, products],
   );
 
   return (
@@ -29,7 +34,7 @@ export function ProductGrid({
         <>
           <p className="kd-kicker mb-2">{kicker}</p>
           <h2 className="kd-h2 mb-2">{title}</h2>
-          <p className="mb-6 max-w-2xl text-muted">{subtitle}</p>
+          <p className="mb-6 max-w-2xl text-muted">{subtitle ?? ui.productsSubtitle}</p>
         </>
       ) : null}
       <CategoryPills active={filter} onChange={setFilter} />

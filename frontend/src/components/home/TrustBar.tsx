@@ -1,15 +1,17 @@
 import { BadgeCheck, MapPin, Shield, Truck } from "lucide-react";
 
-import { TRUST_PILLS } from "@/data/content";
+import { getLocale } from "@/i18n/get-locale";
+import { uiCopy } from "@/i18n/ui";
 
 const ICONS = [MapPin, Shield, Truck, BadgeCheck];
 
-export function TrustBar() {
+export async function TrustBar() {
+  const trust = uiCopy(await getLocale()).trust;
   return (
     <section className="bg-sage">
       <div className="kd-container py-6">
         <ul className="flex gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:pb-0">
-          {TRUST_PILLS.map((p, i) => {
+          {trust.map((p, i) => {
             const Icon = ICONS[i] ?? BadgeCheck;
             return (
               <li

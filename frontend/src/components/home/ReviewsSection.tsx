@@ -1,12 +1,12 @@
-import { HOME, REVIEWS } from "@/data/content";
+import { getLocale } from "@/i18n/get-locale";
+import { homeCopy, reviewCopy } from "@/i18n/home-copy";
 import { RatingRow, Stars } from "@/components/ui/Stars";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-export function ReviewsSection({
-  reviews = REVIEWS,
-}: {
-  reviews?: typeof REVIEWS;
-}) {
+export async function ReviewsSection() {
+  const locale = await getLocale();
+  const HOME = homeCopy(locale);
+  const reviews = reviewCopy(locale);
   return (
     <section className="kd-section bg-sage/70" id="reviews">
       <div className="kd-container">

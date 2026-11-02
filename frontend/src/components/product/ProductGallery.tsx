@@ -4,9 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 
 import type { Product } from "@/data/products";
+import { useLocale } from "@/i18n/locale-context";
+import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
 
 export function ProductGallery({ product }: { product: Product }) {
+  const ui = uiCopy(useLocale());
   const [active, setActive] = useState(0);
   const current = product.gallery[active] ?? product.gallery[0];
 
@@ -24,7 +27,7 @@ export function ProductGallery({ product }: { product: Product }) {
           className="object-cover"
         />
         <span className="absolute top-4 right-4 z-[1] rounded-full border border-leaf bg-white/95 px-3 py-1 text-xs font-bold text-brand">
-          الدار البيضاء · 14 يوم تبديل
+          {ui.galleryBadge}
         </span>
       </div>
       <div className="mt-3 grid grid-cols-4 gap-2">

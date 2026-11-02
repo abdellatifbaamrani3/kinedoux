@@ -1,15 +1,16 @@
-import { HOME } from "@/data/content";
+import { getLocale } from "@/i18n/get-locale";
+import { homeCopy } from "@/i18n/home-copy";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-export function HomeComparison() {
-  const { comparison } = HOME;
+export async function HomeComparison() {
+  const { comparison } = homeCopy(await getLocale());
 
   return (
     <section id="comparison" className="kd-section bg-alabaster">
       <div className="kd-container">
         <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} sub={comparison.sub} />
         <div className="mt-10 overflow-x-auto rounded-2xl ring-1 ring-brand/10">
-          <table className="w-full min-w-[36rem] border-collapse bg-white text-right">
+          <table className="w-full min-w-[36rem] border-collapse bg-white text-start">
             <caption className="sr-only">{comparison.title}</caption>
             <thead>
               <tr>
