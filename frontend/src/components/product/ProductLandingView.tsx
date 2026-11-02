@@ -222,16 +222,23 @@ export function ProductLandingView({ product }: { product: Product }) {
       <section id="kit" className="kd-section bg-alabaster">
         <div className="kd-container">
           <SectionHeading title={product.kitTitle} />
-          <ul className="mx-auto mt-10 grid max-w-3xl gap-3 md:grid-cols-2">
-            {product.kitContents.map((item) => (
-              <li key={item} className="flex gap-3 rounded-xl bg-white p-4 shadow-card">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
-                  ✔
-                </span>
-                <span className="font-medium">{item}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-10 grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+            <BrandImage
+              src={product.gallery[3]?.src ?? product.image}
+              alt={product.kitTitle}
+              className="aspect-[4/3] max-w-md mx-auto lg:max-w-none"
+            />
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+              {product.kitContents.map((item) => (
+                <li key={item} className="flex gap-3 rounded-xl bg-white p-4 shadow-card">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                    ✔
+                  </span>
+                  <span className="font-medium">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 

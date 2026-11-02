@@ -48,9 +48,10 @@ export const IMAGES = {
     "kenidoux-posta": {
       ...set("posta"),
       main: "/images/posta/office.webp",
-      mechanism: "/images/posta/how.webp",
-      lifestyle: "/images/posta/tv.webp",
-      sections: ["/images/posta/salon.webp", "/images/posta/how.webp", "/images/posta/tv.webp"],
+      mechanism: "/images/posta/button.webp",
+      lifestyle: "/images/posta/laptop.webp",
+      kit: "/images/posta/kit.webp",
+      sections: ["/images/posta/clip.webp", "/images/posta/button.webp", "/images/posta/laptop.webp"],
     },
     "kenidoux-calma": { ...set("calma"), main: "/images/calma/studio.webp" },
   } as Record<string, ProductImageSet>,
