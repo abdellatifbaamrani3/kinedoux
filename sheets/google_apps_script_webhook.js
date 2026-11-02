@@ -3,7 +3,7 @@
  * KINÉDOUX™ (kenidoux.com) — GOOGLE SHEETS ORDER WEBHOOK SCRIPT
  * ============================================================================
  * HOW TO INSTALL & DEPLOY:
- * 1. Open your Google Sheet (or import `kenidoux_orders_template.csv` first).
+ * 1. Open this sheet: https://docs.google.com/spreadsheets/d/1C98PNsHXPtn_pEemMDOL6O9zpCRae6lkjBi6kX-mZfI/edit
  * 2. Click `Extensions` > `Apps Script`.
  * 3. Delete any code in `Code.gs` and paste this entire file.
  * 4. Click `Save` (disk icon).
@@ -18,6 +18,7 @@
  */
 
 const EXPECTED_SECRET = ""; // Optional: Set to match GOOGLE_SHEETS_WEBHOOK_SECRET if you want token verification
+const SPREADSHEET_ID = "1C98PNsHXPtn_pEemMDOL6O9zpCRae6lkjBi6kX-mZfI";
 
 const HEADERS = [
   "رقم الطلب (Order ID)",
@@ -71,7 +72,7 @@ function doPost(e) {
       ).setMimeType(ContentService.MimeType.JSON);
     }
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheets()[0];
     ensureHeaders(sheet);
 
