@@ -22,7 +22,7 @@ function ThankYouInner() {
   const orderId = params.get("order_id");
   const last = useCartStore((s) => s.lastConfirmedOrder);
   const [order, setOrder] = useState<ApiOrderPublic | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [busySlug, setBusySlug] = useState<string | null>(null);
   const [addState, setAddState] = useState<"idle" | "added" | "failed">("idle");
 
   useEffect(() => {
@@ -60,9 +60,14 @@ function ThankYouInner() {
   const total = order?.total_mad ?? last?.totalMad;
   const first = order?.customer_first_name || last?.customerName.split(" ")[0] || "";
   const wa = whatsappLink(ui.thanksWaMessage(first, number || ""));
-  const offer = order && !order.upsell_added ? order.upsell_offer : null;
-  const offerCopy = offer ? ui.thanksUpsellOffers[offer.product_slug as keyof typeof ui.thanksUpsellOffers] : undefined;
-  const offerImage = offer ? getProduct(offer.product_slug)?.image : undefined;
+  const offers =
+    order && !order.upsell_added
+      ? order.upsell_offers?.length
+        ? order.upsell_offers
+        : order.upsell_offer
+          ? [order.upsell_offer]
+          : []
+      : [];
 
   function applyUpsell(done: ApiOrder) {
     setOrder((prev) =>
@@ -74,25 +79,27 @@ function ThankYouInner() {
             upsell_added: done.upsell_added,
             items: done.items,
             upsell_offer: done.upsell_added ? null : prev.upsell_offer,
+            upsell_offers: done.upsell_added ? [] : prev.upsell_offers,
           }
         : prev,
     );
     setAddState(done.upsell_added ? "added" : "failed");
   }
 
-  async function addUpsell() {
-    if (!orderId || busy || !offer) return;
-    setBusy(true);
+  async function addUpsell(slug: string) {
+    if (!orderId || busySlug) return;
+    setBusySlug(slug);
     try {
       const done = await api.decideUpsell(orderId, {
         accepted: true,
+        upsell_product_slug: slug,
         purchase_event_id: order?.event_id ?? undefined,
       });
       applyUpsell(done);
     } catch {
       setAddState("failed");
     } finally {
-      setBusy(false);
+      setBusySlug(null);
     }
   }
 
@@ -128,29 +135,47 @@ function ThankYouInner() {
           <p className="mt-6 text-sm text-muted">{ui.orderMissing}</p>
         )}
 
-        {offer && offerCopy ? (
-          <div className="kd-card mx-auto mt-6 p-5 text-start">
-            <p className="text-xs font-extrabold uppercase tracking-wide text-brand">{ui.thanksUpsellKicker}</p>
-            <div className="mt-3 flex gap-4">
-              {offerImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={offerImage} alt={offerCopy.title} className="h-24 w-24 shrink-0 rounded-xl object-cover" />
-              ) : null}
-              <div>
-                <p className="font-extrabold text-brand-dark">{offerCopy.title}</p>
-                <p className="mt-1 text-sm leading-7 text-muted">{offerCopy.body}</p>
-                <p className="mt-2 text-lg font-extrabold tabular-nums text-brand">
-                  +{money(offer.price_mad, locale)}
-                  <span className="ms-2 text-sm font-medium text-muted line-through">
-                    {money(offer.compare_at_mad, locale)}
-                  </span>
-                </p>
-              </div>
+        {offers.length ? (
+          <div className="mt-6 text-start">
+            <p className="text-sm font-extrabold text-brand">{ui.thanksUpsellKicker}</p>
+            <div className="mt-3 space-y-3">
+              {offers.map((offer) => {
+                const copy = ui.thanksUpsellOffers[offer.product_slug as keyof typeof ui.thanksUpsellOffers];
+                if (!copy) return null;
+                const image = getProduct(offer.product_slug)?.image;
+                return (
+                  <div key={offer.product_slug} className="kd-card p-4">
+                    <div className="flex gap-4">
+                      {image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={image} alt={copy.title} className="h-24 w-24 shrink-0 rounded-xl object-cover" />
+                      ) : null}
+                      <div>
+                        <p className="font-extrabold text-brand-dark">{copy.title}</p>
+                        <p className="mt-1 text-sm leading-7 text-muted">{copy.body}</p>
+                        <p className="mt-2 text-lg font-extrabold tabular-nums text-brand">
+                          +{money(offer.price_mad, locale)}
+                          <span className="ms-2 text-sm font-medium text-muted line-through">
+                            {money(offer.compare_at_mad, locale)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="kd-cta mt-4"
+                      disabled={busySlug != null}
+                      onClick={() => void addUpsell(offer.product_slug)}
+                    >
+                      {busySlug === offer.product_slug
+                        ? ui.thanksUpsellBusy
+                        : ui.thanksUpsellYes(money(offer.price_mad, locale))}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
-            <button type="button" className="kd-cta mt-4" disabled={busy} onClick={() => void addUpsell()}>
-              {busy ? ui.thanksUpsellBusy : ui.thanksUpsellYes(money(offer.price_mad, locale))}
-            </button>
-            <p className="mt-2 text-sm leading-7 text-muted">{addState === "failed" ? ui.thanksUpsellFail : ui.thanksUpsellNote}</p>
+            <p className="mt-3 text-sm leading-7 text-muted">{addState === "failed" ? ui.thanksUpsellFail : ui.thanksUpsellNote}</p>
           </div>
         ) : null}
 

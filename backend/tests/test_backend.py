@@ -146,12 +146,13 @@ def test_order_accept_upsell_flow(client, sheet_calls):
     assert "customer_phone_e164" not in pub
 
 
-def test_thank_you_offer_can_be_added_after_decline(client):
+def test_thank_you_offer_can_be_added_after_decline(client, sheet_calls):
     order = client.post(f"{API}/orders", json=order_payload()).json()
     client.post(f"{API}/orders/{order['id']}/upsell", json={"accepted": False})
     pub = client.get(f"{API}/orders/{order['id']}").json()
     assert pub["upsell_added"] is False
-    assert (pub["upsell_offer"]["product_slug"], pub["upsell_offer"]["price_mad"]) == ("kenidoux-calma", 199)
+    assert [o["product_slug"] for o in pub["upsell_offers"]] == ["kenidoux-calma", "kenidoux-posta"]
+    assert [o["price_mad"] for o in pub["upsell_offers"]] == [199, 229]
 
     done = client.post(
         f"{API}/orders/{order['id']}/upsell",
@@ -161,8 +162,26 @@ def test_thank_you_offer_can_be_added_after_decline(client):
     assert done["total_mad"] == order["total_mad"] + 199
 
     again = client.get(f"{API}/orders/{order['id']}").json()
-    assert again["upsell_added"] is True and again["upsell_offer"] is None
+    assert again["upsell_added"] is True and again["upsell_offer"] is None and again["upsell_offers"] == []
     assert again["total_mad"] == order["total_mad"] + 199
+    assert wait_for(
+        lambda: next((c for c in sheet_calls if c["order_number"] == order["order_number"] and c["total_mad"] == again["total_mad"]), None)
+    )
+
+
+def test_thank_you_adds_the_upsell_the_customer_picked(client, sheet_calls):
+    order = client.post(f"{API}/orders", json=order_payload()).json()
+    client.post(f"{API}/orders/{order['id']}/upsell", json={"accepted": False})
+    done = client.post(
+        f"{API}/orders/{order['id']}/upsell",
+        json={"accepted": True, "upsell_product_slug": "kenidoux-posta", "upsell_price_mad": 1},
+    ).json()
+    assert done["upsell_product_slug"] == "kenidoux-posta"
+    assert done["upsell_price_mad"] == 229
+    assert done["total_mad"] == order["total_mad"] + 229
+    assert wait_for(
+        lambda: next((c for c in sheet_calls if c["order_number"] == order["order_number"] and c["total_mad"] == done["total_mad"]), None)
+    )
 
 
 def test_order_decline_flow(client, sheet_calls):

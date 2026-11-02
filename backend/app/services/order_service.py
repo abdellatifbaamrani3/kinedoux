@@ -20,7 +20,7 @@ from app.services import capi_service, sheets_webhook
 from app.services.offers import (
     PricingError,
     price_items,
-    recommend_upsell,
+    resolve_upsell,
     upsell_line_item,
 )
 from app.services.phone_normalizer import validate_and_format_phone
@@ -149,7 +149,11 @@ def create_order(
 
 # --------------------------------------------------------------------------- finalize
 def finalize_order(
-    db: Session, order_id: uuid.UUID, accepted: bool, source: str = "customer"
+    db: Session,
+    order_id: uuid.UUID,
+    accepted: bool,
+    source: str = "customer",
+    upsell_slug: str | None = None,
 ) -> FinalizeResult:
     """Lock the order row, apply (or skip) the upsell, confirm, and claim the one-shot integrations."""
     order = db.execute(select(Order).where(Order.id == order_id).with_for_update()).scalar_one_or_none()
@@ -157,7 +161,7 @@ def finalize_order(
         raise OrderNotFound(str(order_id))
 
     now = _now()
-    offer = recommend_upsell(order.items_json)
+    offer = resolve_upsell(order.items_json, upsell_slug if accepted else None)
 
     def apply_upsell() -> None:
         names = {p.slug: p.name_ar for p in db.scalars(select(Product))}
@@ -247,10 +251,12 @@ async def dispatch_integrations(order_id: uuid.UUID, send_sheet: bool, send_capi
         await run_in_threadpool(_release_claims, order_id, send_sheet, send_capi)
 
 
-async def finalize_and_dispatch(order_id: uuid.UUID, accepted: bool, source: str) -> FinalizeResult:
+async def finalize_and_dispatch(
+    order_id: uuid.UUID, accepted: bool, source: str, upsell_slug: str | None = None
+) -> FinalizeResult:
     def _run() -> FinalizeResult:
         with SessionLocal() as db:
-            return finalize_order(db, order_id, accepted, source)
+            return finalize_order(db, order_id, accepted, source, upsell_slug)
 
     result = await run_in_threadpool(_run)
     spawn(dispatch_integrations(order_id, result.send_sheet, result.send_capi), name=f"dispatch-{order_id}")

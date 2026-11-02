@@ -60,6 +60,7 @@ export type ApiOrderPublic = {
   items: ApiOrderItem[];
   event_id: string | null;
   upsell_offer: ApiUpsellOffer | null;
+  upsell_offers: ApiUpsellOffer[];
 };
 
 export type TrackingContextPayload = {

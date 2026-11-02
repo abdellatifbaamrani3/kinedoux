@@ -121,3 +121,4 @@ class OrderPublicOut(BaseModel):
     items: list[OrderItemOut]
     event_id: str | None
     upsell_offer: UpsellOfferOut | None = None
+    upsell_offers: list[UpsellOfferOut] = Field(default_factory=list)

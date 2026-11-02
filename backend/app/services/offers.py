@@ -38,35 +38,35 @@ def products_in_items(items: list[dict]) -> set[str]:
     return present
 
 
-def recommend_upsell(items: list[dict]) -> UpsellOffer:
-    present = products_in_items(items)
+def _calma() -> UpsellOffer:
+    return UpsellOffer(
+        product_slug="kenidoux-calma",
+        title_ar="كينيدو كالما (جهاز الكاسات الحرارية الذكية)",
+        headline_ar='زيد "كينيدو كالما" مع الكولية ديالك بـ 199 درهم فقط عوض 349 درهم!',
+        pitch_ar=(
+            "82% من الكليان اللي خداو منتجات كينيدو كيزيدو جهاز الكاسات الحراري الذكي باش يديرو "
+            "جلسة استرخاء دافئة للكتاف والظهر فالليل (بلا جرح وبلا مصاريف توصيل إضافية — كيجيك فنفس الكولية!)."
+        ),
+        price_mad=UPSELL_PRICE["kenidoux-calma"],
+        compare_at_mad=349,
+    )
 
-    if "kenidoux-calma" not in present:
-        return UpsellOffer(
-            product_slug="kenidoux-calma",
-            title_ar="كينيدو كالما (جهاز الكاسات الحرارية الذكية)",
-            headline_ar='زيد "كينيدو كالما" مع الكولية ديالك بـ 199 درهم فقط عوض 349 درهم!',
-            pitch_ar=(
-                "82% من الكليان اللي خداو منتجات كينيدو كيزيدو جهاز الكاسات الحراري الذكي باش يديرو "
-                "جلسة استرخاء دافئة للكتاف والظهر فالليل (بلا جرح وبلا مصاريف توصيل إضافية — كيجيك فنفس الكولية!)."
-            ),
-            price_mad=UPSELL_PRICE["kenidoux-calma"],
-            compare_at_mad=349,
-        )
 
-    if "kenidoux-posta" not in present:
-        return UpsellOffer(
-            product_slug="kenidoux-posta",
-            title_ar="كينيدو بوسطا (باقة مصحح الوقفة الذكي + وسادة الرقبة)",
-            headline_ar='فرصة وحيدة: زيد باقة "كينيدو بوسطا" لراحة الرقبة والوقفة بـ 229 درهم فقط!',
-            pitch_ar=(
-                "كمّل راحة جسمك بمصحح الوقفة الذكي ووسادة التمدد العنقي — كيجيو معاك فنفس الكولية "
-                "وبلا أي مصاريف توصيل إضافية، وبثمن خاص ما كيتعاودش."
-            ),
-            price_mad=UPSELL_PRICE["kenidoux-posta"],
-            compare_at_mad=379,
-        )
+def _posta() -> UpsellOffer:
+    return UpsellOffer(
+        product_slug="kenidoux-posta",
+        title_ar="كينيدو بوسطا (باقة مصحح الوقفة الذكي + وسادة الرقبة)",
+        headline_ar='فرصة وحيدة: زيد باقة "كينيدو بوسطا" لراحة الرقبة والوقفة بـ 229 درهم فقط!',
+        pitch_ar=(
+            "كمّل راحة جسمك بمصحح الوقفة الذكي ووسادة التمدد العنقي — كيجيو معاك فنفس الكولية "
+            "وبلا أي مصاريف توصيل إضافية، وبثمن خاص ما كيتعاودش."
+        ),
+        price_mad=UPSELL_PRICE["kenidoux-posta"],
+        compare_at_mad=379,
+    )
 
+
+def _lumba_gift() -> UpsellOffer:
     return UpsellOffer(
         product_slug="kenidoux-lumba",
         title_ar="قطعة إضافية من كينيدو لومبا كهدية للوالدين",
@@ -78,6 +78,33 @@ def recommend_upsell(items: list[dict]) -> UpsellOffer:
         price_mad=UPSELL_PRICE["kenidoux-lumba"],
         compare_at_mad=499,
     )
+
+
+def upsell_choices(items: list[dict]) -> list[UpsellOffer]:
+    """Products missing from the box, at the post-checkout price. One gift Lumba if nothing is missing."""
+    present = products_in_items(items)
+    choices: list[UpsellOffer] = []
+    if "kenidoux-calma" not in present:
+        choices.append(_calma())
+    if "kenidoux-posta" not in present:
+        choices.append(_posta())
+    if not choices:
+        choices.append(_lumba_gift())
+    return choices
+
+
+def recommend_upsell(items: list[dict]) -> UpsellOffer:
+    return upsell_choices(items)[0]
+
+
+def resolve_upsell(items: list[dict], slug: str | None) -> UpsellOffer:
+    """The shopper may pick one of the offered slugs. Any other slug falls back to the first offer."""
+    choices = upsell_choices(items)
+    if slug:
+        match = next((offer for offer in choices if offer.product_slug == slug), None)
+        if match is not None:
+            return match
+    return choices[0]
 
 
 def price_items(db: Session, items_in: list[OrderItemIn]) -> list[dict]:
@@ -145,4 +172,13 @@ def upsell_line_item(offer: UpsellOffer, product_names: dict[str, str]) -> dict:
     }
 
 
-__all__ = ["ALL_SLUGS", "PricingError", "UpsellOffer", "price_items", "recommend_upsell", "upsell_line_item"]
+__all__ = [
+    "ALL_SLUGS",
+    "PricingError",
+    "UpsellOffer",
+    "price_items",
+    "recommend_upsell",
+    "resolve_upsell",
+    "upsell_choices",
+    "upsell_line_item",
+]

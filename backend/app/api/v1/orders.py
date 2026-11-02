@@ -15,7 +15,7 @@ from app.schemas.order import (
     UpsellOfferOut,
 )
 from app.services import order_service
-from app.services.offers import recommend_upsell
+from app.services.offers import recommend_upsell, upsell_choices
 from app.services.snapshot import OrderSnapshot, snapshot_from_order
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -73,7 +73,12 @@ async def create_order(payload: OrderCreate, request: Request):
 async def decide_upsell(order_id: uuid.UUID, decision: UpsellDecision):
     """Accept / decline / 15s timeout -> finalize, then Sheets + Purchase CAPI run in the background."""
     try:
-        result = await order_service.finalize_and_dispatch(order_id, decision.accepted, source="customer")
+        result = await order_service.finalize_and_dispatch(
+            order_id,
+            decision.accepted,
+            source="customer",
+            upsell_slug=decision.upsell_product_slug,
+        )
     except order_service.OrderNotFound as exc:
         raise HTTPException(status_code=404, detail="الطلب غير موجود") from exc
     return _order_out(result.snapshot, result.snapshot.created_at, with_offer=False)
@@ -89,7 +94,7 @@ async def get_order(order_id: uuid.UUID):
     snap = await run_in_threadpool(_load)
     if snap is None:
         raise HTTPException(status_code=404, detail="الطلب غير موجود")
-    offer = None if snap.upsell_added else recommend_upsell(snap.items)
+    offers = [] if snap.upsell_added else upsell_choices(snap.items)
     return OrderPublicOut(
         id=snap.id,
         order_number=snap.order_number,
@@ -100,5 +105,6 @@ async def get_order(order_id: uuid.UUID):
         upsell_added=snap.upsell_added,
         items=_items_out(snap.items),
         event_id=snap.event_id,
-        upsell_offer=UpsellOfferOut(**offer.as_dict()) if offer else None,
+        upsell_offer=UpsellOfferOut(**offers[0].as_dict()) if offers else None,
+        upsell_offers=[UpsellOfferOut(**offer.as_dict()) for offer in offers],
     )
