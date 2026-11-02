@@ -28,9 +28,9 @@ export const IMAGES = {
     unboxing: "/images/about-unbox.webp",
   },
   about: {
-    hub: "/images/about-hub.svg",
+    hub: "/images/about-hub.webp",
     pillars: "/images/about-pillars.webp",
-    trust: "/images/about-trust.svg",
+    trust: "/images/about-trust.webp",
   },
   ugc: ["/images/ugc-1.svg", "/images/ugc-2.svg", "/images/ugc-3.svg"],
   badges: {
