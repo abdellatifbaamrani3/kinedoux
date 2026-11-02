@@ -37,6 +37,7 @@ export function Hero() {
             alt="مجموعة كينيدو: لومبا، بوسطا وكالما"
             className="mx-auto aspect-square max-w-md lg:max-w-none"
             badge={HOME.hero.imageBadge}
+            sizes="(max-width: 1024px) 92vw, 560px"
             priority
           />
         </div>

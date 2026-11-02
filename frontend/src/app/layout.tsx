@@ -15,6 +15,8 @@ const cairo = Cairo({
   variable: "--font-cairo",
   display: "swap",
   preload: true,
+  adjustFontFallback: true,
+  fallback: ["Tahoma", "Arial", "sans-serif"],
 });
 
 const jakarta = Plus_Jakarta_Sans({

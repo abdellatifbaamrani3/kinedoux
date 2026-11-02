@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 import type { Product } from "@/data/products";
 import { defaultOffer } from "@/data/products";
@@ -16,11 +17,14 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-sage shadow-card transition hover:-translate-y-0.5 hover:shadow-lift">
       <Link href={`/products/${product.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-white">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={product.image}
           alt={product.nameAr}
-          className="h-full w-full object-cover transition duration-500 hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 92vw, 33vw"
+          quality={70}
+          unoptimized={product.image.endsWith(".svg")}
+          className="object-cover transition duration-500 hover:scale-105"
         />
         <span className="absolute top-3 right-3 max-w-[75%] rounded-full bg-brand px-3 py-1 text-[11px] font-bold leading-4 text-white">
           {product.category}

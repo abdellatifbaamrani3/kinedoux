@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 import type { Product } from "@/data/products";
 import { cn } from "@/lib/utils";
@@ -11,18 +12,18 @@ export function ProductGallery({ product }: { product: Product }) {
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-2xl border border-brand/10 bg-sage shadow-card">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-brand/10 bg-sage shadow-card">
+        <Image
           src={current.src}
           alt={current.label}
-          width={800}
-          height={600}
-          decoding="async"
-          fetchPriority="high"
-          className="aspect-[4/3] w-full object-cover"
+          fill
+          sizes="(max-width: 1024px) 92vw, 540px"
+          quality={70}
+          priority
+          unoptimized={current.src.endsWith(".svg")}
+          className="object-cover"
         />
-        <span className="absolute top-4 right-4 rounded-full border border-leaf bg-white/95 px-3 py-1 text-xs font-bold text-brand">
+        <span className="absolute top-4 right-4 z-[1] rounded-full border border-leaf bg-white/95 px-3 py-1 text-xs font-bold text-brand">
           الدار البيضاء · 14 يوم تبديل
         </span>
       </div>
@@ -37,8 +38,17 @@ export function ProductGallery({ product }: { product: Product }) {
               i === active ? "border-brand" : "border-transparent opacity-80 hover:opacity-100",
             )}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img.src} alt="" width={160} height={160} loading="lazy" decoding="async" className="aspect-square w-full object-cover" />
+            <span className="relative block aspect-square">
+              <Image
+                src={img.src}
+                alt=""
+                fill
+                sizes="80px"
+                quality={60}
+                unoptimized={img.src.endsWith(".svg")}
+                className="object-cover"
+              />
+            </span>
             <span className="block truncate bg-alabaster px-1 py-1 text-center text-[10px] font-bold text-muted">
               {img.label}
             </span>
