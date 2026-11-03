@@ -1,4 +1,6 @@
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+// Unset in local dev: the browser calls this same site, and Next proxies to the API.
+// Production sets NEXT_PUBLIC_API_URL to the public API host at build time.
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
 
 export class ApiError extends Error {
   status: number;

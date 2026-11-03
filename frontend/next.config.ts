@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
     imageSizes: [64, 96, 128, 256, 384],
     qualities: [60, 70, 75],
   },
+  async rewrites() {
+    const target = (process.env.API_PROXY_TARGET || "https://api.kinedoux.com").replace(/\/$/, "");
+    return [{ source: "/api/v1/:path*", destination: `${target}/api/v1/:path*` }];
+  },
   async headers() {
     return [
       {
