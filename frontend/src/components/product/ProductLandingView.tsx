@@ -2,15 +2,15 @@ import Link from "next/link";
 import { Check, ShieldCheck } from "lucide-react";
 
 import { getLocale } from "@/i18n/get-locale";
-import { comparisonFake, ctaTrust, faqCopy, homeCopy, reviewCopy } from "@/i18n/home-copy";
+import { comparisonFake, ctaTrust, faqCopy, homeCopy } from "@/i18n/home-copy";
 import { localePath } from "@/i18n/locale";
 import { localizeProduct, localizeProducts } from "@/i18n/products-copy";
 import { uiCopy } from "@/i18n/ui";
 import type { Product } from "@/data/products";
 import { ConfirmationSection } from "@/components/home/ConfirmationSection";
+import { TrustLedger } from "@/components/home/TrustLedger";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { TrustBar } from "@/components/home/TrustBar";
-import { RatingRow, Stars } from "@/components/ui/Stars";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SplitSection } from "@/components/ui/SplitSection";
 import { BrandImage } from "@/components/ui/BrandImage";
@@ -29,8 +29,6 @@ export async function ProductLandingView({ product: source }: { product: Product
   const HOME = homeCopy(locale);
   const product = localizeProduct(source, locale);
   const related = localizeProducts(locale).filter((p) => p.slug !== product.slug);
-  const reviews = reviewCopy(locale).filter((r) => r.slug === product.slug);
-  const shownReviews = reviews.length ? reviews : reviewCopy(locale).slice(0, 3);
   const emotional = product.sections.find((s) => s.kind === "emotional");
   const science = product.sections.find((s) => s.kind === "science");
   const materials = product.sections.find((s) => s.kind === "materials");
@@ -192,37 +190,7 @@ export async function ProductLandingView({ product: source }: { product: Product
           </div>
         </section>
 
-        <section id="reviews" className="kd-section bg-alabaster">
-          <div className="kd-container">
-            <SectionHeading eyebrow={HOME.reviews.eyebrow} title={HOME.reviews.title} sub={HOME.reviews.note} />
-            <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1fr_1.4fr]">
-              <div className="lg:sticky lg:top-28">
-                <BrandImage
-                  src={product.gallery[2]?.src ?? product.image}
-                  alt={product.nameAr}
-                  className="mx-auto aspect-[4/5] max-w-md lg:max-w-none"
-                />
-                <div className="mt-4 rounded-2xl bg-sage p-4 text-center ring-1 ring-brand/10">
-                  <RatingRow rating={product.rating} count={product.reviewCount} />
-                </div>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                {shownReviews.map((r) => (
-                  <article key={r.name} className="flex flex-col justify-between rounded-2xl bg-white p-5 ring-1 ring-brand/10">
-                    <div>
-                      <Stars rating={r.stars} />
-                      <p className="mt-3 text-sm leading-7 text-muted">«{r.body}»</p>
-                    </div>
-                    <div className="mt-4 border-t border-brand/10 pt-3">
-                      <p className="text-sm font-bold text-brand-dark">{r.name}</p>
-                      <p className="text-xs text-muted">{r.city} · {r.product}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <TrustLedger />
 
         <section id="timeline" className="kd-section bg-sage">
           <div className="kd-container">

@@ -9,7 +9,6 @@ import { useLocale } from "@/i18n/locale-context";
 import { localePath } from "@/i18n/locale";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
-import { RatingRow } from "@/components/ui/Stars";
 import { useCartStore } from "@/store/useCartStore";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -40,7 +39,7 @@ export function ProductCard({ product }: { product: Product }) {
         </span>
       </Link>
       <div className="flex flex-1 flex-col p-5">
-        <RatingRow rating={product.rating} count={product.reviewCount} className="mb-3" />
+        <p className="mb-3 text-xs font-bold text-brand">{ui.priceLock}</p>
         <h3 className="mb-2 text-lg font-bold leading-7 text-brand-dark">
           <Link href={localePath(`/products/${product.slug}`, locale)}>{product.cardHeading}</Link>
         </h3>

@@ -45,6 +45,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <span className="hidden text-end text-[11px] font-bold leading-4 text-leaf xl:block">{ui.deskChip}</span>
           <LanguageSwitch />
           <a
             href={whatsappLink(ui.whatsappMessage)}

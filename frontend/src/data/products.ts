@@ -32,8 +32,6 @@ export type Product = {
   nameEn: string;
   latinSubtitle: string;
   category: string;
-  rating: number;
-  reviewCount: number;
   cardHeading: string;
   cardSubheading: string;
   scarcityBadge: string;
@@ -75,14 +73,12 @@ const lumba: Product = {
   slug: "kenidoux-lumba",
   nameAr: "كينيدو لومبا",
   nameEn: "Kinédoux Lumba™",
-  latinSubtitle: "Kinédoux Lumba™ — Ceinture de Décompression Lombaire",
-  category: "الأكثر طلباً — راحة أسفل الظهر",
-  rating: 4.9,
-  reviewCount: 3,
+  latinSubtitle: "Kinédoux Lumba™ — Ceinture de soutien lombaire à air",
+  category: "راحة أسفل الظهر",
   cardHeading: "كينيدو لومبا — حزام أسفل الظهر",
   cardSubheading:
     "دعم وتمدد خفيف بعد السياقة، الجلسة الطويلة أو الوقوف. تنتفخ الأعمدة الهوائية بضغطات بسيطة، وأنت جالس أو سايق.",
-  scarcityBadge: "توصيل مجاني 24–48 ساعة من الدار البيضاء · الخلاص عند الاستلام",
+  scarcityBadge: "توصيل مجاني بعد التأكيد · الخلاص نقداً عند الباب",
   scarcityShort: "توصيل فابور",
   stock: 24,
   viewers: 0,
@@ -99,6 +95,7 @@ const lumba: Product = {
       price: 499,
       compareAt: 499,
       badge: "توصيل مجاني",
+      isDefault: true,
     },
     {
       id: "lumba-2",
@@ -107,8 +104,7 @@ const lumba: Product = {
       units: 2,
       price: 849,
       compareAt: 998,
-      badge: "الأكثر طلباً",
-      isDefault: true,
+      badge: "هدية",
     },
     {
       id: "lumba-3",
@@ -200,22 +196,20 @@ const lumba: Product = {
   ],
   crossSellPitches: {
     "kenidoux-posta": "أضف الحزام الهوائي لأسفل الظهر بنفس الكولية",
-    "kenidoux-calma": "أضف الحزام الهوائي الأكثر طلباً لراحة أسفل الظهر",
+    "kenidoux-calma": "أضف حزام أسفل الظهر مع نفس الكولية",
   },
   gallery: gallery("kenidoux-lumba"),
   image: IMAGES.products["kenidoux-lumba"].main,
   metaDescription:
-    "كينيدو لومبا — الحزام الهوائي لراحة أسفل الظهر. توصيل مجاني لجميع مدن المغرب والخلاص عند الاستلام بعد فحص الكولية.",
+    "كينيدو لومبا — الحزام الهوائي لراحة أسفل الظهر. توصيل مجاني، تأكيد من الدار البيضاء، والخلاص نقداً عند الباب.",
 };
 
 const posta: Product = {
   slug: "kenidoux-posta",
   nameAr: "كينيدو بوسطا",
   nameEn: "Kinédoux Posta™",
-  latinSubtitle: "Kinédoux Posta™ — Pack Posture Intelligente & Nuque",
+  latinSubtitle: "Kinédoux Posta™ — Rappel de posture et coussin de nuque",
   category: "وقفة خفيفة وراحة الرقبة",
-  rating: 4.8,
-  reviewCount: 1,
   cardHeading: "كينيدو بوسطا — وقفة ووسادة رقبة",
   cardSubheading:
     "منبّه اهتزاز لطيف بالنهار + وسادة تمدد للرقبة بالعشية. وقف بثقة، بلا أحزمة قاصحة تحت الإبط.",
@@ -236,6 +230,7 @@ const posta: Product = {
       price: 379,
       compareAt: 379,
       badge: "توصيل مجاني",
+      isDefault: true,
     },
     {
       id: "posta-2",
@@ -244,8 +239,7 @@ const posta: Product = {
       units: 2,
       price: 649,
       compareAt: 758,
-      badge: "الأكثر طلباً",
-      isDefault: true,
+      badge: "هدية",
     },
     {
       id: "posta-3",
@@ -349,14 +343,12 @@ const calma: Product = {
   slug: "kenidoux-calma",
   nameAr: "كينيدو كالما",
   nameEn: "Kinédoux Calma™",
-  latinSubtitle: "Kinédoux Calma™ — Ventouse Thermique Intelligente",
+  latinSubtitle: "Kinédoux Calma™ — Coupes chaudes pour les épaules",
   category: "طقس الاسترخاء المسائي",
-  rating: 4.9,
-  reviewCount: 2,
   cardHeading: "كينيدو كالما — كاسات دافئة بلا جرح",
   cardSubheading:
     "النسخة العصرية ديال الكاسات: دفء مريح وشفط ناعم لكتافك وظهرك فـ 15 دقيقة، بلا نار وبلا فوضى.",
-  scarcityBadge: "إضافة مفضلة مع لومبا: نفس الكولية، بلا توصيل زايد",
+  scarcityBadge: "كتزاد مع لومبا فنفس الكولية، بلا توصيل زايد",
   scarcityShort: "بلا جرح",
   stock: 24,
   viewers: 0,
@@ -373,6 +365,7 @@ const calma: Product = {
       price: 349,
       compareAt: 349,
       badge: "توصيل مجاني",
+      isDefault: true,
     },
     {
       id: "calma-2",
@@ -381,8 +374,7 @@ const calma: Product = {
       units: 2,
       price: 599,
       compareAt: 698,
-      badge: "الأكثر طلباً",
-      isDefault: true,
+      badge: "هدية",
     },
     {
       id: "calma-3",

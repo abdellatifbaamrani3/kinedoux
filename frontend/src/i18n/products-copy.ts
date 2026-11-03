@@ -5,7 +5,7 @@ import { uiCopy } from "./ui";
 import { deepMerge } from "./merge";
 
 const free = { fr: "Livraison offerte", en: "Free delivery" };
-const popular = { fr: "Le plus demandé", en: "Most popular" };
+const popular = { fr: "Cadeau", en: "Gift" };
 const family = { fr: "Offre famille", en: "Family offer" };
 const kitBadge = { fr: "Pack complet", en: "Full kit" };
 
@@ -16,10 +16,10 @@ function offers(locale: "fr" | "en", rows: Array<{ title: string; subtitle: stri
 const FR = {
   "kenidoux-lumba": {
     nameAr: "Kinédoux Lumba",
-    category: "Le plus demandé — confort du bas du dos",
+    category: "Confort du bas du dos",
     cardHeading: "Kinédoux Lumba — ceinture du bas du dos",
     cardSubheading: "Soutien léger après la conduite, une longue position assise ou la station debout. Les colonnes d’air se gonflent en quelques pressions, assis ou au volant.",
-    scarcityBadge: "Livraison offerte en 24–48 h depuis Casablanca · paiement à la livraison",
+    scarcityBadge: "Livraison offerte après confirmation · paiement à la porte",
     scarcityShort: free.fr,
     crossSellNote: "au lieu de 499 DH",
     offers: offers("fr", [
@@ -74,16 +74,16 @@ const FR = {
     comparisonOriginal: ["Matière qui garde l’air", "Guide en darija et en français", "Échange offert sous 14 jours", "Rallonge de 70 à 130 cm", "Suivi depuis Casablanca"],
     crossSellPitches: {
       "kenidoux-posta": "Ajoutez la ceinture à air pour le bas du dos dans le même colis",
-      "kenidoux-calma": "Ajoutez la ceinture la plus demandée pour le bas du dos",
+      "kenidoux-calma": "Ajoutez la ceinture du bas du dos dans le même colis",
     },
-    metaDescription: "Kinédoux Lumba — ceinture à air pour le bas du dos. Livraison offerte au Maroc et paiement après ouverture du colis.",
+    metaDescription: "Kinédoux Lumba — ceinture à air pour le bas du dos. Livraison offerte, confirmation depuis Casablanca, paiement à la porte.",
   },
   "kenidoux-posta": {
     nameAr: "Kinédoux Posta",
     category: "Posture légère et confort de la nuque",
     cardHeading: "Kinédoux Posta — posture et nuque",
     cardSubheading: "Un rappel doux quand vous vous penchez devant l’écran, et un moment de nuque le soir. Léger, sans sangle dure.",
-    scarcityBadge: "Livraison offerte en 24–48 h depuis Casablanca · paiement à la livraison",
+    scarcityBadge: "Livraison offerte après confirmation · paiement à la porte",
     scarcityShort: free.fr,
     crossSellNote: "au lieu de 379 DH",
     offers: offers("fr", [
@@ -211,10 +211,10 @@ const FR = {
 const EN = {
   "kenidoux-lumba": {
     nameAr: "Kinédoux Lumba",
-    category: "Most asked for — lower-back comfort",
+    category: "Lower-back comfort",
     cardHeading: "Kinédoux Lumba — lower-back belt",
     cardSubheading: "Light support after driving, long sitting, or standing. The air columns inflate with a few pumps, while you sit or drive.",
-    scarcityBadge: "Free delivery in 24–48 h from Casablanca · cash on delivery",
+    scarcityBadge: "Free delivery after confirmation · pay at the door",
     scarcityShort: free.en,
     crossSellNote: "instead of 499 DH",
     offers: offers("en", [
@@ -269,16 +269,16 @@ const EN = {
     comparisonOriginal: ["Material that holds the air", "Guide in Darija and French", "Free exchange within 14 days", "Extension from 70 to 130 cm", "Follow-up from Casablanca"],
     crossSellPitches: {
       "kenidoux-posta": "Add the air belt for the lower back in the same box",
-      "kenidoux-calma": "Add the most-requested belt for lower-back comfort",
+      "kenidoux-calma": "Add the lower-back belt in the same box",
     },
-    metaDescription: "Kinédoux Lumba — air belt for lower-back comfort. Free delivery in Morocco and payment after you open the box.",
+    metaDescription: "Kinédoux Lumba — air belt for lower-back comfort. Free delivery, confirmation from Casablanca, pay at the door.",
   },
   "kenidoux-posta": {
     nameAr: "Kinédoux Posta",
     category: "Light posture and neck comfort",
     cardHeading: "Kinédoux Posta — posture",
     cardSubheading: "A soft reminder when you slump in front of a screen. Light, with no hard strap.",
-    scarcityBadge: "Free delivery in 24–48 h from Casablanca · cash on delivery",
+    scarcityBadge: "Free delivery after confirmation · pay at the door",
     scarcityShort: free.en,
     crossSellNote: "instead of 379 DH",
     offers: offers("en", [

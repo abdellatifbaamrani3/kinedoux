@@ -12,7 +12,7 @@ import { TrustBar } from "@/components/home/TrustBar";
 import { ProductGrid } from "@/components/home/ProductGrid";
 import { QuickDiagnosis } from "@/components/home/QuickDiagnosis";
 import { HomeComparison } from "@/components/home/HomeComparison";
-import { ReviewsSection } from "@/components/home/ReviewsSection";
+import { TrustLedger } from "@/components/home/TrustLedger";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SplitSection } from "@/components/ui/SplitSection";
@@ -118,7 +118,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </SplitSection>
 
       <HomeComparison />
-      <ReviewsSection />
+      <TrustLedger />
 
       <section className="kd-section bg-alabaster">
         <div className="kd-container">

@@ -8,7 +8,6 @@ import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { defaultOffer, type Product } from "@/data/products";
 import { trackEvent } from "@/lib/tracking";
-import { RatingRow } from "@/components/ui/Stars";
 import { ProductGallery } from "./ProductGallery";
 import { OfferTierSelector } from "./OfferTierSelector";
 import { StickyAddToCart } from "./StickyAddToCart";
@@ -68,9 +67,7 @@ export function ProductOfferShell({
               <h1 className="mt-3 text-3xl font-bold text-brand-dark md:text-4xl">{product.nameAr}</h1>
               <p className="mt-2 font-sans text-sm font-semibold tracking-wide text-muted">{product.latinSubtitle}</p>
               <p className="mt-3 text-base leading-8 text-muted">{product.cardSubheading}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                <RatingRow rating={product.rating} count={product.reviewCount} />
-              </div>
+              <p className="mt-3 text-sm font-bold text-brand">{ui.priceLock}</p>
 
               <ul className="mt-6 space-y-3">
                 {product.bonuses.map((b) => (

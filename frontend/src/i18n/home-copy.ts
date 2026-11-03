@@ -5,7 +5,6 @@ import {
   CTA_TRUST,
   FAQS,
   HOME,
-  REVIEWS,
 } from "@/data/content";
 
 import type { Locale } from "./locale";
@@ -16,14 +15,14 @@ const HOME_FR = {
     pill: "Kinédoux · Casablanca · marque spécialisée",
     title: "Votre dos travaille avec vous toute la journée. Donnez-lui un soutien clair, depuis chez vous.",
     subtitle:
-      "Kinédoux Lumba : ceinture à air pour le bas du dos, avec un guide de 10 minutes. Livraison offerte, confirmation depuis Casa, et vous payez quand vous ouvrez le colis.",
+      "Kinédoux Lumba : ceinture à air pour le bas du dos, avec un guide de 10 minutes. Livraison offerte, un appel de Casa avant l’envoi, et le prix de la page est le prix à la porte.",
     cta: "Commander Lumba — 499 DH, livraison incluse",
     secondaryCta: "Voir toute la ligne",
     proofChips: [
-      "Vous ouvrez le colis avant de payer",
-      "Livraison offerte en 24–48 h",
+      "Le prix de la page est le prix à la porte",
+      "Appel de Casa avant l’envoi",
+      "24–48 h après confirmation dans les grandes villes",
       "Échange offert sous 14 jours",
-      "Confirmation depuis Casablanca",
     ],
   },
   struggle: {
@@ -113,8 +112,8 @@ const HOME_FR = {
     yes: [
       "Un soutien léger à la maison ou en voiture",
       "Un guide en darija et en français",
-      "Vous ouvrez le colis avant de payer",
-      "Échange offert sous 14 jours si la taille ne va pas",
+      "Le prix de la page est le prix à la porte",
+      "Échange offert sous 14 jours si la taille ne va pas, ou si le colis arrive incomplet ou abîmé",
     ],
     no: [
       "Ce n’est pas un traitement et ça ne remplace pas un médecin",
@@ -123,17 +122,17 @@ const HOME_FR = {
     ],
     timeline: [
       { when: "Le jour de la commande", what: "Confirmation depuis Casablanca avant l’envoi" },
-      { when: "24–48 heures", what: "Le colis arrive, vous l’ouvrez avant de payer" },
-      { when: "14 jours", what: "Temps d’essai. Si ça ne va pas, on échange" },
+      { when: "Après confirmation", what: "24–48 h dans les grandes villes. Ailleurs, le jour est fixé pendant l’appel" },
+      { when: "14 jours", what: "Échange si la taille ne va pas, ou si le colis arrive incomplet ou abîmé" },
     ],
   },
   guarantee: {
     title: "Essayez Kinédoux 14 jours. Si ça ne va pas, on échange.",
-    body: "On appelle depuis Casablanca avant la livraison. Vous ouvrez le colis devant le livreur et vous payez en espèces. Si la taille ne convient pas, l’échange est offert sous 14 jours sur WhatsApp.",
+    body: "On appelle depuis Casablanca avant l’envoi et on vous dit le jour de livraison. Vous payez en espèces quand le colis est dans vos mains. Demandez au livreur de vous montrer le produit et le guide. Si le transporteur de votre ville ne peut pas attendre, on vous le dit à l’appel, et l’échange offert sous 14 jours reste valable.",
     points: [
-      "Vous ouvrez le colis devant le livreur avant de payer",
+      "Le prix de la page est le prix à la porte, sans frais en plus",
       "Confirmation depuis Casablanca avant l’envoi",
-      "Échange offert sous 14 jours sur WhatsApp",
+      "Échange offert sous 14 jours : taille, pièce manquante, ou arrivée abîmée",
     ],
   },
   causes: {
@@ -147,16 +146,26 @@ const HOME_FR = {
     ],
     footer: "Chaque produit fait une chose bien. Le pack complet couvre les trois.",
   },
-  reviews: {
-    eyebrow: "Avis clients",
-    title: "Avis écrits depuis les villes du Maroc",
-    note: "Casa, Rabat, Tanger, Marrakech, Fès et Agadir. Même prix, même livraison, même confirmation depuis Casablanca.",
+  trustLedger: {
+    eyebrow: "Comment on gagne la confiance",
+    title: "Le prix, l’appel et la porte — écrits avant que vous commandiez",
+    note: "On n’affiche pas un 4,9 ni des noms de villes sans commandes livrées. Après la livraison, on publie le prénom, la ville et le produit seulement si le client nous l’écrit lui-même sur WhatsApp.",
+    rules: [
+      { title: "Le prix de la page est le prix à la porte", body: "L’offre que vous choisissez inclut la livraison. Aucun frais en plus à l’appel ni avec le livreur." },
+      { title: "On appelle de Casablanca avant l’envoi", body: "Le bureau répond tous les jours de 09:00 à 21:00. Sans réponse, le colis ne part pas. Pendant l’appel, on vous dit le jour de livraison selon votre ville." },
+      { title: "Vous payez en espèces quand le colis est dans vos mains", body: "Demandez au livreur de vous montrer le produit et le guide. Si le transporteur de votre ville ne peut pas attendre l’ouverture, on vous le dit à l’appel, et l’échange offert sous 14 jours reste valable." },
+      { title: "Échange offert sous 14 jours après la réception", body: "Taille incorrecte, pièce manquante, ou produit abîmé à l’arrivée. Écrivez-nous sur WhatsApp avec le numéro de commande. On n’échange pas sur une promesse médicale." },
+    ],
+    deskEyebrow: "Bureau Kinédoux",
+    deskTitle: "Casablanca · le même numéro qui va vous appeler",
+    deskBody: "Taille, suivi ou échange : on répond depuis Casa, en darija ou en français. L’adresse complète se prend à l’appel, pas sur la page.",
+    deskHours: "Lundi–dimanche · 09:00–21:00",
   },
   finalCta: {
     title: "Votre dos travaille avec vous. Donnez-lui un soutien clair aujourd’hui.",
-    sub: "Livraison offerte, confirmation depuis Casablanca, et vous payez quand vous ouvrez le colis.",
+    sub: "Livraison offerte, confirmation depuis Casablanca, et le prix de la page est le prix à la porte.",
     cta: "Voir les produits Kinédoux",
-    reassurance: "Échange offert sous 14 jours · vous ouvrez avant de payer",
+    reassurance: "Échange offert sous 14 jours · aucun frais en plus",
   },
 };
 
@@ -165,14 +174,14 @@ const HOME_EN = {
     pill: "Kinédoux · Casablanca · a specialist brand",
     title: "Your back works with you all day. Give it clear support, from home.",
     subtitle:
-      "Kinédoux Lumba: an air belt for the lower back, with a 10-minute guide. Free delivery, a call from Casablanca, and you pay when you open the box.",
+      "Kinédoux Lumba: an air belt for the lower back, with a 10-minute guide. Free delivery, a call from Casablanca before shipping, and the price on the page is the price at the door.",
     cta: "Order Lumba — 499 DH, delivery included",
     secondaryCta: "See the full line",
     proofChips: [
-      "Open the box before you pay",
-      "Free delivery in 24–48 hours",
+      "The price on the page is the price at the door",
+      "A call from Casablanca before shipping",
+      "24–48 hours after confirmation in major cities",
       "Free exchange within 14 days",
-      "Confirmed from Casablanca",
     ],
   },
   struggle: {
@@ -262,8 +271,8 @@ const HOME_EN = {
     yes: [
       "Light support you can use at home or in the car",
       "A guide in Darija and French",
-      "You open the box before you pay",
-      "Free exchange within 14 days if the size is wrong",
+      "The price on the page is the price at the door",
+      "Free exchange within 14 days if the size is wrong, or the parcel arrives incomplete or damaged",
     ],
     no: [
       "It does not treat and it does not replace a doctor",
@@ -272,17 +281,17 @@ const HOME_EN = {
     ],
     timeline: [
       { when: "Order day", what: "A confirmation call from Casablanca before shipping" },
-      { when: "24–48 hours", what: "The box arrives and you open it before you pay" },
-      { when: "14 days", what: "Trial time. If it doesn’t fit, we exchange it" },
+      { when: "After confirmation", what: "24–48 hours in major cities. Elsewhere, the day is set on the call" },
+      { when: "14 days", what: "Exchange if the size is wrong, or the parcel arrives incomplete or damaged" },
     ],
   },
   guarantee: {
     title: "Try Kinédoux for 14 days. If it doesn’t fit, we exchange it.",
-    body: "We call from Casablanca before delivery. You open the box in front of the courier and pay cash. If the size is wrong, the exchange is free within 14 days on WhatsApp.",
+    body: "We call from Casablanca before shipping and tell you the delivery day. You pay cash when the parcel is in your hands. Ask the courier to show you the product and the guide. If your city’s courier cannot wait, we say so on the call, and the free 14-day exchange still stands.",
     points: [
-      "Open the box in front of the courier before you pay",
+      "The price on the page is the price at the door, with no extra fee",
       "Confirmation from Casablanca before it ships",
-      "Free exchange within 14 days on WhatsApp",
+      "Free 14-day exchange: size, a missing piece, or damage on arrival",
     ],
   },
   causes: {
@@ -296,66 +305,58 @@ const HOME_EN = {
     ],
     footer: "Each product does one job well. The full kit covers all three.",
   },
-  reviews: {
-    eyebrow: "Customer notes",
-    title: "Written notes from cities across Morocco",
-    note: "Casablanca, Rabat, Tangier, Marrakech, Fes, and Agadir. Same price, same delivery, same confirmation from Casablanca.",
+  trustLedger: {
+    eyebrow: "How we earn trust",
+    title: "The price, the call, and the door — written before you order",
+    note: "We do not show a 4.9 or city names without delivered orders. After delivery, we publish a first name, the city, and the product only if the buyer writes it to us on WhatsApp.",
+    rules: [
+      { title: "The price on the page is the price at the door", body: "The offer you choose includes delivery. No extra fee on the call or with the courier." },
+      { title: "We call from Casablanca before shipping", body: "The desk answers every day from 09:00 to 21:00. If you don’t answer, the parcel does not leave. On that call we tell you the delivery day for your city." },
+      { title: "You pay cash when the parcel is in your hands", body: "Ask the courier to show you the product and the guide. If your city’s courier cannot wait for you to open it, we say so on the call, and the free 14-day exchange still stands." },
+      { title: "Free exchange within 14 days of delivery", body: "Wrong size, a missing piece, or damage on arrival. Message us on WhatsApp with the order number. We do not exchange against a medical promise." },
+    ],
+    deskEyebrow: "Kinédoux desk",
+    deskTitle: "Casablanca · the same number that will call you",
+    deskBody: "Size, tracking, or an exchange: we answer from Casablanca. The full address is taken on the call, not on the page.",
+    deskHours: "Monday–Sunday · 09:00–21:00",
   },
   finalCta: {
     title: "Your back works with you. Give it clear support today.",
-    sub: "Free delivery, a call from Casablanca, and you pay when you open the box.",
+    sub: "Free delivery, a call from Casablanca, and the price on the page is the price at the door.",
     cta: "See Kinédoux products",
-    reassurance: "Free 14-day exchange · open the box before you pay",
+    reassurance: "Free 14-day exchange · no extra fee",
   },
 };
 
 const FAQ_FR = [
-  { q: "Puis-je ouvrir le colis avant de payer ?", a: "Oui. Le livreur attend que vous ouvriez le colis et voyiez le produit et le guide. Le paiement en espèces vient après, pas avant." },
+  { q: "Puis-je voir le produit avant de payer ?", a: "Vous payez en espèces quand le colis est dans vos mains. Demandez au livreur de vous montrer le produit et le guide. Si le transporteur de votre ville ne permet pas l’ouverture, on vous le dit lors de l’appel de Casablanca, et l’échange offert sous 14 jours reste valable." },
   { q: "Qui m’appelle, et pourquoi ?", a: "L’équipe Kinédoux à Casablanca appelle pour confirmer le nom, la ville, l’adresse et l’horaire. La commande ne part pas tant que vous n’avez pas répondu." },
-  { q: "Combien de temps pour la livraison, et combien ça coûte ?", a: "La livraison est offerte sur toutes les offres. 24 h pour les grandes villes, 24 à 48 h pour le reste du Maroc." },
+  { q: "Combien de temps pour la livraison, et combien ça coûte ?", a: "La livraison est offerte sur toutes les offres, après votre réponse à l’appel. 24 à 48 h pour Casablanca, Rabat, Tanger, Kénitra, Marrakech, Fès et Agadir. Pour les autres villes, on fixe le jour pendant l’appel, en général entre 2 et 5 jours." },
   { q: "Si la taille ne va pas, comment échanger ?", a: "Chaque ceinture Lumba arrive avec une rallonge d’environ 70 à 130 cm. En plus, échange offert pendant 14 jours sur WhatsApp." },
   { q: "Est-ce un médicament ou un appareil médical ?", a: "Non. Kinédoux vend du confort quotidien et un soutien mécanique. Ce n’est pas un traitement et ça ne remplace pas un médecin." },
   { q: "Qui doit demander un avis médical avant ?", a: "Demandez un médecin en cas de grossesse, de fracture récente, d’opération récente de la colonne, ou d’un problème de peau à l’endroit d’utilisation." },
 ];
 
 const FAQ_EN = [
-  { q: "Can I open the box before I pay?", a: "Yes. The courier waits while you open the box and see the product and the guide. You pay cash after that, not before." },
+  { q: "Can I see the product before I pay?", a: "You pay cash when the parcel is in your hands. Ask the courier to show you the product and the guide. If your city’s courier does not allow opening, we say so on the Casablanca call, and the free 14-day exchange still stands." },
   { q: "Who calls me, and why?", a: "The Kinédoux team in Casablanca calls to confirm your name, city, address, and delivery time. The order does not ship until you answer." },
-  { q: "How long is delivery, and what does it cost?", a: "Delivery is free on every offer. 24 hours for major cities, 24 to 48 hours for the rest of Morocco." },
+  { q: "How long is delivery, and what does it cost?", a: "Delivery is free on every offer, after you answer the call. 24 to 48 hours for Casablanca, Rabat, Tangier, Kenitra, Marrakech, Fes, and Agadir. For other cities, we set the day on the call, usually 2 to 5 days." },
   { q: "If the size is wrong, how do I exchange it?", a: "Every Lumba belt comes with an extension for about 70 to 130 cm. On top of that, exchange is free for 14 days on WhatsApp." },
   { q: "Is this a medicine or a medical device?", a: "No. Kinédoux sells daily comfort and mechanical support. It does not treat and it does not replace a doctor." },
   { q: "Who should ask a doctor first?", a: "Ask a doctor if you are pregnant, have a recent fracture, had recent spine surgery, or have a skin problem where you would use it." },
 ];
 
-const REVIEW_FR = [
-  { city: "Casablanca (Maârif)", product: "Kinédoux Lumba", body: "Je passe 7 à 8 heures par jour en voiture pour le travail. Le soir, le bas du dos était lourd. Depuis Lumba, je le mets un moment en rentrant et le repos est plus simple. J’ai pris l’offre de deux et donné le second à mon père." },
-  { city: "Rabat (Agdal)", product: "Kinédoux Posta", body: "Je travaille toute la journée devant l’ordinateur et je finissais penchée. Posta n’est pas une sangle dure : une petite vibration me rappelle de me redresser. La livraison est arrivée le lendemain à Rabat." },
-  { city: "Tanger", product: "Kinédoux Calma + Lumba", body: "Le colis est propre, ça ne ressemble pas à un produit du marché. J’ai ajouté Calma, je l’utilise sur les épaules après le travail. En 10 minutes les épaules se relâchent." },
-  { city: "Marrakech", product: "Offre deux ceintures Lumba", body: "Je l’ai pris pour mes parents. Ce qui leur a plu, c’est la simplicité : quelques pressions de la pompe, et la rallonge de taille est dans la boîte." },
-  { city: "Fès", product: "Kinédoux Calma", body: "J’ai peur des ventouses à la lame. Calma donne le confort des ventouses avec une chaleur douce, sans coupure et sans douleur. Je le conseille à toute femme fatiguée par le travail et la station debout." },
-  { city: "Agadir", product: "Pack complet", body: "Le livreur m’a laissé voir le colis, avec le guide en darija et en français. Lumba m’accompagne sur les longs trajets entre Agadir et Casa." },
-];
-
-const REVIEW_EN = [
-  { city: "Casablanca (Maarif)", product: "Kinédoux Lumba", body: "I spend 7 to 8 hours a day in the car for work. By evening my lower back felt heavy. Since Lumba, I use it for a short while when I get home. I took the two-belt offer and gave the second one to my father." },
-  { city: "Rabat (Agdal)", product: "Kinédoux Posta", body: "I work all day at a computer and I had started to slump. Posta is not a hard strap: a small vibration reminds me to sit up. It arrived in Rabat the next day." },
-  { city: "Tangier", product: "Kinédoux Calma + Lumba", body: "The parcel looks tidy, not like a market product. I added Calma and use it on my shoulders after work. In about 10 minutes the shoulders ease." },
-  { city: "Marrakech", product: "Two Lumba belts", body: "I bought it for my parents. What they liked is how simple it is: a few pumps, and the size extension is in the box." },
-  { city: "Fes", product: "Kinédoux Calma", body: "I am afraid of blade cupping. Calma gives the comfort of cups with gentle warmth, no cut and no pain. I recommend it to any woman tired from work and standing." },
-  { city: "Agadir", product: "Full kit", body: "The courier let me see the box, with the guide in Darija and French. Lumba now comes with me on the long drives between Agadir and Casablanca." },
-];
-
 const CTA_FR = [
-  "✔ Vous ouvrez le colis avant de payer",
-  "✔ Livraison offerte en 24–48 h",
+  "✔ Le prix de la page est le prix à la porte",
+  "✔ 24–48 h après confirmation dans les grandes villes",
   "✔ Échange offert sous 14 jours",
-  "✔ Confirmation depuis Casablanca",
+  "✔ Appel de Casablanca avant l’envoi",
 ];
 const CTA_EN = [
-  "✔ Open the box before you pay",
-  "✔ Free delivery in 24–48 hours",
+  "✔ The price on the page is the price at the door",
+  "✔ 24–48 hours after confirmation in major cities",
   "✔ Free exchange within 14 days",
-  "✔ Confirmed from Casablanca",
+  "✔ A call from Casablanca before shipping",
 ];
 const FAKE_FR = [
   "Matière fine qui se dégonfle",
@@ -392,8 +393,8 @@ const ABOUT_FR = {
     },
     {
       title: "Comment on gagne la confiance",
-      body: "Kinédoux n’est pas une boutique de pubs bon marché. On s’appuie sur un prix clair, l’ouverture du colis avant le paiement, et un vrai guide.",
-      bullets: ["Suivi depuis Casablanca sur WhatsApp", "Livraison dans les villes du Maroc en 24–48 h", "Échange offert sous 14 jours", "Vous ouvrez avant de payer"],
+      body: "Kinédoux n’est pas une boutique de pubs bon marché. On s’appuie sur un prix clair, un appel avant l’envoi, et un vrai guide.",
+      bullets: ["Suivi depuis Casablanca sur WhatsApp", "24–48 h après confirmation dans les grandes villes", "Échange offert sous 14 jours", "Le prix de la page est le prix à la porte"],
     },
   ],
 };
@@ -418,8 +419,8 @@ const ABOUT_EN = {
     },
     {
       title: "How we earn trust",
-      body: "Kinédoux is not a cheap-ad shop. We rely on a clear price, opening the box before payment, and a real guide.",
-      bullets: ["Follow-up from Casablanca on WhatsApp", "Delivery across Morocco in 24–48 hours", "Free exchange within 14 days", "You open the box before you pay"],
+      body: "Kinédoux is not a cheap-ad shop. We rely on a clear price, a call before shipping, and a real guide.",
+      bullets: ["Follow-up from Casablanca on WhatsApp", "24–48 hours after confirmation in major cities", "Free exchange within 14 days", "The price on the page is the price at the door"],
     },
   ],
 };
@@ -454,11 +455,6 @@ export function homeCopy(locale: Locale) {
 export function faqCopy(locale: Locale) {
   if (locale === "ar") return FAQS;
   return deepMerge(FAQS, locale === "fr" ? FAQ_FR : FAQ_EN);
-}
-
-export function reviewCopy(locale: Locale) {
-  if (locale === "ar") return REVIEWS;
-  return deepMerge(REVIEWS, locale === "fr" ? REVIEW_FR : REVIEW_EN);
 }
 
 export function comparisonFake(locale: Locale) {
