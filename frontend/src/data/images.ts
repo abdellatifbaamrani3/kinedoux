@@ -20,17 +20,17 @@ const set = (key: "lumba" | "posta" | "calma"): ProductImageSet => ({
 });
 
 export const IMAGES = {
-  hero: "/images/hero-kenidoux-collection.webp",
+  hero: "/images/hero-kenidoux-collection-2.webp",
   bundle: "/images/bundle-kit.svg",
   home: {
     struggle: "/images/home-section-1.webp",
     compare: "/images/home-section-2.svg",
-    unboxing: "/images/about-unbox.webp",
+    unboxing: "/images/about-unbox-2.webp",
   },
   about: {
-    hub: "/images/about-hub.webp",
-    pillars: "/images/about-pillars.webp",
-    trust: "/images/about-trust.webp",
+    hub: "/images/about-hub-2.webp",
+    pillars: "/images/about-pillars-2.webp",
+    trust: "/images/about-trust-2.webp",
   },
   ugc: ["/images/ugc-1.svg", "/images/ugc-2.svg", "/images/ugc-3.svg"],
   badges: {
@@ -40,10 +40,11 @@ export const IMAGES = {
   products: {
     "kenidoux-lumba": {
       ...set("lumba"),
-      mechanism: "/images/lumba/how.webp",
-      lifestyle: "/images/lumba/drive.webp",
-      kit: "/images/lumba/kit.webp",
-      sections: ["/images/lumba/salon.webp", "/images/lumba/how.webp", "/images/lumba/kit.webp"],
+      main: "/images/lumba/main-2.webp",
+      mechanism: "/images/lumba/how-2.webp",
+      lifestyle: "/images/lumba/drive-2.webp",
+      kit: "/images/lumba/kit-2.webp",
+      sections: ["/images/lumba/salon-2.webp", "/images/lumba/how-2.webp", "/images/lumba/kit-2.webp"],
     },
     "kenidoux-posta": {
       ...set("posta"),
