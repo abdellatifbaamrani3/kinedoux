@@ -10,14 +10,23 @@ import { localizeProduct } from "@/i18n/products-copy";
 import { BrandImage } from "@/components/ui/BrandImage";
 import { useCartStore } from "@/store/useCartStore";
 
+export function OrderKitButton({ className, label }: { className?: string; label: string }) {
+  const locale = useLocale();
+  const buyNow = useCartStore((s) => s.buyNow);
+  const kit = fullKitOffer();
+  const product = localizeProduct(kit.product, locale);
+  const offer = product.offers.find((item) => item.id === kit.offer.id) ?? kit.offer;
+  return (
+    <button type="button" className={className} onClick={() => buyNow(product, offer)}>
+      {label}
+    </button>
+  );
+}
+
 export function BundleBanner() {
   const locale = useLocale();
   const HOME = homeCopy(locale);
   const ui = uiCopy(locale);
-  const add = useCartStore((s) => s.addOfferAndOpenCart);
-  const kit = fullKitOffer();
-  const product = localizeProduct(kit.product, locale);
-  const offer = product.offers.find((item) => item.id === kit.offer.id) ?? kit.offer;
 
   return (
     <section className="kd-container py-16">
@@ -34,9 +43,7 @@ export function BundleBanner() {
                 {ui.bundleSave(money(HOME.bundle.save, locale))}
               </span>
             </p>
-            <button type="button" className="kd-cta mt-6 sm:w-auto" onClick={() => add(product, offer)}>
-              {HOME.bundle.cta}
-            </button>
+            <OrderKitButton className="kd-cta mt-6 sm:w-auto" label={HOME.bundle.cta} />
           </div>
           <BrandImage src={IMAGES.bundle} alt={ui.bundleAlt} className="aspect-[4/3] rounded-none border-0" />
         </div>

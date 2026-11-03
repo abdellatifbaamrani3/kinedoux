@@ -20,7 +20,7 @@ export async function Hero() {
           <h1 className="kd-h1 mt-3 text-balance">{HOME.hero.title}</h1>
           <p className="mt-5 max-w-[38rem] text-base leading-8 text-muted md:text-lg">{HOME.hero.subtitle}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href={localePath("/products/kenidoux-lumba", locale)} className="kd-cta sm:w-auto">
+            <Link href={localePath("/products/kenidoux-lumba#offer", locale)} className="kd-cta sm:w-auto">
               {HOME.hero.cta}
             </Link>
             <Link href={localePath("/collections", locale)} className="kd-cta-secondary">

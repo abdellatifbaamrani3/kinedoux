@@ -16,6 +16,7 @@ import { TrustLedger } from "@/components/home/TrustLedger";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SplitSection } from "@/components/ui/SplitSection";
+import { OrderKitButton } from "@/components/home/BundleBanner";
 import { StickyMobileCta } from "@/components/layout/StickyMobileCta";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -72,9 +73,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="rounded-2xl bg-sage p-6 text-center ring-1 ring-brand/15 md:p-8">
             <h3 className="text-xl font-bold text-brand-dark">{HOME.bundle.title}</h3>
             <p className="mt-2 text-muted">{HOME.bundle.subtitle}</p>
-            <Link href={localePath("/collections", locale)} className="kd-cta mx-auto mt-5 sm:w-auto">
-              {HOME.bundle.cta}
-            </Link>
+            <OrderKitButton className="kd-cta mx-auto mt-5 sm:w-auto" label={HOME.bundle.cta} />
           </div>
         </div>
       </section>
@@ -179,14 +178,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="kd-container text-center">
           <h2 className="text-3xl font-bold text-white md:text-4xl">{HOME.finalCta.title}</h2>
           <p className="mx-auto mt-4 max-w-lg text-lg text-leaf/80">{HOME.finalCta.sub}</p>
-          <Link href={localePath("/collections", locale)} className="kd-cta mx-auto mt-8 sm:w-auto">
-            {HOME.finalCta.cta}
+          <Link href={localePath("/products/kenidoux-lumba#offer", locale)} className="kd-cta mx-auto mt-8 sm:w-auto">
+            {HOME.hero.cta}
           </Link>
           <p className="mt-5 text-sm text-leaf/70">{HOME.finalCta.reassurance}</p>
         </div>
       </section>
 
-      <StickyMobileCta href="#quiz" label={HOME.quiz.title} note={HOME.quiz.resultNote} />
+      <StickyMobileCta
+        href={localePath("/products/kenidoux-lumba#offer", locale)}
+        label={HOME.hero.cta}
+        note={HOME.finalCta.reassurance}
+      />
     </>
   );
 }

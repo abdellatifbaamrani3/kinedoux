@@ -30,8 +30,9 @@ export function ProductOfferShell({
   finalNote: string;
   trustPills: readonly string[];
 }) {
-  const add = useCartStore((s) => s.addOfferAndOpenCart);
+  const buyNow = useCartStore((s) => s.buyNow);
   const isCartOpen = useCartStore((s) => s.isCartOpen);
+  const isCheckoutOpen = useCartStore((s) => s.isCheckoutOpen);
   const locale = useLocale();
   const ui = uiCopy(locale);
   const [offer, setOffer] = useState(() => defaultOffer(product));
@@ -44,7 +45,7 @@ export function ProductOfferShell({
     });
   }, [product]);
 
-  const addSelected = () => add(product, offer);
+  const addSelected = () => buyNow(product, offer);
 
   return (
     <>
@@ -132,7 +133,7 @@ export function ProductOfferShell({
       </section>
 
       <div className="pb-[88px] lg:pb-0" />
-      {!isCartOpen ? <StickyAddToCart product={product} offer={offer} onAdd={addSelected} /> : null}
+      {!isCartOpen && !isCheckoutOpen ? <StickyAddToCart product={product} offer={offer} onAdd={addSelected} /> : null}
     </>
   );
 }

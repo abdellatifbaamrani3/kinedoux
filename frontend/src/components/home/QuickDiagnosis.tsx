@@ -137,7 +137,7 @@ export function QuickDiagnosis({
               <p className="mt-1 text-sm text-muted">{product.cardSubheading}</p>
               <p className="mt-3 font-bold text-brand-dark">{fromLabel} {money(product.price, locale)}</p>
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <Link href={localePath(`/products/${product.slug}`, locale)} className="kd-cta sm:w-auto">
+                <Link href={localePath(`/products/${product.slug}#offer`, locale)} className="kd-cta sm:w-auto">
                   {quiz.cta}
                 </Link>
                 <Link href={localePath("/collections", locale)} className="kd-cta-secondary">

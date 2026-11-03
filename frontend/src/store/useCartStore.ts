@@ -44,6 +44,7 @@ type CartState = {
   activeOrder: ActiveOrder | null;
   lastConfirmedOrder: ActiveOrder | null;
   addOfferAndOpenCart: (product: Product, offer: Offer) => void;
+  buyNow: (product: Product, offer: Offer) => void;
   addCrossSellItem: (product: Product) => void;
   setQty: (lineId: string, quantity: number) => void;
   removeItem: (lineId: string) => void;
@@ -159,6 +160,41 @@ export const useCartStore = create<CartState>()(
           value: item.price,
           contents: [{ id: product.slug, quantity: item.units, item_price: item.price, name: product.nameAr }],
         });
+      },
+
+      buyNow: (product, offer) => {
+        const id = lineId(product.slug, offer.id, false);
+        const includes = offer.includes ?? [product.slug];
+        const covered = new Set(includes);
+        const kept = get().items.filter((i) => i.isCrossSell && !covered.has(i.productSlug));
+        const main: CartItem = {
+          lineId: id,
+          productSlug: product.slug,
+          offerId: offer.id,
+          title: `${product.nameAr} — ${offer.title}`,
+          subtitle: offer.subtitle,
+          quantity: 1,
+          units: offer.units,
+          price: offer.price,
+          compareAtPrice: offer.compareAt,
+          image: product.image,
+          isCrossSell: false,
+          isUpsell: false,
+          includes,
+        };
+        const items = [main, ...kept];
+        set({
+          items,
+          isCartOpen: false,
+          isCheckoutOpen: true,
+          isMobileNavOpen: false,
+          reservedUntil: ensureTimer(get().reservedUntil),
+        });
+        trackEvent("AddToCart", {
+          value: offer.price,
+          contents: [{ id: product.slug, quantity: offer.units, item_price: offer.price, name: product.nameAr }],
+        });
+        trackEvent("InitiateCheckout", { value: cartValue(items), contents: contentsOf(items) });
       },
 
       addCrossSellItem: (product) => {

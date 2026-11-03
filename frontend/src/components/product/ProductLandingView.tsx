@@ -72,23 +72,16 @@ export async function ProductLandingView({ product: source }: { product: Product
               <div className="flex flex-col justify-between rounded-2xl bg-coral/10 p-6 ring-1 ring-coral/20 lg:p-8">
                 <div>
                   <p className="kd-kicker text-coral">{ui.problem}</p>
-                  <ul className="mt-5 space-y-4">
-                    {(emotional?.bullets ?? []).map((line) => (
-                      <li key={line} className="flex gap-3 text-sm text-muted">
-                        <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-coral" aria-hidden />
-                        {line}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="mt-4 text-base leading-8 text-brand-dark">{emotional?.body ?? product.heroHook.body}</p>
                 </div>
-                <p className="mt-6 text-sm font-bold text-coral">{emotional?.body}</p>
               </div>
               <div className="flex flex-col justify-between rounded-2xl bg-sage p-6 ring-1 ring-brand/10 lg:p-8">
                 <div>
                   <p className="kd-kicker">{ui.solution}</p>
                   <h3 className="mt-3 text-lg font-bold text-brand-dark">{science?.title ?? product.nameAr}</h3>
+                  <p className="mt-3 text-sm leading-7 text-muted">{science?.body}</p>
                   <ul className="mt-5 space-y-3">
-                    {product.bonuses.map((b) => (
+                    {(science?.bullets ?? []).map((b) => (
                       <li key={b} className="flex gap-3 text-sm text-muted">
                         <Check className="mt-0.5 h-5 w-5 shrink-0 text-brand" aria-hidden />
                         {b}
@@ -97,7 +90,7 @@ export async function ProductLandingView({ product: source }: { product: Product
                   </ul>
                 </div>
                 <a href="#offer" className="mt-8 inline-flex items-center gap-2 font-bold text-brand">
-                  {ui.chooseOffer}
+                  {ui.orderNow}
                 </a>
               </div>
             </div>
@@ -215,28 +208,6 @@ export async function ProductLandingView({ product: source }: { product: Product
           </div>
         </section>
 
-        <SplitSection
-          id="howto"
-          reverse
-          eyebrow={ui.atHome}
-          title={emotional?.title ?? product.nameAr}
-          imageSrc={emotional?.image ?? product.image}
-          imageAlt={product.nameAr}
-        >
-          <ol className="space-y-4">
-            {product.steps.map((s, i) => (
-              <li key={s.title} className="flex gap-3 text-base text-muted">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">
-                  {i + 1}
-                </span>
-                <span>
-                  <strong className="text-brand-dark">{s.title}.</strong> {s.body}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </SplitSection>
-
         <ConfirmationSection />
 
         <section id="causes" className="kd-section bg-brand-dark">
@@ -253,7 +224,7 @@ export async function ProductLandingView({ product: source }: { product: Product
                 return (
                   <Link
                     key={c.n}
-                    href={localePath(`/products/${c.slug}`, locale)}
+                    href={localePath(`/products/${c.slug}#offer`, locale)}
                     className={`rounded-2xl p-6 ${
                       active
                         ? "border-2 border-action bg-white/10"

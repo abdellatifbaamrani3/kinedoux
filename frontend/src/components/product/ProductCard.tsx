@@ -12,7 +12,7 @@ import { uiCopy } from "@/i18n/ui";
 import { useCartStore } from "@/store/useCartStore";
 
 export function ProductCard({ product }: { product: Product }) {
-  const add = useCartStore((s) => s.addOfferAndOpenCart);
+  const buyNow = useCartStore((s) => s.buyNow);
   const locale = useLocale();
   const ui = uiCopy(locale);
   const popular = defaultOffer(product);
@@ -62,8 +62,8 @@ export function ProductCard({ product }: { product: Product }) {
               : ui.singleLine(money(popular.price, locale))}
           </p>
         </div>
-        <button type="button" className="kd-cta py-3 text-base" onClick={() => add(product, popular)}>
-          {ui.addToCart}
+        <button type="button" className="kd-cta py-3 text-base" onClick={() => buyNow(product, popular)}>
+          {ui.orderNow}
         </button>
         <Link href={localePath(`/products/${product.slug}`, locale)} className="mt-3 text-center text-sm font-bold text-brand hover:underline">
           {ui.details}

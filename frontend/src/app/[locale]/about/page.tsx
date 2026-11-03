@@ -26,7 +26,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <p className="kd-kicker mb-3">Kinédoux · Casablanca</p>
         <h1 className="kd-h1">{ABOUT.heroTitle}</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{ABOUT.heroSubtitle}</p>
-        <Link href={localePath("/products/kenidoux-lumba", locale)} className="kd-cta mt-8 max-w-sm">
+        <Link href={localePath("/products/kenidoux-lumba#offer", locale)} className="kd-cta mt-8 max-w-sm">
           {ui.addCta(money(499, locale))}
         </Link>
       </header>
