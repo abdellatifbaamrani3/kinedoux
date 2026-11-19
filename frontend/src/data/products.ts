@@ -11,8 +11,12 @@ export type Offer = {
   compareAt: number;
   badge: string;
   isDefault?: boolean;
+  /** Full-kit row stays orderable from the home bundle, and stays off the product picker. */
+  showInPicker?: boolean;
   /** Set on the Full Kit offer: product slugs physically included. */
   includes?: ProductSlug[];
+  /** Optional 64px-class thumbnail shown on the offer card. */
+  thumbSrc?: string;
 };
 
 export type MaterialCard = { title: string; latin: string; body: string };
@@ -49,10 +53,15 @@ export type Product = {
   heroHook: { title: string; body: string };
   sections: ProductSection[];
   steps: Array<{ title: string; body: string }>;
+  /** Optional image shown beside the how-to steps (e.g. illustrated guide). */
+  stepsImage?: string;
+  stepsImageAlt?: string;
   comparisonOriginal: string[];
   crossSellPitches: Partial<Record<ProductSlug, string>>;
-  gallery: Array<{ src: string; label: string }>;
+  gallery: Array<{ src: string; label: string; alt?: string }>;
   image: string;
+  kitImageAlt?: string;
+  scienceImageAlt?: string;
   /** Short description used in <meta> and JSON-LD. */
   metaDescription: string;
 };
@@ -104,16 +113,8 @@ const lumba: Product = {
       units: 2,
       price: 849,
       compareAt: 998,
-      badge: "هدية",
-    },
-    {
-      id: "lumba-3",
-      title: "ثلاثة أحزمة للعائلة",
-      subtitle: "للدار كاملة، بنفس التوصيل المجاني وبدون مصاريف زايدة.",
-      units: 3,
-      price: 1149,
-      compareAt: 1497,
-      badge: "عرض العائلة",
+      badge: "هدية للدار",
+      thumbSrc: "/images/lumba/woman-salon-thumb.webp",
     },
   ],
   bonuses: [
@@ -187,6 +188,10 @@ const lumba: Product = {
     { title: "5 ضغطات بالمضخة", body: "نفخ الأعمدة حتى تحس بتمدد عمودي لطيف. وقف قبل ما يولي قاصح." },
     { title: "ارتاح 10–15 دقيقة", body: "بدا قصير فالأيام الأولى، ومن بعد فرّغ الهواء بضغطة على الصمام." },
   ],
+  stepsImage: "/images/lumba/guide-booklet.webp",
+  stepsImageAlt: "دليل كينيدو المصور بالدارجة — 3 خطوات",
+  scienceImageAlt: "الأعمدة الهوائية العمودية ديال كينيدو لومبا من قريب",
+  kitImageAlt: "محتويات العلبة: الحزام، المضخة، وصلة التوسيع، والدليل",
   comparisonOriginal: [
     "خامة متينة تحافظ على الهواء",
     "دليل استعمال بالدارجة والفرنسية",
@@ -198,7 +203,38 @@ const lumba: Product = {
     "kenidoux-posta": "أضف الحزام الهوائي لأسفل الظهر بنفس الكولية",
     "kenidoux-calma": "أضف حزام أسفل الظهر مع نفس الكولية",
   },
-  gallery: gallery("kenidoux-lumba"),
+  gallery: [
+    {
+      src: "/images/lumba/drive-2.webp",
+      label: "الصورة الرئيسية",
+      alt: "سائق مغربي لابس حزام كينيدو لومبا فالطوموبيل",
+    },
+    {
+      src: "/images/lumba/before-after.webp",
+      label: "قبل وبعد",
+      alt: "كينيدو لومبا قبل وبعد النفخ — الأعمدة الهوائية كتطلع للفوق",
+    },
+    {
+      src: "/images/lumba/woman-salon.webp",
+      label: "فالصالون",
+      alt: "سيدة مغربية لابسة حزام كينيدو لومبا فالصالون",
+    },
+    {
+      src: "/images/lumba/man-shop.webp",
+      label: "فالحانوت",
+      alt: "مول الحانوت لابس حزام كينيدو لومبا — مقاسات من 70 حتى 130 سم",
+    },
+    {
+      src: "/images/lumba/kit-mint.webp",
+      label: "محتويات العلبة",
+      alt: "محتويات العلبة: الحزام، المضخة، وصلة التوسيع، والدليل",
+    },
+    {
+      src: "/images/lumba/guide-booklet.webp",
+      label: "الدليل",
+      alt: "دليل كينيدو المصور بالدارجة — 3 خطوات",
+    },
+  ],
   image: IMAGES.products["kenidoux-lumba"].main,
   metaDescription:
     "كينيدو لومبا — الحزام الهوائي لراحة أسفل الظهر. توصيل مجاني، تأكيد من الدار البيضاء، والخلاص نقداً عند الباب.",
@@ -239,16 +275,7 @@ const posta: Product = {
       units: 2,
       price: 649,
       compareAt: 758,
-      badge: "هدية",
-    },
-    {
-      id: "posta-3",
-      title: "ثلاث باقات للمكتب أو العائلة",
-      subtitle: "ثلاثة أطقم كاملة، بنفس التوصيل المجاني.",
-      units: 3,
-      price: 899,
-      compareAt: 1137,
-      badge: "عرض العائلة",
+      badge: "هدية للدار",
     },
   ],
   bonuses: [
@@ -374,7 +401,7 @@ const calma: Product = {
       units: 2,
       price: 599,
       compareAt: 698,
-      badge: "هدية",
+      badge: "هدية للدار",
     },
     {
       id: "calma-3",
@@ -384,6 +411,7 @@ const calma: Product = {
       price: 890,
       compareAt: 1227,
       badge: "الباقة المتكاملة",
+      showInPicker: false,
       includes: ALL,
     },
   ],

@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import type { Offer } from "@/data/products";
 import { useLocale } from "@/i18n/locale-context";
 import { money } from "@/i18n/money";
@@ -23,7 +25,7 @@ export function OfferTierSelector({
     <fieldset>
       <legend className="mb-3 text-base font-bold text-brand-dark">{ui.offerLegend}</legend>
       <div className="space-y-3">
-        {offers.map((offer) => {
+        {offers.filter((offer) => offer.showInPicker !== false).map((offer) => {
           const selected = offer.id === selectedId;
           const save = offer.compareAt - offer.price;
           return (
@@ -41,7 +43,7 @@ export function OfferTierSelector({
                 checked={selected}
                 onChange={() => onSelect(offer)}
               />
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-bold text-brand-dark">{offer.title}</span>
                   <span
@@ -71,6 +73,20 @@ export function OfferTierSelector({
                   )}
                 </p>
               </div>
+              {offer.thumbSrc ? (
+                <span className="relative mt-0.5 h-16 w-16 shrink-0 overflow-hidden rounded-full ring-1 ring-brand/10">
+                  <Image
+                    src={offer.thumbSrc}
+                    alt=""
+                    width={64}
+                    height={64}
+                    sizes="64px"
+                    quality={70}
+                    loading="lazy"
+                    className="h-full w-full object-cover object-[center_20%]"
+                  />
+                </span>
+              ) : null}
             </label>
           );
         })}

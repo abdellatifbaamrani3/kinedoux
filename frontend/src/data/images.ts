@@ -40,11 +40,15 @@ export const IMAGES = {
   products: {
     "kenidoux-lumba": {
       ...set("lumba"),
-      main: "/images/lumba/main-2.webp",
-      mechanism: "/images/lumba/how-2.webp",
+      main: "/images/lumba/drive-2.webp",
+      mechanism: "/images/lumba/columns-closeup.webp",
       lifestyle: "/images/lumba/drive-2.webp",
-      kit: "/images/lumba/kit-2.webp",
-      sections: ["/images/lumba/salon-2.webp", "/images/lumba/how-2.webp", "/images/lumba/kit-2.webp"],
+      kit: "/images/lumba/kit-mint.webp",
+      sections: [
+        "/images/lumba/salon-2.webp",
+        "/images/lumba/columns-closeup.webp",
+        "/images/lumba/kit-mint.webp",
+      ],
     },
     "kenidoux-posta": {
       ...set("posta"),

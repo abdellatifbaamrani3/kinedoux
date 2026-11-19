@@ -6,7 +6,6 @@ import { deepMerge } from "./merge";
 
 const free = { fr: "Livraison offerte", en: "Free delivery" };
 const popular = { fr: "Cadeau", en: "Gift" };
-const family = { fr: "Offre famille", en: "Family offer" };
 const kitBadge = { fr: "Pack complet", en: "Full kit" };
 
 function offers(locale: "fr" | "en", rows: Array<{ title: string; subtitle: string; badge: string }>) {
@@ -25,7 +24,6 @@ const FR = {
     offers: offers("fr", [
       { title: "Une ceinture", subtitle: "Lumba + pompe + rallonge + guide + livraison offerte", badge: free.fr },
       { title: "Deux ceintures — pour vous et vos parents", subtitle: "Une pour vous, une pour un parent. La deuxième à 350 DH au lieu de 499, dans le même colis.", badge: popular.fr },
-      { title: "Trois ceintures pour la famille", subtitle: "Pour toute la maison, même livraison offerte, sans frais en plus.", badge: family.fr },
     ]),
     bonuses: [
       "Pompe à air manuelle avec valve de sécurité",
@@ -89,7 +87,6 @@ const FR = {
     offers: offers("fr", [
       { title: "Un pack Posta", subtitle: "Rappel + programme 14 jours + livraison offerte", badge: free.fr },
       { title: "Deux packs — pour vous et quelqu’un", subtitle: "Pour le couple, ou pour vous et un enfant qui étudie. Le second à 270 DH au lieu de 379, même colis.", badge: popular.fr },
-      { title: "Trois packs pour le bureau ou la famille", subtitle: "Trois ensembles complets, même livraison offerte.", badge: family.fr },
     ]),
     bonuses: [
       "Ceinture légère avec capteur d’angle et vibration discrète",
@@ -147,7 +144,7 @@ const FR = {
     category: "Rituel du soir",
     cardHeading: "Kinédoux Calma — ventouses chaudes, sans marque",
     cardSubheading: "La version actuelle des ventouses : chaleur confortable et aspiration douce pour les épaules, le dos ou le genou, en 15 minutes, sans feu et sans désordre.",
-    scarcityBadge: "Souvent ajouté avec Lumba : même colis, pas de livraison en plus",
+    scarcityBadge: "S’ajoute avec Lumba : même colis, sans livraison en plus",
     scarcityShort: "Sans marque",
     crossSellNote: "au lieu de 349 DH",
     offers: offers("fr", [
@@ -220,7 +217,6 @@ const EN = {
     offers: offers("en", [
       { title: "One belt", subtitle: "Lumba + pump + extension + guide + free delivery", badge: free.en },
       { title: "Two belts — for you and your parents", subtitle: "One for you, one for a parent. The second is 350 DH instead of 499, same box.", badge: popular.en },
-      { title: "Three belts for the family", subtitle: "For the whole house, same free delivery, no extra fee.", badge: family.en },
     ]),
     bonuses: [
       "Hand air pump with a safety valve",
@@ -284,7 +280,6 @@ const EN = {
     offers: offers("en", [
       { title: "One Posta set", subtitle: "Reminder + 14-day plan + free delivery", badge: free.en },
       { title: "Two sets — for you and someone else", subtitle: "For a couple, or for you and a student. The second is 270 DH instead of 379, same box.", badge: popular.en },
-      { title: "Three sets for the office or family", subtitle: "Three full sets, same free delivery.", badge: family.en },
     ]),
     bonuses: [
       "Light strap with an angle sensor and a quiet vibration",
@@ -342,7 +337,7 @@ const EN = {
     category: "Evening ritual",
     cardHeading: "Kinédoux Calma — warm cups, no marks",
     cardSubheading: "Today’s version of cupping: comfortable warmth and gentle suction for shoulders, back, or knee, in 15 minutes, with no fire and no mess.",
-    scarcityBadge: "Often added with Lumba: same box, no extra delivery",
+    scarcityBadge: "Add it with Lumba: same box, no extra delivery",
     scarcityShort: "No marks",
     crossSellNote: "instead of 349 DH",
     offers: offers("en", [
@@ -408,10 +403,14 @@ export function localizeProduct(product: Product, locale: Locale): Product {
   const patch = (locale === "fr" ? FR : EN)[product.slug as ProductSlug];
   const merged = deepMerge(product, patch);
   const labels = uiCopy(locale).gallery;
-  merged.gallery = product.gallery.map((image, index) => ({
-    ...image,
-    label: labels[index] ?? image.label,
-  }));
+  // Only remap shared 4-slot gallery labels. Custom longer galleries keep their own labels.
+  merged.gallery =
+    product.gallery.length === labels.length
+      ? product.gallery.map((image, index) => ({
+          ...image,
+          label: labels[index] ?? image.label,
+        }))
+      : product.gallery;
   return merged;
 }
 

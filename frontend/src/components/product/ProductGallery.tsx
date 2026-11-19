@@ -12,17 +12,19 @@ export function ProductGallery({ product }: { product: Product }) {
   const ui = uiCopy(useLocale());
   const [active, setActive] = useState(0);
   const current = product.gallery[active] ?? product.gallery[0];
+  const cols = product.gallery.length > 4 ? "grid-cols-3 sm:grid-cols-6" : "grid-cols-4";
 
   return (
     <div>
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-brand/10 bg-sage shadow-card">
         <Image
           src={current.src}
-          alt={current.label}
+          alt={current.alt ?? current.label}
           fill
           sizes="(max-width: 1024px) 92vw, 540px"
           quality={70}
-          priority
+          priority={active === 0}
+          loading={active === 0 ? "eager" : "lazy"}
           unoptimized={current.src.endsWith(".svg")}
           className="object-cover"
         />
@@ -30,14 +32,14 @@ export function ProductGallery({ product }: { product: Product }) {
           {ui.galleryBadge}
         </span>
       </div>
-      <div className="mt-3 grid grid-cols-4 gap-2">
+      <div className={cn("mt-3 grid gap-2", cols)}>
         {product.gallery.map((img, i) => (
           <button
             key={img.src}
             type="button"
             onClick={() => setActive(i)}
             className={cn(
-              "overflow-hidden rounded-xl border-2 bg-white",
+              "min-w-0 overflow-hidden rounded-xl border-2 bg-white",
               i === active ? "border-brand" : "border-transparent opacity-80 hover:opacity-100",
             )}
           >
@@ -48,6 +50,7 @@ export function ProductGallery({ product }: { product: Product }) {
                 fill
                 sizes="80px"
                 quality={60}
+                loading="lazy"
                 unoptimized={img.src.endsWith(".svg")}
                 className="object-cover"
               />

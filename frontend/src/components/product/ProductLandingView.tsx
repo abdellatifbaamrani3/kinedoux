@@ -7,6 +7,7 @@ import { localePath } from "@/i18n/locale";
 import { localizeProduct, localizeProducts } from "@/i18n/products-copy";
 import { uiCopy } from "@/i18n/ui";
 import type { Product } from "@/data/products";
+import { IMAGES } from "@/data/images";
 import { ConfirmationSection } from "@/components/home/ConfirmationSection";
 import { TrustLedger } from "@/components/home/TrustLedger";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
@@ -103,7 +104,7 @@ export async function ProductLandingView({ product: source }: { product: Product
             eyebrow={ui.howEyebrow}
             title={science.title}
             imageSrc={science.image}
-            imageAlt={science.title}
+            imageAlt={product.scienceImageAlt ?? science.title}
           >
             <p>{science.body}</p>
             <ol className="space-y-6">
@@ -145,9 +146,9 @@ export async function ProductLandingView({ product: source }: { product: Product
             <SectionHeading title={product.kitTitle} />
             <div className="mt-10 grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
               <BrandImage
-                src={product.gallery[3]?.src ?? product.image}
-                alt={product.kitTitle}
-                className="aspect-[4/3] max-w-md mx-auto lg:max-w-none"
+                src={IMAGES.products[product.slug]?.kit ?? product.image}
+                alt={product.kitImageAlt ?? product.kitTitle}
+                className="aspect-[4/3] w-full max-w-md mx-auto lg:max-w-none"
               />
               <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                 {product.kitContents.map((item) => (
@@ -188,17 +189,38 @@ export async function ProductLandingView({ product: source }: { product: Product
         <section id="timeline" className="kd-section bg-sage">
           <div className="kd-container">
             <SectionHeading eyebrow={ui.stepsEyebrow} title={ui.stepsTitle} />
-            <ol className="mx-auto mt-10 grid max-w-4xl gap-4 md:grid-cols-3">
-              {product.steps.map((t, i) => (
-                <li key={t.title} className="rounded-2xl bg-white p-5 ring-1 ring-brand/10">
-                  <span className="inline-block rounded-full bg-sage px-3 py-1 text-xs font-bold text-brand">
-                    {ui.step(i + 1)}
-                  </span>
-                  <h3 className="mt-3 font-bold text-brand-dark">{t.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-muted">{t.body}</p>
-                </li>
-              ))}
-            </ol>
+            {product.stepsImage ? (
+              <div className="mt-10 grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+                <BrandImage
+                  src={product.stepsImage}
+                  alt={product.stepsImageAlt ?? ui.stepsTitle}
+                  className="aspect-[4/3] w-full max-w-md mx-auto lg:max-w-none"
+                />
+                <ol className="grid gap-4">
+                  {product.steps.map((t, i) => (
+                    <li key={t.title} className="rounded-2xl bg-white p-5 ring-1 ring-brand/10">
+                      <span className="inline-block rounded-full bg-sage px-3 py-1 text-xs font-bold text-brand">
+                        {ui.step(i + 1)}
+                      </span>
+                      <h3 className="mt-3 font-bold text-brand-dark">{t.title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-muted">{t.body}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ) : (
+              <ol className="mx-auto mt-10 grid max-w-4xl gap-4 md:grid-cols-3">
+                {product.steps.map((t, i) => (
+                  <li key={t.title} className="rounded-2xl bg-white p-5 ring-1 ring-brand/10">
+                    <span className="inline-block rounded-full bg-sage px-3 py-1 text-xs font-bold text-brand">
+                      {ui.step(i + 1)}
+                    </span>
+                    <h3 className="mt-3 font-bold text-brand-dark">{t.title}</h3>
+                    <p className="mt-2 text-sm leading-7 text-muted">{t.body}</p>
+                  </li>
+                ))}
+              </ol>
+            )}
             <p className="mt-8 text-center text-sm font-medium text-muted">
             {ui.consistency}{" "}
             <a href="#offer" className="font-bold text-brand underline underline-offset-4">

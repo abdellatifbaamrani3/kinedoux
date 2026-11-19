@@ -40,7 +40,7 @@ export function SplitSection({
             <BrandImage
               src={imageSrc}
               alt={imageAlt}
-              className={cn("aspect-[4/5] max-w-md mx-auto lg:max-w-none lg:h-full lg:min-h-[28rem]", dark && "border-white/10")}
+              className={cn("aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none lg:h-full lg:min-h-[28rem]", dark && "border-white/10")}
             />
           </div>
           <div className="order-2 lg:order-none lg:flex lg:flex-col lg:justify-center">
