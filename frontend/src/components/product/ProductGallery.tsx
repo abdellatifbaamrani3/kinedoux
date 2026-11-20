@@ -12,8 +12,6 @@ export function ProductGallery({ product }: { product: Product }) {
   const ui = uiCopy(useLocale());
   const [active, setActive] = useState(0);
   const current = product.gallery[active] ?? product.gallery[0];
-  const cols = product.gallery.length > 4 ? "grid-cols-3 sm:grid-cols-6" : "grid-cols-4";
-
   return (
     <div>
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-brand/10 bg-sage shadow-card">
@@ -32,14 +30,14 @@ export function ProductGallery({ product }: { product: Product }) {
           {ui.galleryBadge}
         </span>
       </div>
-      <div className={cn("mt-3 grid gap-2", cols)}>
+      <div className="mt-2 grid grid-cols-6 gap-1">
         {product.gallery.map((img, i) => (
           <button
             key={img.src}
             type="button"
             onClick={() => setActive(i)}
             className={cn(
-              "min-w-0 overflow-hidden rounded-xl border-2 bg-white",
+              "min-w-0 overflow-hidden rounded-lg border-2 bg-white",
               i === active ? "border-brand" : "border-transparent opacity-80 hover:opacity-100",
             )}
           >
@@ -48,14 +46,14 @@ export function ProductGallery({ product }: { product: Product }) {
                 src={img.src}
                 alt=""
                 fill
-                sizes="80px"
+                sizes="64px"
                 quality={60}
                 loading="lazy"
                 unoptimized={img.src.endsWith(".svg")}
                 className="object-cover"
               />
             </span>
-            <span className="block truncate bg-alabaster px-1 py-1 text-center text-[10px] font-bold text-muted">
+            <span className="block truncate bg-alabaster px-0.5 py-0.5 text-center text-[9px] font-bold leading-tight text-muted">
               {img.label}
             </span>
           </button>

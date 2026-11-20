@@ -205,9 +205,9 @@ const lumba: Product = {
   },
   gallery: [
     {
-      src: "/images/lumba/drive-2.webp",
+      src: "/images/lumba/man-shop.webp",
       label: "الصورة الرئيسية",
-      alt: "سائق مغربي لابس حزام كينيدو لومبا فالطوموبيل",
+      alt: "مول الحانوت لابس حزام كينيدو لومبا وماسك المضخة",
     },
     {
       src: "/images/lumba/before-after.webp",
@@ -220,9 +220,9 @@ const lumba: Product = {
       alt: "سيدة مغربية لابسة حزام كينيدو لومبا فالصالون",
     },
     {
-      src: "/images/lumba/man-shop.webp",
-      label: "فالحانوت",
-      alt: "مول الحانوت لابس حزام كينيدو لومبا — مقاسات من 70 حتى 130 سم",
+      src: "/images/lumba/drive-2.webp",
+      label: "فالطيوموبيل",
+      alt: "سائق مغربي لابس حزام كينيدو لومبا فالطوموبيل",
     },
     {
       src: "/images/lumba/kit-mint.webp",
