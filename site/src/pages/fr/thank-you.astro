@@ -1,0 +1,19 @@
+---
+import Simple from '../../templates/Simple.astro';
+import { ui } from '../../data/ui';
+const t = ui.fr;
+---
+<Simple
+  lang="fr"
+  path="/thank-you/"
+  title="Commande enregistrée — Kinédoux"
+  description="Nous appelons pour confirmer la commande avant d’envoyer le colis."
+  noindex={true}
+  track="thanks"
+>
+  <h1>{t.thanksTitle}</h1>
+  <p data-confirmed hidden>{t.thanksBody}</p>
+  <p data-order-number></p>
+  <p data-direct>{t.thanksDirect}</p>
+  <p><a href="/fr/">{t.thanksHome}</a></p>
+</Simple>

@@ -1,0 +1,26 @@
+---
+import { localizePath, type Lang } from '../config';
+import { ui } from '../data/ui';
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+const { lang, path } = Astro.props;
+const t = ui[lang];
+const other: Lang = lang === 'ar' ? 'fr' : 'ar';
+const home = localizePath('/', lang);
+---
+
+<a class="skip" href="#content">{lang === 'ar' ? 'تخطى إلى المحتوى' : 'Aller au contenu'}</a>
+<header class="top">
+  <a class="brand" href={home}>
+    <span class="mark" aria-hidden="true">KD</span>
+    <span>
+      <strong>كينيدو</strong>
+      <small>kinedoux</small>
+    </span>
+  </a>
+  <p class="bar">{t.bar}</p>
+  <a class="lang" href={localizePath(path, other)} hrefLang={other}>{t.langLabel}</a>
+</header>

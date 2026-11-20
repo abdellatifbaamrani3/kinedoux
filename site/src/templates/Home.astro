@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Picture from '../components/Picture.astro';
+import { localizePath, type Lang } from '../config';
+import { homeCopy } from '../data/home';
+import { ui } from '../data/ui';
+import { products } from '../data/products';
+import { imgSrc } from '../lib/img';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = homeCopy[lang];
+const u = ui[lang];
+const featured = products.find((item) => item.featured) ?? products[0];
+const copy = featured[lang];
+const href = localizePath(`/${featured.slug}/`, lang) + '#order';
+const price = featured.offers[0].price;
+const priceLabel = lang === 'ar' ? `${price} درهم` : `${price} DH`;
+const og = imgSrc(featured.hero.webp[featured.hero.webp.length - 1]);
+---
+
+<Base title={t.metaTitle} description={t.metaDescription} lang={lang} path="/" ogImage={og} preloadImage={imgSrc(featured.hero.avif[1] ?? featured.hero.avif[0])}>
+  <main id="content">
+    <section class="hero">
+      <h1>{t.headline}</h1>
+      <p class="lead">{t.sub}</p>
+    </section>
+    <article class="card">
+      <Picture
+        avif={featured.hero.avif}
+        webp={featured.hero.webp}
+        alt={featured.hero.alt[lang]}
+        priority={true}
+        sizes="(max-width: 640px) 100vw, 544px"
+      />
+      <h2>{copy.headline}</h2>
+      <p>{copy.sub}</p>
+      <p class="price-row">
+        <span class="price">{priceLabel}</span>
+      </p>
+      <ul class="points">
+        {t.points.map((point) => <li>{point}</li>)}
+      </ul>
+      <a class="btn" href={href}>{u.order}</a>
+    </article>
+  </main>
+</Base>

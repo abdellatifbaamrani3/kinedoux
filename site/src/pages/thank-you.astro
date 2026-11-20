@@ -1,0 +1,19 @@
+---
+import Simple from '../templates/Simple.astro';
+import { ui } from '../data/ui';
+const t = ui.ar;
+---
+<Simple
+  lang="ar"
+  path="/thank-you/"
+  title="تسجّل الطلب — كينيدو"
+  description="غادي نعيطو ليك باش نأكدو الطلب قبل ما نخرجو الكولية."
+  noindex={true}
+  track="thanks"
+>
+  <h1>{t.thanksTitle}</h1>
+  <p data-confirmed hidden>{t.thanksBody}</p>
+  <p data-order-number></p>
+  <p data-direct>{t.thanksDirect}</p>
+  <p><a href="/">{t.thanksHome}</a></p>
+</Simple>

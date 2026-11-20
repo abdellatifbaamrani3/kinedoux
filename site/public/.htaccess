@@ -1,0 +1,42 @@
+# Kinédoux — Hostinger / Apache
+# Upload this file with the rest of dist/. In File Manager, enable "show hidden files".
+
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # One hop: http or www -> https://kinedoux.com
+  RewriteCond %{HTTPS} !=on [OR]
+  RewriteCond %{HTTP_HOST} ^www\.kinedoux\.com$ [NC]
+  RewriteRule ^ https://kinedoux.com%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json image/svg+xml application/xml
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/javascript application/javascript application/json image/svg+xml application/xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 5 minutes"
+  ExpiresDefault "access plus 1 hour"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Hashed build files (Astro puts them in /_astro/).
+  SetEnvIf Request_URI "^/_astro/" kd_hashed
+  Header set Cache-Control "public, max-age=31536000, immutable" env=kd_hashed
+
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </FilesMatch>
+
+  # The product video is not hashed. Short cache so a new file replaces it.
+  <FilesMatch "\.(mp4)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>

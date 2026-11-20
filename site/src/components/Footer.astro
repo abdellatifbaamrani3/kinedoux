@@ -1,0 +1,21 @@
+---
+import { site, localizePath, type Lang } from '../config';
+import { ui } from '../data/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const year = new Date().getFullYear();
+---
+
+<footer class="foot">
+  <nav aria-label={lang === 'ar' ? 'أسفل الصفحة' : 'Pied de page'}>
+    <a href={localizePath('/', lang)}>{t.footerHome}</a>
+    <a href={localizePath('/privacy/', lang)}>{t.footerPrivacy}</a>
+    <a href={localizePath('/terms/', lang)}>{t.footerTerms}</a>
+    <a href={localizePath('/contact/', lang)}>{t.footerContact}</a>
+  </nav>
+  <p>{t.rights} · {year} · {site.email}</p>
+</footer>

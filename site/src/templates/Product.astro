@@ -1,0 +1,290 @@
+---
+import Base from '../layouts/Base.astro';
+import Picture from '../components/Picture.astro';
+import OrderScript from '../components/OrderScript.astro';
+import { site, localizePath, type Lang } from '../config';
+import { ui } from '../data/ui';
+import { cities } from '../data/cities';
+import { imgSrc } from '../lib/img';
+import type { Product } from '../data/products/lumba';
+
+interface Props {
+  product: Product;
+  lang: Lang;
+}
+const { product, lang } = Astro.props;
+const t = product[lang];
+const u = ui[lang];
+const path = `/${product.slug}/`;
+const thanks = localizePath('/thank-you/', lang);
+const offer = product.offers[0];
+const priceLabel = (n: number) =>
+  lang === 'ar'
+    ? `${new Intl.NumberFormat('fr-MA').format(n)} درهم`
+    : `${new Intl.NumberFormat('fr-MA').format(n)} DH`;
+const preload = imgSrc(product.hero.avif[1] ?? product.hero.avif[0]);
+const og = imgSrc(product.hero.webp[product.hero.webp.length - 1]);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'Kinédoux Lumba',
+  image: new URL(og, Astro.site).href,
+  description: t.metaDescription,
+  brand: { '@type': 'Brand', name: 'Kinédoux' },
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'MAD',
+    price: String(offer.price),
+    availability: 'https://schema.org/InStock',
+    url: new URL(localizePath(path, lang), Astro.site).href,
+  },
+};
+---
+
+<Base
+  title={t.metaTitle}
+  description={t.metaDescription}
+  lang={lang}
+  path={path}
+  ogImage={og}
+  preloadImage={preload}
+  dock={true}
+  price={offer.price}
+>
+  <main id="content">
+    <section class="hero">
+      <div class="frame">
+        <Picture
+          avif={product.hero.avif}
+          webp={product.hero.webp}
+          alt={product.hero.alt[lang]}
+          priority={true}
+          sizes="(max-width: 640px) 100vw, 544px"
+        />
+      </div>
+      <h1>{t.headline}</h1>
+      <p class="lead">{t.sub}</p>
+      <p class="price-row">
+        <span class="price">{priceLabel(offer.price)}</span>
+        {offer.compareAt && <s class="was">{priceLabel(offer.compareAt)}</s>}
+      </p>
+      <p class="trust">
+        <span>{u.delivery}</span>
+        <span>{u.exchange}</span>
+      </p>
+      <a class="btn" href="#order">{u.order}</a>
+    </section>
+
+    <section class="section">
+      <h2>{t.problemTitle}</h2>
+      <p>{t.problemBody}</p>
+      <ul class="points">
+        {t.points.map((point) => <li>{point}</li>)}
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>{t.benefitsTitle}</h2>
+      <ul class="benefits">
+        {t.benefits.map((item, index) => (
+          <li>
+            <span class="ico" aria-hidden="true">
+              {index === 0 && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M8 19V6M12 19V4M16 19V8" stroke-linecap="round" />
+                </svg>
+              )}
+              {index === 1 && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="8" cy="8" r="3" />
+                  <path d="M11 10c4 1 6 4 7 8" stroke-linecap="round" />
+                </svg>
+              )}
+              {index === 2 && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M6 18h12M8 18V10h8v8M9 10V7h6" stroke-linecap="round" />
+                </svg>
+              )}
+              {index === 3 && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M4 8h16M4 12h10M4 16h16" stroke-linecap="round" />
+                </svg>
+              )}
+            </span>
+            <span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="section" aria-label={t.videoTitle}>
+      <h2>{t.videoTitle}</h2>
+      <p>{t.videoText}</p>
+      <div class="video" data-video={product.video || site.videoSrc}>
+        <button class="video-btn" type="button" data-play aria-label={u.videoPlay}>
+          <Picture avif={product.poster.avif} webp={product.poster.webp} alt="" />
+          <span class="play" aria-hidden="true">▶</span>
+        </button>
+        <p class="video-msg" data-video-msg hidden>{u.videoMissing}</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>{t.stepsTitle}</h2>
+      <ol class="steps">
+        {t.steps.map((step, index) => (
+          <li>
+            <span class="num">{index + 1}</span>
+            <span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>{lang === 'ar' ? 'صور الحزام' : 'Photos'}</h2>
+      <div class="gallery">
+        {product.gallery.map((frame) => (
+          <figure>
+            <div class="frame">
+              <Picture avif={frame.avif} webp={frame.webp} alt={frame.alt[lang]} sizes="(max-width: 640px) 86vw, 460px" />
+            </div>
+            <figcaption>{frame.alt[lang]}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>{t.reviewsTitle}</h2>
+      <p class="note">{t.reviewsNote}</p>
+      <ul class="reviews">
+        {t.reviews.map((review) => (
+          <li>
+            <div class="ph">{t.reviewPhoto}</div>
+            <h3>{review.name}</h3>
+            <p class="hint">{review.city}</p>
+            <p>{review.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <form
+      id="order"
+      class="order"
+      data-order
+      method="post"
+      action={site.webhookUrl || '#'}
+      data-webhook={site.webhookUrl}
+      data-thanks={thanks}
+      data-product-id={product.id}
+      data-sheet-name={product.sheetName}
+      data-submit-label={`${u.submit} — {price}`}
+      data-sending={u.sending}
+      data-err-name={u.errName}
+      data-err-phone={u.errPhone}
+      data-err-city={u.errCity}
+      data-err-address={u.errAddress}
+      data-err-fast={u.errFast}
+      data-err-send={u.errSend}
+      data-err-hook={u.errNoWebhook}
+      data-saved={u.savedOnPhone}
+      novalidate
+    >
+      <section class="section">
+        <h2 id="offer-title">{t.offerTitle}</h2>
+        <div class="offers" role="radiogroup" aria-labelledby="offer-title">
+          {product.offers.map((item, index) => (
+            <label class:list={['offer', index === 0 && 'is-on']}>
+              <input
+                type="radio"
+                name="offer"
+                value={item.id}
+                checked={index === 0}
+                data-qty={item.qty}
+                data-price={item.price}
+                data-sheet={item.sheetLabel}
+                data-price-label={priceLabel(item.price)}
+              />
+              <b class="tag">{priceLabel(item.price)}</b>
+              <strong>{item[lang].title}</strong>
+              <span>
+                {item[lang].detail}
+                {item.compareAt && (
+                  <>
+                    {' · '}
+                    <s>{priceLabel(item.compareAt)}</s>
+                  </>
+                )}
+              </span>
+            </label>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>{u.formTitle}</h2>
+        <p>{u.formLead}</p>
+        <div class="fields">
+          <label>
+            {u.name}
+            <input name="name" autocomplete="name" required minlength="3" />
+          </label>
+          <label>
+            {u.phone}
+            <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="06XXXXXXXX" required />
+            <span class="hint">{u.phoneHint}</span>
+          </label>
+          <label>
+            {u.city}
+            <select name="city" required>
+              <option value="" disabled selected>{u.cityPlaceholder}</option>
+              {cities.map((city) => <option value={city[lang]}>{city[lang]}</option>)}
+            </select>
+          </label>
+          <label>
+            {u.address}
+            <textarea name="address" autocomplete="street-address" required minlength="6"></textarea>
+            <span class="hint">{u.addressHint}</span>
+          </label>
+          <div class="hp" aria-hidden="true">
+            <label for="company_fax">{u.fax}</label>
+            <input id="company_fax" name="company_fax" tabindex="-1" autocomplete="off" />
+          </div>
+        </div>
+        <p class="payline">
+          {u.total}: <span data-total>{priceLabel(offer.price)}</span>
+        </p>
+        <p class="err" data-error role="alert"></p>
+        <button class="btn" type="submit" data-submit>
+          {u.submit} — {priceLabel(offer.price)}
+        </button>
+      </section>
+    </form>
+
+    <section class="section">
+      <h2>{t.faqTitle}</h2>
+      {t.faq.map((item) => (
+        <details>
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </section>
+  </main>
+
+  <div class="dock" data-dock>
+    <b data-dock-price>{priceLabel(offer.price)}</b>
+    <a class="btn" href="#order">{u.sticky}</a>
+  </div>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)}></script>
+  <OrderScript />
+</Base>

@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import ThanksScript from '../components/ThanksScript.astro';
+import OrderScript from '../components/OrderScript.astro';
+import type { Lang } from '../config';
+
+interface Props {
+  lang: Lang;
+  path: string;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  /** Which page script to include. Omit on pages that need none. */
+  track?: 'thanks' | 'order';
+}
+const { lang, path, title, description, noindex = false, track } = Astro.props;
+---
+
+<Base title={title} description={description} lang={lang} path={path} noindex={noindex}>
+  <main id="content" class="prose">
+    <slot />
+  </main>
+  {track === 'thanks' && <ThanksScript />}
+  {track === 'order' && <OrderScript />}
+</Base>

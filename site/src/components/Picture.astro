@@ -1,0 +1,41 @@
+---
+import { imgHeight, imgSrc, imgWidth, type Img } from '../lib/img';
+
+interface Props {
+  avif: Img[];
+  webp: Img[];
+  alt: string;
+  priority?: boolean;
+  sizes?: string;
+}
+
+const {
+  avif,
+  webp,
+  alt,
+  priority = false,
+  sizes = '(max-width: 640px) 92vw, 520px',
+} = Astro.props;
+
+const set = (list: Img[]) =>
+  list.map((img) => `${imgSrc(img)} ${imgWidth(img)}w`).join(', ');
+
+const fallback = webp[webp.length - 1] ?? webp[0];
+const width = imgWidth(fallback);
+const height = imgHeight(fallback);
+---
+
+<picture>
+  <source type="image/avif" srcset={set(avif)} sizes={sizes} />
+  <source type="image/webp" srcset={set(webp)} sizes={sizes} />
+  <img
+    src={imgSrc(fallback)}
+    alt={alt}
+    width={width}
+    height={height}
+    sizes={sizes}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding={priority ? 'auto' : 'async'}
+    fetchpriority={priority ? 'high' : 'auto'}
+  />
+</picture>

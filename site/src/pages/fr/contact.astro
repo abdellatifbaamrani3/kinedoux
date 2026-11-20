@@ -1,0 +1,60 @@
+---
+import Simple from '../../templates/Simple.astro';
+import { site } from '../../config';
+import { ui } from '../../data/ui';
+
+const t = ui.fr;
+const wa = site.whatsapp ? `https://wa.me/${site.whatsapp}` : '';
+---
+<Simple
+  lang="fr"
+  path="/contact/"
+  title="Contact — Kinédoux"
+  description="Question sur la taille, l’échange ou le suivi du colis. Écrire à Kinédoux."
+  track="order"
+>
+  <h1>{t.contactTitle}</h1>
+  <p>{t.contactLead}</p>
+  <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+  {site.phoneDisplay && <p><a href={`tel:${site.phoneDisplay}`}>{site.phoneDisplay}</a></p>}
+  {wa && <p><a href={wa}>WhatsApp</a></p>}
+
+  <form
+    class="order"
+    data-contact
+    method="post"
+    action="#"
+    data-webhook={site.webhookUrl}
+    data-sending={t.sending}
+    data-err-name={t.errName}
+    data-err-phone={t.errPhone}
+    data-err-message={t.errMessage}
+    data-err-fast={t.errFast}
+    data-err-send={t.errSend}
+    data-err-hook={t.errNoWebhook}
+    data-saved={t.savedOnPhone}
+    novalidate
+  >
+    <div class="fields">
+      <label>
+        {t.name}
+        <input name="name" autocomplete="name" required minlength="3" />
+      </label>
+      <label>
+        {t.phone}
+        <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="06XXXXXXXX" required />
+      </label>
+      <label>
+        {t.message}
+        <textarea name="message" required minlength="4"></textarea>
+      </label>
+      <div class="hp" aria-hidden="true">
+        <label for="company_fax">{t.fax}</label>
+        <input id="company_fax" name="company_fax" tabindex="-1" autocomplete="off" />
+      </div>
+    </div>
+    <p class="err" data-error role="alert"></p>
+    <p data-ok hidden>{t.contactOk}</p>
+    <button class="btn" type="submit" data-submit>{t.contactSend}</button>
+  </form>
+</Simple>
