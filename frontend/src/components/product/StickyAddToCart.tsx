@@ -22,7 +22,7 @@ export function StickyAddToCart({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const el = document.getElementById("offer");
+    const el = document.getElementById("order-form");
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => {

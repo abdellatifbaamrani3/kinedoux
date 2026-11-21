@@ -1,11 +1,11 @@
 /**
- * Deferred web pixels (Meta, TikTok, Snapchat) + server-side CAPI relay with 100% event_id deduplication.
+ * Meta pixel + optional TikTok/Snapchat, with one event_id shared with the server.
  *
- * - Events are queued in `window.__kdEventQueue` until the pixel scripts are injected.
- * - Scripts are injected on first user interaction OR after requestIdleCallback (2.5s) — never in <head>.
- * - Every event gets ONE event_id that is sent to the 3 browser pixels AND to the FastAPI CAPI relay.
+ * PageView is queued by the head snippet in the root layout, before React loads.
+ * This module flushes later events into that same fbq queue. It does not wait.
  */
 import { relayEventToServer, type TrackingContextPayload } from "./api";
+import { META_PIXEL_ID } from "./meta-pixel";
 import type { PhoneValidationResult } from "./phone";
 
 export type EventName = "PageView" | "ViewContent" | "AddToCart" | "InitiateCheckout" | "Purchase";
@@ -15,9 +15,12 @@ export type TrackParams = { value?: number; currency?: string; contents?: TrackC
 type QueuedEvent = { name: EventName; params: TrackParams; eventId: string };
 type PixelFn = (...args: unknown[]) => void;
 
+type PageViewBoot = { path: string; eventId: string; relayed?: boolean };
+
 type KDWindow = Window & {
   __kdEventQueue?: QueuedEvent[];
   __kdPixelsLoaded?: boolean;
+  __kdPv?: PageViewBoot;
   fbq?: PixelFn & { queue?: unknown[]; callMethod?: PixelFn; push?: unknown; loaded?: boolean; version?: string };
   _fbq?: unknown;
   ttq?: Record<string, unknown> & { track?: PixelFn; identify?: PixelFn; page?: PixelFn; load?: PixelFn };
@@ -25,7 +28,7 @@ type KDWindow = Window & {
   snaptr?: PixelFn & { queue?: unknown[]; handleRequest?: PixelFn };
 };
 
-const META_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "";
+const META_ID = META_PIXEL_ID;
 const TIKTOK_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || "";
 const SNAP_ID = process.env.NEXT_PUBLIC_SNAP_PIXEL_ID || "";
 const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || "MAD";
@@ -245,6 +248,7 @@ function fireBrowser(ev: QueuedEvent): void {
       if (contents.length)
         Object.assign(data, {
           content_ids: contents.map((c) => c.id),
+          content_name: contents[0].name || contents[0].id,
           content_type: "product",
           num_items: numItems,
           contents: contents.map((c) => ({ id: c.id, quantity: c.quantity, item_price: c.item_price })),
@@ -307,41 +311,48 @@ export function loadPixels(): void {
   }
 }
 
-/** Schedule pixel injection: first interaction OR idle callback after 2.5s. Returns a cleanup function. */
+/** Connect the queue to fbq as soon as this module runs. The head snippet already started the download. */
 export function schedulePixelLoad(): () => void {
   const w = win();
   if (!w) return () => undefined;
-  const events = ["scroll", "touchstart", "mousemove", "click", "keydown"] as const;
-  const trigger = () => {
-    cleanup();
-    loadPixels();
-  };
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const cleanup = () => {
-    events.forEach((e) => window.removeEventListener(e, trigger));
-    if (timer) clearTimeout(timer);
-  };
-  events.forEach((e) => window.addEventListener(e, trigger, { once: true, passive: true }));
-  timer = setTimeout(() => {
-    if ("requestIdleCallback" in window) window.requestIdleCallback(trigger, { timeout: 1000 });
-    else trigger();
-  }, 2500);
-  return cleanup;
+  const timer = window.setTimeout(loadPixels, 0);
+  return () => window.clearTimeout(timer);
+}
+
+/**
+ * One PageView per URL. The head snippet already sent the browser event for the first page.
+ * This call only relays that same event_id to the server, then sends a new PageView on client navigations.
+ */
+export function trackPageView(pathname: string): void {
+  const w = win();
+  if (!w) return;
+  const boot = w.__kdPv;
+  if (boot && boot.path === pathname) {
+    if (!boot.relayed) {
+      boot.relayed = true;
+      trackEvent("PageView", {}, { eventId: boot.eventId, skipBrowser: true });
+    }
+    return;
+  }
+  const eventId = trackEvent("PageView");
+  w.__kdPv = { path: pathname, eventId, relayed: true };
 }
 
 // --------------------------------------------------------------------------- public tracking API
 export function trackEvent(
   name: EventName,
   params: TrackParams = {},
-  opts: { eventId?: string; skipServer?: boolean } = {},
+  opts: { eventId?: string; skipServer?: boolean; skipBrowser?: boolean } = {},
 ): string {
   const eventId = opts.eventId ?? makeEventId(name);
   const w = win();
   if (!w) return eventId;
 
-  const ev: QueuedEvent = { name, params, eventId };
-  if (w.__kdPixelsLoaded) fireBrowser(ev);
-  else (w.__kdEventQueue ||= []).push(ev);
+  if (!opts.skipBrowser) {
+    const ev: QueuedEvent = { name, params, eventId };
+    if (w.__kdPixelsLoaded) fireBrowser(ev);
+    else (w.__kdEventQueue ||= []).push(ev);
+  }
 
   // Purchase is relayed by the backend itself (POST /orders/{id}/upsell) with the same event_id.
   if (name !== "Purchase" && !opts.skipServer) {

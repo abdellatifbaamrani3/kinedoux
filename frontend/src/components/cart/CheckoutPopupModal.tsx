@@ -1,12 +1,15 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 import { CITIES } from "@/data/cities";
 import { api } from "@/lib/api";
+import { firePurchaseOnce, settleCodOrder } from "@/lib/confirm-order";
 import { phonePlaceholder, validateAndFormatPhone } from "@/lib/phone";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId } from "@/lib/tracking";
 import { useLocale } from "@/i18n/locale-context";
+import { localePath } from "@/i18n/locale";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
@@ -16,8 +19,9 @@ export function CheckoutPopupModal() {
   const open = useCartStore((s) => s.isCheckoutOpen);
   const close = useCartStore((s) => s.closeCheckout);
   const items = useCartStore((s) => s.items);
-  const openUpsell = useCartStore((s) => s.setActiveOrderAndOpenUpsell);
+  const mark = useCartStore((s) => s.markOrderConfirmed);
   const total = selectTotal(items);
+  const router = useRouter();
   const locale = useLocale();
   const ui = uiCopy(locale);
 
@@ -54,7 +58,11 @@ export function CheckoutPopupModal() {
         event_id: eventId,
         tracking: getTrackingContext(),
       });
-      openUpsell(order);
+      const settled = await settleCodOrder(order);
+      mark(settled);
+      firePurchaseOnce(settled);
+      close();
+      router.push(localePath(`/thank-you?order_id=${settled.id}`, locale));
     } catch (err) {
       setError(err instanceof Error ? err.message : ui.orderError);
     } finally {
@@ -109,7 +117,7 @@ export function CheckoutPopupModal() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder={phonePlaceholder(locale)}
               dir="ltr"
-              inputMode="tel"
+              inputMode="numeric"
               autoComplete="tel"
               className={cn(
                 "w-full rounded-xl border-2 bg-alabaster px-4 py-3 text-left font-sans tabular-nums outline-none",

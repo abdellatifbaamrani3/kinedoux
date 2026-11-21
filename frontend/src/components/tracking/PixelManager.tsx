@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-import { captureAttribution, schedulePixelLoad, trackEvent } from "@/lib/tracking";
+import { captureAttribution, schedulePixelLoad, trackPageView } from "@/lib/tracking";
 
 export function PixelManager() {
   const pathname = usePathname();
@@ -15,7 +15,7 @@ export function PixelManager() {
 
   useEffect(() => {
     captureAttribution();
-    trackEvent("PageView");
+    trackPageView(pathname);
   }, [pathname]);
 
   return null;
