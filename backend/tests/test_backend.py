@@ -313,6 +313,33 @@ def _event(**kw):
     )
 
 
+def test_fbc_is_forwarded_unchanged(client):
+    from app.schemas.tracking import TrackEventIn
+    from app.services.capi_service import CapiEvent, UserContext, build_meta_payload
+
+    click = "fb.1.1554763741205.AbC+DeF_GhI" + ("Xy" * 200)
+    parsed = TrackEventIn(
+        event_name="ViewContent",
+        event_id="evt_vc_12345678",
+        fbc=click,
+        fbp="fb.1.1596403881668.1116446470",
+        value=499,
+        currency="MAD",
+    )
+    assert parsed.fbc == click
+    sent = build_meta_payload(
+        CapiEvent(
+            name="ViewContent",
+            event_id=parsed.event_id,
+            source_url="https://kinedoux.com/products/kenidoux-lumba",
+            user=UserContext(fbc=parsed.fbc, fbp=parsed.fbp),
+            value=499,
+            currency="MAD",
+        )
+    )["data"][0]["user_data"]["fbc"]
+    assert sent == click
+
+
 def test_capi_phone_rules_and_dedup(client, monkeypatch):
     from app.config import settings
     from app.services import capi_service as c

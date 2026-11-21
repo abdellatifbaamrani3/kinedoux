@@ -31,8 +31,8 @@ class Order(Base):
     client_ip: Mapped[str | None] = mapped_column(String(64), nullable=True)
     client_user_agent: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    fbp: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    fbc: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    fbp: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    fbc: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     ttp: Mapped[str | None] = mapped_column(String(255), nullable=True)
     ttclid: Mapped[str | None] = mapped_column(String(255), nullable=True)
     sc_cookie1: Mapped[str | None] = mapped_column(String(255), nullable=True)

@@ -6,6 +6,8 @@ from typing import Annotated
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 ShortStr = Annotated[str, StringConstraints(strip_whitespace=True, max_length=255)]
+# fbclid is case-sensitive. Do not trim or shorten fbc / fbp.
+ClickStr = Annotated[str, StringConstraints(max_length=2048)]
 EVENT_ID_RE = re.compile(r"^[A-Za-z0-9_\-]{8,100}$")
 
 
@@ -23,8 +25,8 @@ class OrderItemIn(BaseModel):
 class TrackingContext(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    fbp: ShortStr | None = None
-    fbc: ShortStr | None = None
+    fbp: ClickStr | None = None
+    fbc: ClickStr | None = None
     ttp: ShortStr | None = None
     ttclid: ShortStr | None = None
     sc_cookie1: ShortStr | None = None

@@ -64,7 +64,66 @@ export function makeEventId(name: EventName): string {
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp(`(?:^|; )${name.replace(/[$()*+.?[\\\]^{|}]/g, "\\$&")}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
+/** Click-id cookies must be read exactly. Decoding a value Meta already stored would change it. */
+function readExactCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name.replace(/[$()*+.?[\\\]^{|}]/g, "\\$&")}=([^;]*)`));
+  return match ? match[1] : null;
+}
+
+function writeExactCookie(name: string, value: string, days = 90): void {
+  if (typeof document === "undefined") return;
+  document.cookie = `${name}=${value}; max-age=${days * 86400}; path=/; SameSite=Lax`;
+}
+
+/**
+ * fbclid is case-sensitive. URLSearchParams turns "+" into a space, which Meta
+ * reports as a modified click id. Read the raw query value and keep "+".
+ */
+export function fbclidFromSearch(search: string): string | null {
+  const query = search.startsWith("?") ? search.slice(1) : search;
+  if (!query) return null;
+  for (const part of query.split("&")) {
+    if (!part) continue;
+    const eq = part.indexOf("=");
+    const rawKey = eq === -1 ? part : part.slice(0, eq);
+    let key = rawKey;
+    try {
+      key = decodeURIComponent(rawKey.replace(/\+/g, "%2B"));
+    } catch {
+      key = rawKey;
+    }
+    if (key !== "fbclid") continue;
+    const rawValue = eq === -1 ? "" : part.slice(eq + 1);
+    if (!rawValue) return null;
+    try {
+      return decodeURIComponent(rawValue.replace(/\+/g, "%2B"));
+    } catch {
+      return rawValue;
+    }
+  }
+  return null;
+}
+
+function fbcFromCookie(): string | null {
+  const raw = readExactCookie("_fbc");
+  if (!raw) return null;
+  if (!raw.includes("%")) return raw;
+  try {
+    const decoded = decodeURIComponent(raw);
+    if (decoded.startsWith("fb.")) return decoded;
+  } catch {
+    /* keep the raw cookie */
+  }
+  return raw;
 }
 
 function writeCookie(name: string, value: string, days = 90): void {
@@ -95,7 +154,7 @@ export function captureAttribution(): void {
   try {
     const q = new URLSearchParams(window.location.search);
     const found: Attribution = {};
-    const fbclid = q.get("fbclid");
+    const fbclid = fbclidFromSearch(window.location.search);
     const ttclid = q.get("ttclid");
     const sccid = q.get("ScCid") || q.get("sccid");
     if (fbclid) found.fbclid = fbclid;
@@ -105,9 +164,13 @@ export function captureAttribution(): void {
       const v = q.get(key);
       if (v) found[key] = v.slice(0, 150);
     }
-    if (!Object.keys(found).length) return;
-    localStorage.setItem("kd_attr", JSON.stringify({ ...readAttribution(), ...found }));
-    if (fbclid && !readCookie("_fbc")) writeCookie("_fbc", `fb.1.${Date.now()}.${fbclid}`);
+    if (Object.keys(found).length) {
+      localStorage.setItem("kd_attr", JSON.stringify({ ...readAttribution(), ...found }));
+    }
+    const existingFbc = fbcFromCookie();
+    if (fbclid && (!existingFbc || !existingFbc.includes(fbclid))) {
+      writeExactCookie("_fbc", `fb.1.${Date.now()}.${fbclid}`);
+    }
     if (ttclid) writeCookie("kd_ttclid", ttclid);
     if (sccid) writeCookie("kd_sccid", sccid);
   } catch {
@@ -118,10 +181,9 @@ export function captureAttribution(): void {
 export function getTrackingContext(): TrackingContextPayload {
   if (typeof window === "undefined") return {};
   const attr = readAttribution();
-  const fbc = readCookie("_fbc") || (attr.fbclid ? `fb.1.${Date.now()}.${attr.fbclid}` : null);
   return {
-    fbp: readCookie("_fbp"),
-    fbc,
+    fbp: readExactCookie("_fbp") || readCookie("_fbp"),
+    fbc: fbcFromCookie(),
     ttp: readCookie("_ttp"),
     ttclid: attr.ttclid || readCookie("kd_ttclid"),
     sc_cookie1: readCookie("_scid"),

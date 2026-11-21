@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
-from app.schemas.order import EVENT_ID_RE
+from app.schemas.order import EVENT_ID_RE, ClickStr
 
 TrackableEvent = Literal["PageView", "ViewContent", "AddToCart", "InitiateCheckout"]
 _Short = Annotated[str, StringConstraints(strip_whitespace=True, max_length=255)]
@@ -37,8 +37,8 @@ class TrackEventIn(BaseModel):
     currency: str = Field(default="MAD", max_length=10)
     contents: list[TrackContent] = Field(default_factory=list, max_length=12)
     user: TrackUser = Field(default_factory=TrackUser)
-    fbp: _Short | None = None
-    fbc: _Short | None = None
+    fbp: ClickStr | None = None
+    fbc: ClickStr | None = None
     ttp: _Short | None = None
     ttclid: _Short | None = None
     sc_cookie1: _Short | None = None
