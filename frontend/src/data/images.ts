@@ -40,7 +40,7 @@ export const IMAGES = {
   products: {
     "kenidoux-lumba": {
       ...set("lumba"),
-      main: "/images/lumba/man-shop.webp",
+      main: "/images/lumba/man-shop-square.webp",
       mechanism: "/images/lumba/columns-closeup.webp",
       lifestyle: "/images/lumba/drive-2.webp",
       kit: "/images/lumba/kit-mint.webp",

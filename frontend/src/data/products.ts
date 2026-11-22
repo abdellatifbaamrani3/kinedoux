@@ -205,7 +205,7 @@ const lumba: Product = {
   },
   gallery: [
     {
-      src: "/images/lumba/man-shop.webp",
+      src: "/images/lumba/man-shop-square.webp",
       label: "الصورة الرئيسية",
       alt: "مول الحانوت لابس حزام كينيدو لومبا وماسك المضخة",
     },

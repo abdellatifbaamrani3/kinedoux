@@ -19,9 +19,10 @@ export function ProductGallery({ product, frameClassName }: { product: Product; 
           src={current.src}
           alt={current.alt ?? current.label}
           fill
-          sizes="(max-width: 1024px) 42vw, 540px"
-          quality={70}
+          sizes="(max-width: 1024px) max(42vw, 368px), 540px"
+          quality={75}
           priority={active === 0}
+          fetchPriority={active === 0 ? "high" : "auto"}
           loading={active === 0 ? "eager" : "lazy"}
           unoptimized={current.src.endsWith(".svg")}
           className="object-cover"
