@@ -112,6 +112,7 @@ class OrderOut(BaseModel):
     event_id: str | None
     upsell_offer: UpsellOfferOut | None = None
     created_at: datetime | None = None
+    is_test: bool = False
 
 
 class OrderPublicOut(BaseModel):

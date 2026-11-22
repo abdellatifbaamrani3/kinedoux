@@ -123,6 +123,7 @@ def test_url_flag_is_not_a_test_and_admin_session_is(client):
         headers={"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"},
     )
     assert hidden.json()["stored"] is False
+    before = client.get(f"{API}/admin/metrics", params={"range": "today"}, headers=auth).json()
     spoofed = client.post(
         f"{API}/orders",
         json={
@@ -136,6 +137,9 @@ def test_url_flag_is_not_a_test_and_admin_session_is(client):
     assert spoofed.status_code == 201, spoofed.text
     listed = client.get(f"{API}/admin/orders", headers=auth, params={"q": "0691000077"}).json()
     assert listed["items"][0]["is_test"] is False
+    mid = client.get(f"{API}/admin/metrics", params={"range": "today"}, headers=auth).json()
+    assert mid["pipeline"]["orders"] == before["pipeline"]["orders"] + 1
+    assert mid["pipeline"]["revenue_placed"] == before["pipeline"]["revenue_placed"] + 499
 
     token = client.post(f"{API}/admin/login", json={"email": "admin@kinedoux.com", "password": "test-admin-pass"}).json()["token"]
     admin_order = client.post(
@@ -176,3 +180,59 @@ def test_url_flag_is_not_a_test_and_admin_session_is(client):
     payload = build_sheet_payload(snap)
     assert payload["agent_notes"] == "TEST"
     assert payload["customer_name"].startswith("TEST — ")
+    after = client.get(f"{API}/admin/metrics", params={"range": "today"}, headers=auth).json()
+    assert after["pipeline"]["orders"] == mid["pipeline"]["orders"]
+    assert after["pipeline"]["revenue_placed"] == mid["pipeline"]["revenue_placed"]
+
+
+def test_in_app_browser_visit_is_stored_and_dashed_id_links(client):
+    auth = _login(client)
+    facebook = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 "
+        "(KHTML, like Gecko) Mobile/21F79 [FBAN/FBIOS;FBAV/470.1.0.0.0;FBDV/iPhone15,2]"
+    )
+    instagram = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 "
+        "(KHTML, like Gecko) Mobile/21F79 Instagram 350.0.0.0.0"
+    )
+    dashed_visitor = "c1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    dashed_session = "d1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    visit = client.post(
+        f"{API}/track",
+        json={
+            "visitor_id": dashed_visitor,
+            "session_id": dashed_session,
+            "event": "page_view",
+            "path": "/products/kenidoux-lumba",
+            "utm_source": "facebook",
+            "utm_campaign": "iab",
+        },
+        headers={"User-Agent": facebook},
+    )
+    assert visit.status_code == 202 and visit.json()["stored"] is True
+    ig = client.post(
+        f"{API}/track",
+        json={
+            "visitor_id": "e1b2c3d4e5f6789012345678abcdef90",
+            "session_id": "f1b2c3d4e5f6789012345678abcdef90",
+            "event": "page_view",
+            "path": "/products/kenidoux-lumba",
+        },
+        headers={"User-Agent": instagram},
+    )
+    assert ig.status_code == 202 and ig.json()["stored"] is True
+    created = client.post(
+        f"{API}/orders",
+        json={
+            "customer_name": "هند — الرباط",
+            "customer_phone": "0691000074",
+            "items": [{"product_slug": "kenidoux-lumba", "offer_id": "lumba-1", "quantity": 1}],
+            "event_id": f"evt_purchase_{uuid.uuid4()}",
+            "tracking": {"visitor_id": dashed_visitor, "session_id": dashed_session, "utm_source": "facebook", "utm_campaign": "iab"},
+        },
+    )
+    assert created.status_code == 201, created.text
+    listed = client.get(f"{API}/admin/orders", headers=auth, params={"q": "0691000074"}).json()
+    assert listed["items"][0]["tracked"] is True
+    assert listed["items"][0]["campaign"] == "iab"
+    assert listed["items"][0]["is_test"] is False

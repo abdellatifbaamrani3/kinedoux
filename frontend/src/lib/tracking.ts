@@ -128,8 +128,12 @@ function fbcFromCookie(): string | null {
 }
 
 function writeCookie(name: string, value: string, days = 90): void {
-  if (typeof document === "undefined") return;
-  document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${days * 86400}; path=/; SameSite=Lax`;
+  try {
+    if (typeof document === "undefined") return;
+    document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${days * 86400}; path=/; SameSite=Lax`;
+  } catch {
+    /* in-app browsers can block cookies */
+  }
 }
 
 type Attribution = {
@@ -146,6 +150,25 @@ type Attribution = {
 function readAttribution(): Attribution {
   try {
     return JSON.parse(localStorage.getItem("kd_attr") || "{}") as Attribution;
+  } catch {
+    return {};
+  }
+}
+
+function urlAttribution(): Attribution {
+  if (typeof window === "undefined") return {};
+  try {
+    const q = new URLSearchParams(window.location.search);
+    const found: Attribution = {};
+    const fbclid = fbclidFromSearch(window.location.search);
+    const ttclid = q.get("ttclid");
+    if (fbclid) found.fbclid = fbclid;
+    if (ttclid) found.ttclid = ttclid;
+    for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const) {
+      const value = q.get(key);
+      if (value) found[key] = value.slice(0, 150);
+    }
+    return found;
   } catch {
     return {};
   }
@@ -186,6 +209,7 @@ export function getTrackingContext(): TrackingContextPayload {
   const ids = ensureStoreIds();
   const attr = readAttribution();
   const first = sessionFirstTouch();
+  const live = urlAttribution();
   return {
     fbp: readExactCookie("_fbp") || readCookie("_fbp"),
     fbc: fbcFromCookie(),
@@ -193,11 +217,11 @@ export function getTrackingContext(): TrackingContextPayload {
     ttclid: first.ttclid || attr.ttclid || readCookie("kd_ttclid"),
     sc_cookie1: readCookie("_scid"),
     sc_click_id: attr.sccid || readCookie("kd_sccid"),
-    utm_source: first.utm_source || attr.utm_source || null,
-    utm_medium: first.utm_medium || attr.utm_medium || null,
-    utm_campaign: first.utm_campaign || attr.utm_campaign || null,
-    utm_content: first.utm_content || attr.utm_content || null,
-    utm_term: first.utm_term || attr.utm_term || null,
+    utm_source: first.utm_source || attr.utm_source || live.utm_source || null,
+    utm_medium: first.utm_medium || attr.utm_medium || live.utm_medium || null,
+    utm_campaign: first.utm_campaign || attr.utm_campaign || live.utm_campaign || null,
+    utm_content: first.utm_content || attr.utm_content || live.utm_content || null,
+    utm_term: first.utm_term || attr.utm_term || live.utm_term || null,
     visitor_id: ids.visitor,
     session_id: ids.session,
     page_url: window.location.href,

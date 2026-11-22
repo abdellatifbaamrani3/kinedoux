@@ -47,6 +47,7 @@ def _order_out(snap: OrderSnapshot, created_at, with_offer: bool) -> OrderOut:
         event_id=snap.event_id,
         upsell_offer=UpsellOfferOut(**offer.as_dict()) if offer else None,
         created_at=created_at,
+        is_test=snap.is_test,
     )
 
 

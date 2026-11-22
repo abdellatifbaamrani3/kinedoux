@@ -49,6 +49,7 @@ export type ApiOrder = {
   items: ApiOrderItem[];
   event_id: string | null;
   upsell_offer: ApiUpsellOffer | null;
+  is_test?: boolean;
 };
 
 export type ApiOrderPublic = {

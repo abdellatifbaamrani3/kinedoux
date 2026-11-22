@@ -30,21 +30,47 @@ type Extra = {
 };
 
 const QUEUE_KEY = "kd_event_queue";
+let rememberedVisitor = "";
+let rememberedSession = "";
 
 function readCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
+  try {
+    if (typeof document === "undefined") return null;
+    const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : null;
+  } catch {
+    return null;
+  }
 }
 
 function writeCookie(name: string, value: string, seconds: number) {
-  document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${seconds}; path=/; SameSite=Lax`;
+  try {
+    document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${seconds}; path=/; SameSite=Lax`;
+  } catch {
+    /* Facebook and Instagram in-app browsers can block cookies */
+  }
 }
 
 function newId() {
   const cryptoRef = globalThis.crypto;
   if (cryptoRef?.randomUUID) return cryptoRef.randomUUID().replace(/-/g, "");
-  return `${Date.now().toString(16)}${Math.random().toString(16).slice(2, 10)}`;
+  if (cryptoRef?.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    cryptoRef.getRandomValues(bytes);
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  let text = "";
+  while (text.length < 32) text += Math.random().toString(16).slice(2);
+  return text.slice(0, 32).padEnd(32, "0");
+}
+
+function stored(area: "session" | "local", key: string): string {
+  try {
+    const box = area === "session" ? sessionStorage : localStorage;
+    return box.getItem(key) || "";
+  } catch {
+    return "";
+  }
 }
 
 function readJson<T>(raw: string | null, fallback: T): T {
@@ -83,17 +109,13 @@ export function sessionFirstTouch(): Attribution {
 }
 
 function lastTouch(): Attribution {
-  return readJson<Attribution>(localStorage.getItem("kd_attr"), {});
+  return readJson<Attribution>(stored("local", "kd_attr"), {});
 }
 
 export function ensureStoreIds() {
-  let visitor = readCookie("kd_vid");
-  try {
-    visitor = visitor || localStorage.getItem("kd_vid");
-  } catch {
-    /* private mode */
-  }
+  let visitor = rememberedVisitor || readCookie("kd_vid") || stored("local", "kd_vid");
   if (!visitor) visitor = newId();
+  rememberedVisitor = visitor;
   writeCookie("kd_vid", visitor, 60 * 60 * 24 * 365);
   try {
     localStorage.setItem("kd_vid", visitor);
@@ -102,7 +124,7 @@ export function ensureStoreIds() {
   }
 
   const incoming = landingTouch();
-  let session = readCookie("kd_sid");
+  let session = rememberedSession || readCookie("kd_sid");
   let saved = { utm_source: "", utm_campaign: "" };
   try {
     saved = readJson(sessionStorage.getItem("kd_session_utm"), saved);
@@ -129,8 +151,10 @@ export function ensureStoreIds() {
       /* private mode */
     }
   }
-  writeCookie("kd_sid", session || newId(), 60 * 30);
-  return { visitor, session: session || newId(), fresh };
+  if (!session) session = newId();
+  rememberedSession = session;
+  writeCookie("kd_sid", session, 60 * 30);
+  return { visitor, session, fresh };
 }
 
 function payload(event: StoreEventName, extra?: Extra) {
@@ -147,15 +171,15 @@ function payload(event: StoreEventName, extra?: Extra) {
     product_slug: extra?.product_slug || null,
     value_mad: extra?.value_mad ?? null,
     metadata: extra?.metadata || null,
-    landing_page: sessionStorage.getItem("kd_landing") || location.pathname,
-    referrer: sessionStorage.getItem("kd_referrer") || "",
-    utm_source: first.utm_source || null,
-    utm_medium: first.utm_medium || null,
-    utm_campaign: first.utm_campaign || null,
-    utm_content: first.utm_content || null,
-    utm_term: first.utm_term || null,
-    fbclid: first.fbclid || null,
-    ttclid: first.ttclid || null,
+    landing_page: stored("session", "kd_landing") || location.pathname,
+    referrer: stored("session", "kd_referrer") || "",
+    utm_source: first.utm_source || landingTouch().utm_source || null,
+    utm_medium: first.utm_medium || landingTouch().utm_medium || null,
+    utm_campaign: first.utm_campaign || landingTouch().utm_campaign || null,
+    utm_content: first.utm_content || landingTouch().utm_content || null,
+    utm_term: first.utm_term || landingTouch().utm_term || null,
+    fbclid: first.fbclid || landingTouch().fbclid || null,
+    ttclid: first.ttclid || landingTouch().ttclid || null,
     last_utm_source: last.utm_source || first.utm_source || null,
     last_utm_medium: last.utm_medium || first.utm_medium || null,
     last_utm_campaign: last.utm_campaign || first.utm_campaign || null,
@@ -210,18 +234,23 @@ function flushQueue() {
 }
 
 export function trackStore(event: StoreEventName, extra?: Extra) {
-  if (typeof window === "undefined") return;
-  const path = location.pathname;
-  if (path === "/admin" || path.startsWith("/admin/")) return;
-  const mark = `${event}:${extra?.product_slug || path}:${extra?.metadata?.field || extra?.metadata?.depth || ""}`;
   try {
-    const last = Number(sessionStorage.getItem(`kd_seen_${mark}`) || 0);
+    if (typeof window === "undefined") return;
+    const path = location.pathname;
+    if (path === "/admin" || path.startsWith("/admin/")) return;
+    const mark = `${event}:${extra?.product_slug || path}:${extra?.metadata?.field || extra?.metadata?.depth || ""}`;
+    const seenKey = `kd_seen_${mark}`;
+    const last = Number(stored("session", seenKey) || 0);
     if (Date.now() - last < 1500) return;
-    sessionStorage.setItem(`kd_seen_${mark}`, String(Date.now()));
+    try {
+      sessionStorage.setItem(seenKey, String(Date.now()));
+    } catch {
+      /* still send */
+    }
+    deliver(payload(event, extra));
   } catch {
-    /* still send */
+    /* a blocked in-app browser still has to leave the form usable */
   }
-  deliver(payload(event, extra));
 }
 
 export function installStoreObservers() {

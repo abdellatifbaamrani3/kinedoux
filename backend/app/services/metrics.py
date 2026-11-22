@@ -82,7 +82,7 @@ def _event_count(db: Session, start: datetime, end: datetime, name: str) -> int:
 
 
 def _orders_query(start: datetime, end: datetime):
-    return select(Order).where(Order.created_at >= start, Order.created_at < end)
+    return select(Order).where(Order.created_at >= start, Order.created_at < end, Order.is_test.is_(False))
 
 
 def _order_rows(db: Session, start: datetime, end: datetime) -> list[Order]:
@@ -110,6 +110,7 @@ def _hours(db: Session, start: datetime, end: datetime) -> dict[str, float | Non
         .where(
             Order.created_at >= start,
             Order.created_at < end,
+            Order.is_test.is_(False),
             OrderEvent.to_status.in_(("confirmed", "delivered")),
         )
     ).all()
@@ -373,7 +374,7 @@ def _products(db: Session, start: datetime, end: datetime) -> list[dict]:
     for slug, status, count in db.execute(
         select(OrderItem.product_slug, Order.fulfillment_status, func.count(func.distinct(Order.id)))
         .join(Order, Order.id == OrderItem.order_id)
-        .where(Order.created_at >= start, Order.created_at < end)
+        .where(Order.created_at >= start, Order.created_at < end, Order.is_test.is_(False))
         .group_by(OrderItem.product_slug, Order.fulfillment_status)
     ).all():
         slot = folded.setdefault(slug, _slot())

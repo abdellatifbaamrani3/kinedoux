@@ -50,9 +50,12 @@ def _clip(value: str | None, limit: int) -> str | None:
 
 
 def clean_id(value: str | None) -> str | None:
-    if not value or not _ID.match(value):
+    if not value:
         return None
-    return value
+    text = re.sub(r"[^A-Za-z0-9]", "", str(value))
+    if not _ID.match(text):
+        return None
+    return text
 
 
 def _event_key(value: str | None) -> str | None:

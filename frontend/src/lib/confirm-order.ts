@@ -19,6 +19,7 @@ export async function settleCodOrder(order: ApiOrder): Promise<ApiOrder> {
 
 /** Browser Purchase once per order. The thank-you page sees the same key and does not send it again. */
 export function firePurchaseOnce(order: ApiOrder): void {
+  if (order.is_test) return;
   const eventId = order.event_id;
   if (!eventId || typeof window === "undefined") return;
   const key = `kd_purchase_${order.id}`;
