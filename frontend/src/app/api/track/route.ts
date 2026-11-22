@@ -1,13 +1,8 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { apiBase } from "@/lib/admin-proxy";
 
 export async function POST(request: Request) {
-  const jar = await cookies();
-  if (jar.get("kd_admin")) {
-    return NextResponse.json({ ok: true, ignored: true });
-  }
   const headers = new Headers({ "content-type": "application/json" });
   const agent = request.headers.get("user-agent");
   if (agent) headers.set("user-agent", agent);

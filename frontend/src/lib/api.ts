@@ -80,7 +80,6 @@ export type TrackingContextPayload = {
   visitor_id?: string | null;
   session_id?: string | null;
   page_url?: string | null;
-  is_test?: boolean;
 };
 
 export type CreateOrderBody = {
@@ -93,14 +92,17 @@ export type CreateOrderBody = {
 
 const GENERIC_ERROR = "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو التواصل معنا عبر الواتساب.";
 
-async function request<T>(path: string, init?: RequestInit & { timeoutMs?: number }): Promise<T> {
+async function request<T>(path: string, init?: RequestInit & { timeoutMs?: number; sameOrigin?: boolean }): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), init?.timeoutMs ?? 15000);
+  const { timeoutMs: _timeout, sameOrigin, ...rest } = init ?? {};
+  const base = sameOrigin ? "" : API_URL;
   try {
-    const res = await fetch(`${API_URL}${path}`, {
-      ...init,
+    const res = await fetch(`${base}${path}`, {
+      ...rest,
       signal: controller.signal,
-      headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
+      credentials: sameOrigin ? "include" : "same-origin",
+      headers: { "Content-Type": "application/json", ...(rest.headers || {}) },
     });
     if (!res.ok) {
       let message = GENERIC_ERROR;
@@ -124,7 +126,7 @@ async function request<T>(path: string, init?: RequestInit & { timeoutMs?: numbe
 
 export const api = {
   createOrder: (body: CreateOrderBody) =>
-    request<ApiOrder>("/api/v1/orders", { method: "POST", body: JSON.stringify(body) }),
+    request<ApiOrder>("/api/v1/orders", { method: "POST", body: JSON.stringify(body), sameOrigin: true }),
 
   decideUpsell: (
     orderId: string,

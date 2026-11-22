@@ -85,6 +85,7 @@ def _public(order: Order, neighbors: list[Order], blocked: set[str]) -> dict:
         "tracking_number": order.tracking_number,
         "duplicate": admin_desk.is_duplicate(order, neighbors),
         "blacklisted": order.customer_phone_e164 in blocked,
+        "is_test": bool(order.is_test),
     }
 
 

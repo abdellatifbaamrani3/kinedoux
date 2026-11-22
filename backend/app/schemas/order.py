@@ -39,7 +39,6 @@ class TrackingContext(BaseModel):
     visitor_id: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] | None = None
     session_id: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] | None = None
     page_url: Annotated[str, StringConstraints(strip_whitespace=True, max_length=1000)] | None = None
-    is_test: bool = False
 
 
 class OrderCreate(BaseModel):

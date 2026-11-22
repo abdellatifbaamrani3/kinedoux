@@ -111,25 +111,68 @@ def test_duplicate_event_and_untracked_order(client):
     assert counts == sorted(counts, reverse=True)
 
 
-def test_admin_path_and_test_order_are_excluded(client):
+def test_url_flag_is_not_a_test_and_admin_session_is(client):
+    from app.services.sheets_webhook import build_sheet_payload
+    from app.services.snapshot import OrderSnapshot
+    from datetime import datetime, timezone
+
     auth = _login(client)
-    before = client.get(f"{API}/admin/metrics", params={"range": "today"}, headers=auth).json()
     hidden = client.post(
         f"{API}/track",
         json={"visitor_id": VISITOR, "session_id": SESSION, "event": "page_view", "path": "/admin/orders"},
         headers={"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"},
     )
     assert hidden.json()["stored"] is False
-    created = client.post(
+    spoofed = client.post(
         f"{API}/orders",
         json={
             "customer_name": "هند — الرباط",
             "customer_phone": "0691000077",
             "items": [{"product_slug": "kenidoux-lumba", "offer_id": "lumba-1", "quantity": 1}],
             "event_id": f"evt_purchase_{uuid.uuid4()}",
-            "tracking": {"visitor_id": VISITOR, "session_id": SESSION, "is_test": True},
+            "tracking": {"visitor_id": VISITOR, "session_id": SESSION, "is_test": True, "utm_source": "facebook", "utm_campaign": "test"},
         },
     )
-    assert created.status_code == 201, created.text
-    after = client.get(f"{API}/admin/metrics", params={"range": "today"}, headers=auth).json()
-    assert after["pipeline"]["orders"] == before["pipeline"]["orders"]
+    assert spoofed.status_code == 201, spoofed.text
+    listed = client.get(f"{API}/admin/orders", headers=auth, params={"q": "0691000077"}).json()
+    assert listed["items"][0]["is_test"] is False
+
+    token = client.post(f"{API}/admin/login", json={"email": "admin@kinedoux.com", "password": "test-admin-pass"}).json()["token"]
+    admin_order = client.post(
+        f"{API}/orders",
+        json={
+            "customer_name": "هند — الرباط",
+            "customer_phone": "0691000076",
+            "items": [{"product_slug": "kenidoux-lumba", "offer_id": "lumba-1", "quantity": 1}],
+            "event_id": f"evt_purchase_{uuid.uuid4()}",
+            "tracking": {"visitor_id": VISITOR, "session_id": SESSION, "utm_source": "facebook", "utm_campaign": "test"},
+        },
+        headers={"x-admin-session": token, "User-Agent": "Mozilla/5.0"},
+    )
+    assert admin_order.status_code == 201, admin_order.text
+    marked = client.get(f"{API}/admin/orders", headers=auth, params={"q": "0691000076"}).json()
+    assert marked["items"][0]["is_test"] is True
+    assert marked["items"][0]["campaign"] == "test"
+    snap = OrderSnapshot(
+        id=uuid.uuid4(),
+        order_number="KD-TEST",
+        customer_name="هند",
+        phone_e164="+212600000000",
+        phone_digits="212600000000",
+        phone_local="0600000000",
+        country="MA",
+        status="confirmed",
+        items=[],
+        subtotal_mad=499,
+        upsell_added=False,
+        upsell_product_slug=None,
+        upsell_price_mad=0,
+        total_mad=499,
+        currency="MAD",
+        event_id="evt",
+        created_at=datetime.now(timezone.utc),
+        is_test=True,
+    )
+    payload = build_sheet_payload(snap)
+    assert payload["agent_notes"] == "TEST"
+    assert payload["customer_name"].startswith("TEST — ")

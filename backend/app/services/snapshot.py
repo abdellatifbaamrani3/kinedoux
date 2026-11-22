@@ -38,6 +38,7 @@ class OrderSnapshot:
     utm_source: str | None = None
     utm_campaign: str | None = None
     page_url: str | None = None
+    is_test: bool = False
     extra: dict = field(default_factory=dict)
 
 
@@ -74,4 +75,5 @@ def snapshot_from_order(order: Order) -> OrderSnapshot:
         utm_source=order.utm_source,
         utm_campaign=order.utm_campaign,
         page_url=order.page_url,
+        is_test=bool(order.is_test),
     )

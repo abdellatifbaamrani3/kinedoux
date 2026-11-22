@@ -248,7 +248,6 @@ def attach_order(db: Session, order: Order, tracking) -> None:
     """Link the order to the visit and write order_placed on the server."""
     visitor_id = clean_id(getattr(tracking, "visitor_id", None))
     session_id = clean_id(getattr(tracking, "session_id", None))
-    order.is_test = bool(getattr(tracking, "is_test", False))
     if getattr(tracking, "utm_term", None) and not order.utm_term:
         order.utm_term = _clip(tracking.utm_term, 150)
     if not visitor_id or not session_id:

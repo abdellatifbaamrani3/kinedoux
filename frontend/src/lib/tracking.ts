@@ -5,7 +5,7 @@
  * This module flushes later events into that same fbq queue. It does not wait.
  */
 import { relayEventToServer, type TrackingContextPayload } from "./api";
-import { ensureStoreIds, isTestVisit, sessionFirstTouch } from "./store-track";
+import { ensureStoreIds, sessionFirstTouch } from "./store-track";
 import { META_PIXEL_ID } from "./meta-pixel";
 import type { PhoneValidationResult } from "./phone";
 
@@ -201,7 +201,6 @@ export function getTrackingContext(): TrackingContextPayload {
     visitor_id: ids.visitor,
     session_id: ids.session,
     page_url: window.location.href,
-    is_test: isTestVisit(),
   };
 }
 

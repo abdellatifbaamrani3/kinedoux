@@ -74,22 +74,6 @@ function landingTouch(): Attribution {
   return found;
 }
 
-function rememberTestFlag() {
-  try {
-    if (new URLSearchParams(location.search).get("kd_test") === "1") sessionStorage.setItem("kd_test", "1");
-  } catch {
-    /* private mode */
-  }
-}
-
-export function isTestVisit() {
-  try {
-    return sessionStorage.getItem("kd_test") === "1" || new URLSearchParams(location.search).get("kd_test") === "1";
-  } catch {
-    return false;
-  }
-}
-
 export function sessionFirstTouch(): Attribution {
   try {
     return readJson<Attribution>(sessionStorage.getItem("kd_first"), {});
@@ -103,7 +87,6 @@ function lastTouch(): Attribution {
 }
 
 export function ensureStoreIds() {
-  rememberTestFlag();
   let visitor = readCookie("kd_vid");
   try {
     visitor = visitor || localStorage.getItem("kd_vid");

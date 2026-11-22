@@ -63,10 +63,6 @@ def _aware(value: datetime) -> datetime:
     return value
 
 
-def _real(column=Order.is_test):
-    return column.is_(False)
-
-
 def _event_ids(db: Session, start: datetime, end: datetime, names: tuple[str, ...] | None = None) -> set[str]:
     stmt = select(StoreEvent.visitor_id).where(StoreEvent.created_at >= start, StoreEvent.created_at < end)
     if names:
@@ -86,7 +82,7 @@ def _event_count(db: Session, start: datetime, end: datetime, name: str) -> int:
 
 
 def _orders_query(start: datetime, end: datetime):
-    return select(Order).where(Order.created_at >= start, Order.created_at < end, _real())
+    return select(Order).where(Order.created_at >= start, Order.created_at < end)
 
 
 def _order_rows(db: Session, start: datetime, end: datetime) -> list[Order]:
@@ -114,7 +110,6 @@ def _hours(db: Session, start: datetime, end: datetime) -> dict[str, float | Non
         .where(
             Order.created_at >= start,
             Order.created_at < end,
-            _real(),
             OrderEvent.to_status.in_(("confirmed", "delivered")),
         )
     ).all()
@@ -284,84 +279,113 @@ def _merge_source(db: Session, start: datetime, end: datetime, visit_column, ord
     return rows[:20]
 
 
+def _slot() -> dict:
+    return {"visitors": 0, "checkout": 0, "orders": 0, "confirmed": 0, "delivered": 0}
+
+
+def _finish(folded: dict[str, dict]) -> list[dict]:
+    rows = []
+    for key, slot in folded.items():
+        slot["key"] = key
+        visitors = slot["visitors"]
+        slot["conversion"] = _capped_rate(min(slot["orders"], visitors), visitors) if visitors else None
+        rows.append(slot)
+    rows.sort(key=lambda row: (row["orders"], row["visitors"]), reverse=True)
+    return rows[:20]
+
+
 def _devices(db: Session, start: datetime, end: datetime) -> list[dict]:
     label = func.coalesce(Visitor.device, "desktop")
-    rows = db.execute(
+    folded: dict[str, dict] = {}
+    for key, count in db.execute(
         select(label, func.count(func.distinct(StoreEvent.visitor_id)))
         .join(Visitor, Visitor.id == StoreEvent.visitor_id)
         .where(StoreEvent.created_at >= start, StoreEvent.created_at < end, StoreEvent.name == "page_view")
         .group_by(label)
-    ).all()
-    return [{"key": str(key), "visitors": int(count)} for key, count in rows]
+    ).all():
+        folded.setdefault(str(key), _slot())["visitors"] = int(count)
+    for key, count in db.execute(
+        select(label, func.count(func.distinct(StoreEvent.visitor_id)))
+        .join(Visitor, Visitor.id == StoreEvent.visitor_id)
+        .where(StoreEvent.created_at >= start, StoreEvent.created_at < end, StoreEvent.name.in_(CHECKOUT_NAMES))
+        .group_by(label)
+    ).all():
+        folded.setdefault(str(key), _slot())["checkout"] = int(count)
+    for order in _order_rows(db, start, end):
+        device = "untracked"
+        if order.visitor_id:
+            visitor = db.get(Visitor, order.visitor_id)
+            device = (visitor.device if visitor and visitor.device else "desktop")
+        slot = folded.setdefault(device, _slot())
+        slot["orders"] += 1
+        if (order.fulfillment_status or "") in REACHED_CONFIRMED:
+            slot["confirmed"] += 1
+        if (order.fulfillment_status or "") == "delivered":
+            slot["delivered"] += 1
+    return _finish(folded)
 
 
 def _cities(db: Session, start: datetime, end: datetime) -> list[dict]:
-    orders = [order for order in _order_rows(db, start, end) if order.city]
-    folded: dict[str, list[Order]] = {}
-    for order in orders:
-        folded.setdefault(order.city or "", []).append(order)
-    result = []
-    for city, group in folded.items():
-        confirmed = sum(1 for order in group if (order.fulfillment_status or "") in REACHED_CONFIRMED)
-        delivered = sum(1 for order in group if (order.fulfillment_status or "") == "delivered")
-        returned = sum(1 for order in group if (order.fulfillment_status or "") == "returned")
-        result.append(
-            {
-                "key": city,
-                "orders": len(group),
-                "confirmation_rate": _rate(confirmed, len(group)),
-                "delivery_rate": _rate(delivered, delivered + returned),
-            }
-        )
-    result.sort(key=lambda row: row["orders"], reverse=True)
-    return result[:20]
+    folded: dict[str, dict] = {}
+    for key, count in db.execute(
+        select(StoreEvent.city, func.count(func.distinct(StoreEvent.visitor_id)))
+        .where(StoreEvent.created_at >= start, StoreEvent.created_at < end, StoreEvent.name == "page_view", StoreEvent.city.is_not(None))
+        .group_by(StoreEvent.city)
+    ).all():
+        folded.setdefault(str(key), _slot())["visitors"] = int(count)
+    for key, count in db.execute(
+        select(StoreEvent.city, func.count(func.distinct(StoreEvent.visitor_id)))
+        .where(StoreEvent.created_at >= start, StoreEvent.created_at < end, StoreEvent.name.in_(CHECKOUT_NAMES), StoreEvent.city.is_not(None))
+        .group_by(StoreEvent.city)
+    ).all():
+        folded.setdefault(str(key), _slot())["checkout"] = int(count)
+    for order in _order_rows(db, start, end):
+        city = order.city or "—"
+        slot = folded.setdefault(city, _slot())
+        slot["orders"] += 1
+        if (order.fulfillment_status or "") in REACHED_CONFIRMED:
+            slot["confirmed"] += 1
+        if (order.fulfillment_status or "") == "delivered":
+            slot["delivered"] += 1
+    return _finish(folded)
 
 
 def _products(db: Session, start: datetime, end: datetime) -> list[dict]:
-    view_rows = db.execute(
-        select(StoreEvent.product_slug, func.count(StoreEvent.id))
-        .where(
+    folded: dict[str, dict] = {}
+    for slug, count in db.execute(
+        select(StoreEvent.product_slug, func.count(func.distinct(StoreEvent.visitor_id))).where(
             StoreEvent.created_at >= start,
             StoreEvent.created_at < end,
             StoreEvent.name == "product_view",
             StoreEvent.product_slug.is_not(None),
-        )
-        .group_by(StoreEvent.product_slug)
-    ).all()
-    checkout_rows = db.execute(
-        select(StoreEvent.product_slug, func.count(func.distinct(StoreEvent.visitor_id)))
-        .where(
+        ).group_by(StoreEvent.product_slug)
+    ).all():
+        folded.setdefault(slug, _slot())["visitors"] = int(count)
+    for slug, count in db.execute(
+        select(StoreEvent.product_slug, func.count(func.distinct(StoreEvent.visitor_id))).where(
             StoreEvent.created_at >= start,
             StoreEvent.created_at < end,
             StoreEvent.name.in_(CHECKOUT_NAMES),
             StoreEvent.product_slug.is_not(None),
-        )
-        .group_by(StoreEvent.product_slug)
-    ).all()
-    order_rows = db.execute(
+        ).group_by(StoreEvent.product_slug)
+    ).all():
+        folded.setdefault(slug, _slot())["checkout"] = int(count)
+    for slug, status, count in db.execute(
         select(OrderItem.product_slug, Order.fulfillment_status, func.count(func.distinct(Order.id)))
         .join(Order, Order.id == OrderItem.order_id)
-        .where(Order.created_at >= start, Order.created_at < end, _real())
+        .where(Order.created_at >= start, Order.created_at < end)
         .group_by(OrderItem.product_slug, Order.fulfillment_status)
-    ).all()
-    folded: dict[str, dict] = {}
-    for slug, count in view_rows:
-        folded.setdefault(slug, {"key": slug, "views": 0, "checkout": 0, "orders": 0, "delivered": 0})
-        folded[slug]["views"] = int(count)
-    for slug, count in checkout_rows:
-        slot = folded.setdefault(slug, {"key": slug, "views": 0, "checkout": 0, "orders": 0, "delivered": 0})
-        slot["checkout"] = int(count)
-    for slug, status, count in order_rows:
-        slot = folded.setdefault(slug, {"key": slug, "views": 0, "checkout": 0, "orders": 0, "delivered": 0})
+    ).all():
+        slot = folded.setdefault(slug, _slot())
         slot["orders"] += int(count)
+        if status in REACHED_CONFIRMED:
+            slot["confirmed"] += int(count)
         if status == "delivered":
             slot["delivered"] += int(count)
-    rows = list(folded.values())
-    rows.sort(key=lambda row: (row["orders"], row["views"]), reverse=True)
-    return rows[:20]
+    return _finish(folded)
 
 
-def _form(db: Session, start: datetime, end: datetime) -> dict:
+def _form(db: Session, start: datetime, end: datetime, orders: list[Order]) -> dict:
     started = len(_event_ids(db, start, end, CHECKOUT_NAMES))
     attempts = len(_event_ids(db, start, end, ("order_submit_attempt",)))
     errors = len(_event_ids(db, start, end, ("order_submit_error",)))
@@ -385,6 +409,7 @@ def _form(db: Session, start: datetime, end: datetime) -> dict:
         "address": len(fields["address"]),
         "submit_attempt": attempts,
         "submit_error": errors,
+        "order_placed": len({order.visitor_id for order in orders if order.visitor_id}),
     }
 
 
@@ -442,7 +467,7 @@ def report(db: Session, preset: str | None, date_from: str | None, date_to: str 
         if pipeline["delivery_rate"] is None or previous_pipeline["delivery_rate"] is None
         else _change(pipeline["delivery_rate"], previous_pipeline["delivery_rate"]),
         "pipeline": pipeline,
-        "form": _form(db, start, end),
+        "form": _form(db, start, end, orders),
         "by_source": _merge_source(db, start, end, StoreSession.utm_source, Order.utm_source),
         "by_campaign": _merge_source(db, start, end, StoreSession.utm_campaign, Order.utm_campaign),
         "by_ad": _merge_source(db, start, end, StoreSession.utm_content, Order.utm_content),

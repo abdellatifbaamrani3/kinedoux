@@ -24,6 +24,7 @@ type OrderRow = {
   tracking_number: string | null;
   duplicate: boolean;
   blacklisted: boolean;
+  is_test?: boolean;
 };
 
 type HistoryItem = {
@@ -227,6 +228,7 @@ export function OrdersDesk() {
                 </p>
                 <p className="mt-1 text-xs text-slate-500">{order.campaign || ""} · {t.attempts}: {order.call_attempts}</p>
                 <div className="mt-2 flex flex-wrap gap-2">
+                  {order.is_test ? <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-semibold">{t.testOrder}</span> : null}
                   {order.duplicate ? <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{t.duplicate}</span> : null}
                   {order.blacklisted ? <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700">{t.blocked}</span> : null}
                   <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs text-brand">{statusName(lang, order.status)}</span>

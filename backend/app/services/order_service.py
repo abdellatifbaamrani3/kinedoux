@@ -78,7 +78,7 @@ def _write_items(order: Order, items: list[dict]) -> None:
 
 
 def create_order(
-    db: Session, payload: OrderCreate, client_ip: str | None, user_agent: str | None
+    db: Session, payload: OrderCreate, client_ip: str | None, user_agent: str | None, admin_test: bool = False
 ) -> tuple[Order, bool]:
     """Persist a `pending_upsell` order. Returns (order, created). Idempotent on `event_id`."""
     phone = validate_and_format_phone(payload.customer_phone, settings.PHONE_VALIDATION_MODE)
@@ -130,12 +130,9 @@ def create_order(
             utm_content=t.utm_content,
             utm_term=t.utm_term,
             page_url=t.page_url,
-            is_test=bool(t.is_test),
+            is_test=admin_test,
             fulfillment_status="new",
         )
-        if t.is_test:
-            order.sheet_synced = True
-            order.capi_purchase_sent = True
         apply_place(order)
         _write_items(order, items)
         try:
@@ -210,7 +207,10 @@ def finalize_order(
             log.info("order %s: late upsell acceptance applied", order.order_number)
 
     send_sheet = settings.sheets_enabled and not order.sheet_synced
-    send_capi = capi_service.capi_enabled() and not order.capi_purchase_sent
+    send_capi = capi_service.capi_enabled() and not order.capi_purchase_sent and not order.is_test
+    if order.is_test and not order.capi_purchase_sent:
+        order.capi_purchase_sent = True
+        log.info("order %s is an admin test, so no Meta Purchase is sent", order.order_number)
     if send_sheet:
         order.sheet_synced = True  # claim before dispatch -> never double-send
         order.sheet_synced_at = now
@@ -307,12 +307,12 @@ def _sweep_once() -> tuple[list[uuid.UUID], list[tuple[uuid.UUID, bool, bool]]]:
             conds.append(Order.capi_purchase_sent.is_(False))
         if conds:
             rows = db.execute(
-                select(Order.id, Order.sheet_synced, Order.capi_purchase_sent)
+                select(Order.id, Order.sheet_synced, Order.capi_purchase_sent, Order.is_test)
                 .where(Order.status == "confirmed", Order.created_at > cutoff_retry, or_(*conds))
                 .limit(50)
             ).all()
-            for oid, sheet_done, capi_done in rows:
-                retry.append((oid, settings.sheets_enabled and not sheet_done, capi_service.capi_enabled() and not capi_done))
+            for oid, sheet_done, capi_done, is_test in rows:
+                retry.append((oid, settings.sheets_enabled and not sheet_done, capi_service.capi_enabled() and not capi_done and not is_test))
     return stuck, retry
 
 

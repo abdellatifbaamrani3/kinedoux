@@ -39,8 +39,9 @@ type Report = {
     address: number;
     submit_attempt: number;
     submit_error: number;
+    order_placed: number;
   };
-  by_product: { key: string; views: number; checkout: number; orders: number; delivered: number }[];
+  by_product: SplitRow[];
   pipeline: {
     orders: number;
     pending: number;
@@ -64,8 +65,8 @@ type Report = {
   by_source: SplitRow[];
   by_campaign: SplitRow[];
   by_ad: SplitRow[];
-  by_device: { key: string; visitors: number }[];
-  by_city: { key: string; orders: number; confirmation_rate: number | null; delivery_rate: number | null }[];
+  by_device: SplitRow[];
+  by_city: SplitRow[];
 };
 
 type SplitRow = {
@@ -199,6 +200,7 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
             </div>
             {report.untracked_orders > 0 ? <p className="mt-3 text-sm text-slate-500">+ {report.untracked_orders} {t.untracked}</p> : null}
           </section>
+          <FormDrop report={report.form} />
           <section className="rounded-xl bg-white p-4 shadow-card dark:bg-slate-900">
             <h2 className="text-sm font-semibold">{t.confirmedReach}</h2>
             <p className="mt-1 text-xs text-slate-500">{t.confirmedHint}</p>
@@ -220,59 +222,13 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
         </>
       ) : (
         <div className="space-y-4">
-          <Split title={t.source} rows={report.by_source} visitors={t.visitors} orders={t.orders} />
-          <Split title={t.campaign} rows={report.by_campaign} visitors={t.visitors} orders={t.orders} />
-          <Split title={t.ad} rows={report.by_ad} visitors={t.visitors} orders={t.orders} />
-          <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
-            <h2 className="font-semibold">{t.device}</h2>
-            {report.by_device.length === 0 ? <p className="mt-2 text-slate-500">{t.noTraffic}</p> : null}
-            <ul className="mt-2 space-y-1">
-              {report.by_device.map((row) => (
-                <li key={row.key} className="flex justify-between">
-                  <span>{row.key}</span>
-                  <span>{row.visitors}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
-            <h2 className="font-semibold">{t.product}</h2>
-            {report.by_product.length === 0 ? <p className="mt-2 text-slate-500">{t.noTraffic}</p> : null}
-            <ul className="mt-2 space-y-2">
-              {report.by_product.map((row) => (
-                <li key={row.key} className="flex flex-wrap justify-between gap-2">
-                  <span>{row.key}</span>
-                  <span className="text-slate-500">{row.views} · {row.checkout} · {row.orders} · {row.delivered}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
-            <h2 className="font-semibold">{t.formDrop}</h2>
-            <ul className="mt-2 space-y-1">
-              <li className="flex justify-between"><span>{t.checkout}</span><span>{report.form.checkout_started}</span></li>
-              <li className="flex justify-between"><span>{t.fieldName}</span><span>{report.form.name}</span></li>
-              <li className="flex justify-between"><span>{t.fieldPhone}</span><span>{report.form.phone}</span></li>
-              <li className="flex justify-between"><span>{t.fieldCity}</span><span>{report.form.city}</span></li>
-              <li className="flex justify-between"><span>{t.fieldAddress}</span><span>{report.form.address}</span></li>
-              <li className="flex justify-between"><span>{t.submitAttempt}</span><span>{report.form.submit_attempt}</span></li>
-              <li className="flex justify-between"><span>{t.submitError}</span><span>{report.form.submit_error}</span></li>
-            </ul>
-          </section>
-          <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
-            <h2 className="font-semibold">{t.city}</h2>
-            {report.by_city.length === 0 ? <p className="mt-2 text-slate-500">{t.noTraffic}</p> : null}
-            <ul className="mt-2 space-y-2">
-              {report.by_city.map((row) => (
-                <li key={row.key} className="flex flex-wrap justify-between gap-2">
-                  <span>{row.key}</span>
-                  <span>
-                    {row.orders} · {pct(row.confirmation_rate)} · {pct(row.delivery_rate)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <Table title={t.source} rows={report.by_source} />
+          <Table title={t.campaign} rows={report.by_campaign} />
+          <Table title={t.ad} rows={report.by_ad} />
+          <Table title={t.product} rows={report.by_product} />
+          <Table title={t.device} rows={report.by_device} />
+          <Table title={t.city} rows={report.by_city} />
+          <FormDrop report={report.form} />
         </div>
       )}
     </div>
@@ -289,20 +245,63 @@ function Card({ label, value, change }: { label: string; value: string; change?:
   );
 }
 
-function Split({ title, rows, visitors, orders }: { title: string; rows: SplitRow[]; visitors: string; orders: string }) {
+function Table({ title, rows }: { title: string; rows: SplitRow[] }) {
+  const t = text(useAdminLang());
   return (
     <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
       <h2 className="font-semibold">{title}</h2>
-      {rows.length === 0 ? <p className="mt-2 text-slate-500">—</p> : null}
-      <ul className="mt-2 space-y-2">
-        {rows.map((row) => (
-          <li key={row.key} className="flex justify-between gap-3">
-            <span className="truncate">{row.key}</span>
-            <span className="shrink-0 text-slate-500">
-              {visitors} {row.visitors} · {row.checkout} · {orders} {row.orders} · {row.confirmed} · {row.delivered}
-              {row.conversion !== null ? ` · ${row.conversion}%` : ""}
-            </span>
-          </li>
+      {rows.length === 0 ? <p className="mt-2 text-slate-500">{t.noTraffic}</p> : (
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full min-w-[36rem] text-left">
+            <thead className="text-xs text-slate-500">
+              <tr>
+                <th className="py-1 pr-3 font-medium">{title}</th>
+                <th className="py-1 pr-3 font-medium">{t.visitors}</th>
+                <th className="py-1 pr-3 font-medium">{t.checkout}</th>
+                <th className="py-1 pr-3 font-medium">{t.orders}</th>
+                <th className="py-1 pr-3 font-medium">{t.confirmedReach}</th>
+                <th className="py-1 pr-3 font-medium">{t.delivered}</th>
+                <th className="py-1 font-medium">{t.conversion}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.key} className="border-t border-slate-100 dark:border-slate-800">
+                  <td className="py-2 pr-3">{row.key}</td>
+                  <td className="py-2 pr-3">{row.visitors}</td>
+                  <td className="py-2 pr-3">{row.checkout}</td>
+                  <td className="py-2 pr-3">{row.orders}</td>
+                  <td className="py-2 pr-3">{row.confirmed}</td>
+                  <td className="py-2 pr-3">{row.delivered}</td>
+                  <td className="py-2">{pct(row.conversion)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function FormDrop({ report }: { report: Report["form"] }) {
+  const t = text(useAdminLang());
+  const rows = [
+    [t.checkout, report.checkout_started],
+    [t.fieldName, report.name],
+    [t.fieldPhone, report.phone],
+    [t.fieldCity, report.city],
+    [t.fieldAddress, report.address],
+    [t.submitAttempt, report.submit_attempt],
+    [t.submitError, report.submit_error],
+    [t.orderPlaced, report.order_placed],
+  ] as const;
+  return (
+    <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
+      <h2 className="font-semibold">{t.formDrop}</h2>
+      <ul className="mt-2 space-y-1">
+        {rows.map(([label, count]) => (
+          <li key={label} className="flex justify-between"><span>{label}</span><span>{count}</span></li>
         ))}
       </ul>
     </section>

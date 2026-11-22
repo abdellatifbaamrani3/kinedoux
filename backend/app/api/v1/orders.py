@@ -15,6 +15,7 @@ from app.schemas.order import (
     UpsellOfferOut,
 )
 from app.services import order_service
+from app.services.admin_auth import user_for_token
 from app.services.offers import recommend_upsell, upsell_choices
 from app.services.snapshot import OrderSnapshot, snapshot_from_order
 
@@ -56,7 +57,8 @@ async def create_order(payload: OrderCreate, request: Request):
 
     def _create() -> tuple[OrderSnapshot, bool]:
         with SessionLocal() as db:
-            order, created = order_service.create_order(db, payload, ip, ua)
+            admin = user_for_token(db, request.headers.get("x-admin-session"))
+            order, created = order_service.create_order(db, payload, ip, ua, admin_test=admin is not None)
             return snapshot_from_order(order), created
 
     try:
