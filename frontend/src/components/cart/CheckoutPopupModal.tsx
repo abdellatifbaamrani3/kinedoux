@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { CITIES } from "@/data/cities";
 import { api } from "@/lib/api";
 import { firePurchaseOnce, settleCodOrder } from "@/lib/confirm-order";
 import { phonePlaceholder, validateAndFormatPhone } from "@/lib/phone";
+import { trackStore } from "@/lib/store-track";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId } from "@/lib/tracking";
 import { useLocale } from "@/i18n/locale-context";
 import { localePath } from "@/i18n/locale";
@@ -35,12 +36,27 @@ export function CheckoutPopupModal() {
   const nameOk = name.trim().length >= 3;
   const cityOk = (CITIES as readonly string[]).includes(city);
   const canSubmit = nameOk && phoneResult.isValid && cityOk && items.length > 0 && !submitting;
+  const checkoutSent = useRef(false);
+
+  useEffect(() => {
+    if (!open) {
+      checkoutSent.current = false;
+      return;
+    }
+    if (checkoutSent.current) return;
+    checkoutSent.current = true;
+    trackStore("checkout_started", { product_slug: items[0]?.productSlug, value_mad: total });
+  }, [open, items, total]);
 
   if (!open) return null;
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!canSubmit) return;
+    trackStore("order_submit_attempt", { product_slug: items[0]?.productSlug, value_mad: total });
+    if (!canSubmit) {
+      trackStore("order_submit_error", { product_slug: items[0]?.productSlug, metadata: { message: "invalid" } });
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -64,7 +80,9 @@ export function CheckoutPopupModal() {
       close();
       router.push(localePath(`/thank-you?order_id=${settled.id}`, locale));
     } catch (err) {
-      setError(err instanceof Error ? err.message : ui.orderError);
+      const message = err instanceof Error ? err.message : ui.orderError;
+      setError(message);
+      trackStore("order_submit_error", { product_slug: items[0]?.productSlug, metadata: { message: message.slice(0, 180) } });
     } finally {
       setSubmitting(false);
     }

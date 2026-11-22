@@ -48,7 +48,7 @@ export function ProductOfferShell({
       currency: "MAD",
       contents: [{ id: product.slug, quantity: first.units, item_price: first.price, name: product.nameAr }],
     });
-    trackStore("product_view", { product_slug: product.slug });
+    trackStore("product_view", { product_slug: product.slug, value_mad: first.price });
   }, [product]);
 
   function trackAdd(next: Offer) {
@@ -59,11 +59,16 @@ export function ProductOfferShell({
       currency: "MAD",
       contents: [{ id: product.slug, quantity: next.units, item_price: next.price, name: product.nameAr }],
     });
-    trackStore("add_to_cart", { product_slug: product.slug });
+    trackStore("add_to_cart", { product_slug: product.slug, value_mad: next.price });
   }
 
   function choose(next: Offer) {
     setOffer(next);
+    trackStore("variant_select", {
+      product_slug: product.slug,
+      value_mad: next.price,
+      metadata: { offer_id: next.id, units: next.units },
+    });
     trackAdd(next);
   }
 

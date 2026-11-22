@@ -98,6 +98,7 @@ def seed(db) -> None:
                 sheet_synced=True,
                 capi_purchase_sent=True,
                 notes="demo-seed",
+                is_test=True,
                 created_at=seen,
             )
             db.add(order)

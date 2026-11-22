@@ -37,6 +37,14 @@ type HistoryItem = {
 
 const EMPTY_FILTERS = { q: "", city: "", campaign: "", status: "", date_from: "", date_to: "" };
 
+function waiting(value: string | null, now: number) {
+  if (!value) return null;
+  const hours = (now - new Date(value).getTime()) / 3600000;
+  if (!Number.isFinite(hours) || hours < 0) return null;
+  const text = hours < 1 ? `${Math.max(1, Math.round(hours * 60))}m` : `${Math.floor(hours)}h`;
+  return { text, late: hours >= 2 };
+}
+
 function when(value: string | null, lang: "en" | "fr") {
   if (!value) return "";
   return new Intl.DateTimeFormat(lang === "fr" ? "fr-MA" : "en-GB", {
@@ -59,6 +67,7 @@ export function OrdersDesk() {
   const [items, setItems] = useState<OrderRow[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const [now, setNow] = useState(() => Date.now());
   const [error, setError] = useState("");
   const [picked, setPicked] = useState<string[]>([]);
   const [bulk, setBulk] = useState("confirmed");
@@ -87,6 +96,11 @@ export function OrdersDesk() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 60000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   async function patch(id: string, payload: Record<string, string>) {
     const response = await fetch(`/api/admin/orders/${id}`, {
@@ -201,6 +215,11 @@ export function OrdersDesk() {
                   <p className="font-semibold">{order.name}</p>
                   <span className="text-xs text-slate-500">{order.order_number}</span>
                   <span className="text-xs text-slate-500">{when(order.created_at, lang)}</span>
+                  {order.status === "new" && waiting(order.created_at, now) ? (
+                    <span className={`text-xs font-semibold ${waiting(order.created_at, now)?.late ? "text-red-600" : "text-slate-500"}`}>
+                      {t.waiting} {waiting(order.created_at, now)?.text}
+                    </span>
+                  ) : null}
                 </div>
                 <p className="mt-1 text-sm" dir="auto">{order.product}</p>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">

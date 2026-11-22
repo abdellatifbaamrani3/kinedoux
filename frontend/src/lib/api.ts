@@ -76,9 +76,11 @@ export type TrackingContextPayload = {
   utm_medium?: string | null;
   utm_campaign?: string | null;
   utm_content?: string | null;
+  utm_term?: string | null;
   visitor_id?: string | null;
   session_id?: string | null;
   page_url?: string | null;
+  is_test?: boolean;
 };
 
 export type CreateOrderBody = {

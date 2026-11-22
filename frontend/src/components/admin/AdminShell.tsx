@@ -16,6 +16,7 @@ const LINKS = [
   { href: "/admin", key: "dashboard" as const, ready: true },
   { href: "/admin/orders", key: "orders" as const, ready: true },
   { href: "/admin/analytics", key: "analytics" as const, ready: true },
+  { href: "/admin/activity", key: "activity" as const, ready: true },
   { href: "/admin/campaigns", key: "campaigns" as const, ready: false },
   { href: "/admin/settings", key: "settings" as const, ready: true },
 ];

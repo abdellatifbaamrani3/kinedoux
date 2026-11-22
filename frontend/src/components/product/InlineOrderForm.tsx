@@ -49,15 +49,31 @@ export function InlineOrderForm({
       currency: "MAD",
       contents: [{ id: product.slug, quantity: offer.units, item_price: offer.price, name: product.nameAr }],
     });
-    trackStore("checkout_form_start", { product_slug: product.slug });
+    trackStore("checkout_started", { product_slug: product.slug, value_mad: offer.price });
+  }
+
+  function markField(field: "name" | "phone" | "city" | "address", ok: boolean) {
+    if (!ok) return;
+    try {
+      const key = `kd_field_${field}`;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      /* still send */
+    }
+    trackStore("form_field_completed", { product_slug: product.slug, metadata: { field } });
   }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     onBuyTap();
+    noteCheckout();
+    trackStore("order_submit_attempt", { product_slug: product.slug, value_mad: offer.price });
     setError(null);
     if (!canSubmit) {
-      setError(!nameOk ? ui.fullName : !phoneResult.isValid ? phoneResult.errorMessage || ui.phoneHint : ui.city);
+      const message = !nameOk ? ui.fullName : !phoneResult.isValid ? phoneResult.errorMessage || ui.phoneHint : ui.city;
+      setError(message);
+      trackStore("order_submit_error", { product_slug: product.slug, metadata: { message: message.slice(0, 180) } });
       return;
     }
     setSubmitting(true);
@@ -83,7 +99,9 @@ export function InlineOrderForm({
       router.push(localePath(`/thank-you?order_id=${settled.id}`, locale));
     } catch (err) {
       setSubmitting(false);
-      setError(err instanceof Error ? err.message : ui.orderError);
+      const message = err instanceof Error ? err.message : ui.orderError;
+      setError(message);
+      trackStore("order_submit_error", { product_slug: product.slug, metadata: { message: message.slice(0, 180) } });
     }
   }
 
@@ -94,7 +112,10 @@ export function InlineOrderForm({
         <span className="mb-1 block text-sm font-extrabold">{ui.fullName}</span>
         <input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            markField("name", e.target.value.trim().length >= 3);
+          }}
           placeholder={ui.namePlaceholder}
           autoComplete="name"
           required
@@ -109,7 +130,10 @@ export function InlineOrderForm({
         <span className="mb-1 block text-sm font-extrabold">{ui.phone}</span>
         <input
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            setPhone(e.target.value);
+            markField("phone", validateAndFormatPhone(e.target.value, locale).isValid);
+          }}
           placeholder={phonePlaceholder(locale)}
           dir="ltr"
           inputMode="numeric"
@@ -128,7 +152,10 @@ export function InlineOrderForm({
         <span className="mb-1 block text-sm font-extrabold">{ui.city}</span>
         <select
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(e) => {
+            setCity(e.target.value);
+            markField("city", (CITIES as readonly string[]).includes(e.target.value));
+          }}
           required
           className={cn(
             "w-full rounded-xl border-2 bg-alabaster px-4 py-3 text-base outline-none",
@@ -147,7 +174,10 @@ export function InlineOrderForm({
         <span className="mb-1 block text-sm font-extrabold">{ui.address}</span>
         <input
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          onChange={(e) => {
+            setAddress(e.target.value);
+            markField("address", e.target.value.trim().length > 0);
+          }}
           placeholder={ui.addressPlaceholder}
           autoComplete="street-address"
           maxLength={120}

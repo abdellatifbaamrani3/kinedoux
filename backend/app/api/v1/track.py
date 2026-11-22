@@ -27,7 +27,20 @@ class VisitIn(BaseModel):
     utm_medium: str | None = Field(default=None, max_length=100)
     utm_campaign: str | None = Field(default=None, max_length=150)
     utm_content: str | None = Field(default=None, max_length=150)
+    utm_term: str | None = Field(default=None, max_length=150)
     fbclid: str | None = Field(default=None, max_length=2048)
+    ttclid: str | None = Field(default=None, max_length=255)
+    page_url: str | None = Field(default=None, max_length=1000)
+    event_id: str | None = Field(default=None, max_length=64)
+    value_mad: int | None = Field(default=None)
+    metadata: dict | None = None
+    last_utm_source: str | None = Field(default=None, max_length=100)
+    last_utm_medium: str | None = Field(default=None, max_length=100)
+    last_utm_campaign: str | None = Field(default=None, max_length=150)
+    last_utm_content: str | None = Field(default=None, max_length=150)
+    last_utm_term: str | None = Field(default=None, max_length=150)
+    last_fbclid: str | None = Field(default=None, max_length=2048)
+    last_ttclid: str | None = Field(default=None, max_length=255)
 
 
 @router.post("", status_code=202)
@@ -40,5 +53,5 @@ def track_visit(body: VisitIn, request: Request, db: Session = Depends(get_db)):
     country = request.headers.get("cf-ipcountry") or request.headers.get("x-vercel-ip-country")
     raw_city = request.headers.get("x-vercel-ip-city") or ""
     city = unquote(raw_city) or None
-    stored = store_track.record_visit(db, body.model_dump(), user_agent(request), country, city)
+    stored = store_track.record_visit(db, body.model_dump(), user_agent(request), country, city, ip)
     return {"ok": True, "stored": stored == "stored"}

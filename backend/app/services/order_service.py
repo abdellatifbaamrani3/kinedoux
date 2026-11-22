@@ -128,9 +128,14 @@ def create_order(
             utm_medium=t.utm_medium,
             utm_campaign=t.utm_campaign,
             utm_content=t.utm_content,
+            utm_term=t.utm_term,
             page_url=t.page_url,
+            is_test=bool(t.is_test),
             fulfillment_status="new",
         )
+        if t.is_test:
+            order.sheet_synced = True
+            order.capi_purchase_sent = True
         apply_place(order)
         _write_items(order, items)
         try:

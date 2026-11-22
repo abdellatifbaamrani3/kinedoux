@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-import { trackStore } from "@/lib/store-track";
+import { installStoreObservers, trackStore } from "@/lib/store-track";
 import { captureAttribution, schedulePixelLoad, trackPageView } from "@/lib/tracking";
 
 export function PixelManager() {
@@ -11,6 +11,7 @@ export function PixelManager() {
 
   useEffect(() => {
     captureAttribution();
+    installStoreObservers();
     return schedulePixelLoad();
   }, []);
 

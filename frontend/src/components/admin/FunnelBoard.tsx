@@ -20,10 +20,27 @@ type Report = {
     bounce_rate: number | null;
     bounce_rate_change: Change;
   };
-  funnel: { step: string; count: number; drop_pct: number | null }[];
+  funnel: { step: string; count: number; drop_pct: number | null; pct: number | null }[];
+  untracked_orders: number;
   conversion_rate: number | null;
   conversion_rate_change: Change;
   orders_change: Change;
+  confirmed_change: Change;
+  delivered_change: Change;
+  revenue_placed_change: Change;
+  revenue_delivered_change: Change;
+  confirmation_rate_change: Change;
+  delivery_rate_change: Change;
+  form: {
+    checkout_started: number;
+    name: number;
+    phone: number;
+    city: number;
+    address: number;
+    submit_attempt: number;
+    submit_error: number;
+  };
+  by_product: { key: string; views: number; checkout: number; orders: number; delivered: number }[];
   pipeline: {
     orders: number;
     pending: number;
@@ -40,12 +57,25 @@ type Report = {
     success_rate: number | null;
     hours_to_confirm: number | null;
     hours_to_deliver: number | null;
+    revenue_placed: number;
+    revenue_delivered: number;
+    untracked: number;
   };
-  by_source: { key: string; visitors: number; orders: number }[];
-  by_campaign: { key: string; visitors: number; orders: number }[];
-  by_ad: { key: string; visitors: number; orders: number }[];
+  by_source: SplitRow[];
+  by_campaign: SplitRow[];
+  by_ad: SplitRow[];
   by_device: { key: string; visitors: number }[];
   by_city: { key: string; orders: number; confirmation_rate: number | null; delivery_rate: number | null }[];
+};
+
+type SplitRow = {
+  key: string;
+  visitors: number;
+  checkout: number;
+  orders: number;
+  confirmed: number;
+  delivered: number;
+  conversion: number | null;
 };
 
 const RANGES = [
@@ -60,10 +90,12 @@ function pct(value: number | null) {
   return value === null ? "—" : `${value}%`;
 }
 
-function delta(value: Change, fresh: string) {
-  if (value === null) return fresh;
+function delta(value: Change) {
+  if (value === null) return { text: "—", tone: "text-slate-500" };
+  const arrow = value > 0 ? "↑" : value < 0 ? "↓" : "→";
   const sign = value > 0 ? "+" : "";
-  return `${sign}${value}%`;
+  const tone = value > 0 ? "text-emerald-600" : value < 0 ? "text-red-600" : "text-slate-500";
+  return { text: `${arrow} ${sign}${value}%`, tone };
 }
 
 export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
@@ -103,11 +135,12 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
   const stepName: Record<string, string> = {
     visitors: t.visitors,
     product_views: t.productViews,
-    checkout_starts: lang === "fr" ? "Formulaire commencé" : "Checkout started",
+    checkout_starts: t.checkout,
     orders: t.orders,
+    confirmed: t.confirmedReach,
+    delivered: t.delivered,
   };
-
-  const max = Math.max(1, ...(report?.funnel.map((step) => step.count) || [1]));
+  const visitors = report?.funnel[0]?.count || 0;
 
   return (
     <div className="space-y-4">
@@ -131,12 +164,19 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
       {!report ? null : mode === "summary" ? (
         <>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            <Card label={t.visitors} value={String(report.traffic.visitors)} change={delta(report.traffic.visitors_change, t.newPeriod)} />
-            <Card label={t.sessions} value={String(report.traffic.sessions)} change={delta(report.traffic.sessions_change, t.newPeriod)} />
-            <Card label={t.pageViews} value={String(report.traffic.page_views)} change={delta(report.traffic.page_views_change, t.newPeriod)} />
-            <Card label={t.productViews} value={String(report.traffic.product_views)} change={delta(report.traffic.product_views_change, t.newPeriod)} />
-            <Card label={t.bounce} value={pct(report.traffic.bounce_rate)} change={delta(report.traffic.bounce_rate_change, t.newPeriod)} />
-            <Card label={t.conversion} value={pct(report.conversion_rate)} change={delta(report.conversion_rate_change, t.newPeriod)} />
+            <Card label={t.visitors} value={String(report.traffic.visitors)} change={delta(report.traffic.visitors_change)} />
+            <Card label={t.sessions} value={String(report.traffic.sessions)} change={delta(report.traffic.sessions_change)} />
+            <Card label={t.pageViews} value={String(report.traffic.page_views)} change={delta(report.traffic.page_views_change)} />
+            <Card label={t.productViews} value={String(report.traffic.product_views)} change={delta(report.traffic.product_views_change)} />
+            <Card label={t.bounce} value={pct(report.traffic.bounce_rate)} change={delta(report.traffic.bounce_rate_change)} />
+            <Card label={t.orders} value={String(report.pipeline.orders)} change={delta(report.orders_change)} />
+            <Card label={t.confirmedReach} value={String(report.pipeline.confirmed)} change={delta(report.confirmed_change)} />
+            <Card label={t.delivered} value={String(report.pipeline.delivered)} change={delta(report.delivered_change)} />
+            <Card label={t.revenuePlaced} value={`${report.pipeline.revenue_placed} ${t.price}`} change={delta(report.revenue_placed_change)} />
+            <Card label={t.revenueDelivered} value={`${report.pipeline.revenue_delivered} ${t.price}`} change={delta(report.revenue_delivered_change)} />
+            <Card label={t.conversion} value={pct(report.conversion_rate)} change={delta(report.conversion_rate_change)} />
+            <Card label={t.confirmationRate} value={pct(report.pipeline.confirmation_rate)} change={delta(report.confirmation_rate_change)} />
+            <Card label={t.deliveryRate} value={pct(report.pipeline.delivery_rate)} change={delta(report.delivery_rate_change)} />
           </div>
           <section className="rounded-xl bg-white p-4 shadow-card dark:bg-slate-900">
             <h2 className="text-sm font-semibold">{t.funnel}</h2>
@@ -147,21 +187,23 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
                     <span>{stepName[step.step] || step.step}</span>
                     <span>
                       {step.count}
+                      {step.pct !== null ? ` · ${step.pct}% ${t.ofVisitors}` : ""}
                       {step.drop_pct !== null ? ` · ${step.drop_pct}% ${t.drop}` : ""}
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800">
-                    <div className="h-2 rounded-full bg-brand" style={{ width: `${Math.max(4, (step.count / max) * 100)}%` }} />
+                    <div className="h-2 rounded-full bg-brand" style={{ width: `${step.count === 0 || visitors === 0 ? 0 : Math.min(100, (step.count / visitors) * 100)}%` }} />
                   </div>
                 </div>
               ))}
             </div>
+            {report.untracked_orders > 0 ? <p className="mt-3 text-sm text-slate-500">+ {report.untracked_orders} {t.untracked}</p> : null}
           </section>
           <section className="rounded-xl bg-white p-4 shadow-card dark:bg-slate-900">
             <h2 className="text-sm font-semibold">{t.confirmedReach}</h2>
             <p className="mt-1 text-xs text-slate-500">{t.confirmedHint}</p>
             <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
-              <Card label={t.orders} value={String(report.pipeline.orders)} change={delta(report.orders_change, t.newPeriod)} />
+              <Card label={t.orders} value={String(report.pipeline.orders)} change={delta(report.orders_change)} />
               <Card label={t.pending} value={String(report.pipeline.pending)} />
               <Card label={t.calling} value={String(report.pipeline.calling)} />
               <Card label={t.confirmedReach} value={String(report.pipeline.confirmed)} />
@@ -194,6 +236,30 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
             </ul>
           </section>
           <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
+            <h2 className="font-semibold">{t.product}</h2>
+            {report.by_product.length === 0 ? <p className="mt-2 text-slate-500">{t.noTraffic}</p> : null}
+            <ul className="mt-2 space-y-2">
+              {report.by_product.map((row) => (
+                <li key={row.key} className="flex flex-wrap justify-between gap-2">
+                  <span>{row.key}</span>
+                  <span className="text-slate-500">{row.views} · {row.checkout} · {row.orders} · {row.delivered}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
+            <h2 className="font-semibold">{t.formDrop}</h2>
+            <ul className="mt-2 space-y-1">
+              <li className="flex justify-between"><span>{t.checkout}</span><span>{report.form.checkout_started}</span></li>
+              <li className="flex justify-between"><span>{t.fieldName}</span><span>{report.form.name}</span></li>
+              <li className="flex justify-between"><span>{t.fieldPhone}</span><span>{report.form.phone}</span></li>
+              <li className="flex justify-between"><span>{t.fieldCity}</span><span>{report.form.city}</span></li>
+              <li className="flex justify-between"><span>{t.fieldAddress}</span><span>{report.form.address}</span></li>
+              <li className="flex justify-between"><span>{t.submitAttempt}</span><span>{report.form.submit_attempt}</span></li>
+              <li className="flex justify-between"><span>{t.submitError}</span><span>{report.form.submit_error}</span></li>
+            </ul>
+          </section>
+          <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
             <h2 className="font-semibold">{t.city}</h2>
             {report.by_city.length === 0 ? <p className="mt-2 text-slate-500">{t.noTraffic}</p> : null}
             <ul className="mt-2 space-y-2">
@@ -213,17 +279,17 @@ export function FunnelBoard({ mode }: { mode: "summary" | "breakdown" }) {
   );
 }
 
-function Card({ label, value, change }: { label: string; value: string; change?: string }) {
+function Card({ label, value, change }: { label: string; value: string; change?: { text: string; tone: string } }) {
   return (
     <div className="rounded-xl bg-white p-3 shadow-card dark:bg-slate-900">
       <p className="text-xs text-slate-500">{label}</p>
       <p className="mt-1 text-xl font-semibold">{value}</p>
-      {change ? <p className="text-xs text-slate-500">{change}</p> : null}
+      {change ? <p className={`text-xs ${change.tone}`}>{change.text}</p> : null}
     </div>
   );
 }
 
-function Split({ title, rows, visitors, orders }: { title: string; rows: { key: string; visitors: number; orders: number }[]; visitors: string; orders: string }) {
+function Split({ title, rows, visitors, orders }: { title: string; rows: SplitRow[]; visitors: string; orders: string }) {
   return (
     <section className="rounded-xl bg-white p-4 text-sm shadow-card dark:bg-slate-900">
       <h2 className="font-semibold">{title}</h2>
@@ -233,7 +299,8 @@ function Split({ title, rows, visitors, orders }: { title: string; rows: { key: 
           <li key={row.key} className="flex justify-between gap-3">
             <span className="truncate">{row.key}</span>
             <span className="shrink-0 text-slate-500">
-              {visitors} {row.visitors} · {orders} {row.orders}
+              {visitors} {row.visitors} · {row.checkout} · {orders} {row.orders} · {row.confirmed} · {row.delivered}
+              {row.conversion !== null ? ` · ${row.conversion}%` : ""}
             </span>
           </li>
         ))}

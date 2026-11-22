@@ -5,7 +5,7 @@
  * This module flushes later events into that same fbq queue. It does not wait.
  */
 import { relayEventToServer, type TrackingContextPayload } from "./api";
-import { ensureStoreIds } from "./store-track";
+import { ensureStoreIds, isTestVisit, sessionFirstTouch } from "./store-track";
 import { META_PIXEL_ID } from "./meta-pixel";
 import type { PhoneValidationResult } from "./phone";
 
@@ -140,6 +140,7 @@ type Attribution = {
   utm_medium?: string;
   utm_campaign?: string;
   utm_content?: string;
+  utm_term?: string;
 };
 
 function readAttribution(): Attribution {
@@ -162,7 +163,7 @@ export function captureAttribution(): void {
     if (fbclid) found.fbclid = fbclid;
     if (ttclid) found.ttclid = ttclid;
     if (sccid) found.sccid = sccid;
-    for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content"] as const) {
+    for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const) {
       const v = q.get(key);
       if (v) found[key] = v.slice(0, 150);
     }
@@ -184,20 +185,23 @@ export function getTrackingContext(): TrackingContextPayload {
   if (typeof window === "undefined") return {};
   const ids = ensureStoreIds();
   const attr = readAttribution();
+  const first = sessionFirstTouch();
   return {
     fbp: readExactCookie("_fbp") || readCookie("_fbp"),
     fbc: fbcFromCookie(),
     ttp: readCookie("_ttp"),
-    ttclid: attr.ttclid || readCookie("kd_ttclid"),
+    ttclid: first.ttclid || attr.ttclid || readCookie("kd_ttclid"),
     sc_cookie1: readCookie("_scid"),
     sc_click_id: attr.sccid || readCookie("kd_sccid"),
-    utm_source: attr.utm_source || null,
-    utm_medium: attr.utm_medium || null,
-    utm_campaign: attr.utm_campaign || null,
-    utm_content: attr.utm_content || null,
+    utm_source: first.utm_source || attr.utm_source || null,
+    utm_medium: first.utm_medium || attr.utm_medium || null,
+    utm_campaign: first.utm_campaign || attr.utm_campaign || null,
+    utm_content: first.utm_content || attr.utm_content || null,
+    utm_term: first.utm_term || attr.utm_term || null,
     visitor_id: ids.visitor,
     session_id: ids.session,
     page_url: window.location.href,
+    is_test: isTestVisit(),
   };
 }
 

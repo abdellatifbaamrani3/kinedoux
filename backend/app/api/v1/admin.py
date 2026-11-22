@@ -268,6 +268,29 @@ def delete_blacklist(phone_e164: str, db: Session = Depends(get_db), _user: Admi
     return {"ok": True}
 
 
+@router.get("/activity")
+def activity(limit: int = Query(default=40, ge=1, le=100), db: Session = Depends(get_db), _user: AdminUser = Depends(require_admin)):
+    from sqlalchemy import select
+
+    from app.models.analytics import StoreEvent
+
+    rows = list(db.scalars(select(StoreEvent).order_by(StoreEvent.created_at.desc()).limit(limit)))
+    return {
+        "items": [
+            {
+                "id": row.id,
+                "event": row.name,
+                "visitor": (row.visitor_id or "")[:8],
+                "path": row.path,
+                "source": row.utm_source or "direct",
+                "campaign": row.utm_campaign,
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+            }
+            for row in rows
+        ]
+    }
+
+
 @router.get("/metrics")
 def metrics(
     range: str | None = None,

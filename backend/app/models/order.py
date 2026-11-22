@@ -42,7 +42,10 @@ class Order(Base):
     utm_medium: Mapped[str | None] = mapped_column(String(100), nullable=True)
     utm_campaign: Mapped[str | None] = mapped_column(String(150), nullable=True)
     utm_content: Mapped[str | None] = mapped_column(String(150), nullable=True)
+    utm_term: Mapped[str | None] = mapped_column(String(150), nullable=True)
     page_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visitor_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    is_test: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
 
     city: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
     address: Mapped[str | None] = mapped_column(String(300), nullable=True)

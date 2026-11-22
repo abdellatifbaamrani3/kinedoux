@@ -13,6 +13,7 @@ from app.seed import seed_initial_products
 from app.services import capi_service, order_service
 from app.services.admin_auth import ensure_admin
 from app.services.admin_desk import backfill_places
+from app.services.store_track import backfill_order_visitors
 from app.services.tasks import spawn
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -25,6 +26,7 @@ def init_db() -> None:
     with SessionLocal() as db:
         seed_initial_products(db)
         backfill_places(db)
+        backfill_order_visitors(db)
         ensure_admin(db)
 
 
