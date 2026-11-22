@@ -75,6 +75,9 @@ export type TrackingContextPayload = {
   utm_source?: string | null;
   utm_medium?: string | null;
   utm_campaign?: string | null;
+  utm_content?: string | null;
+  visitor_id?: string | null;
+  session_id?: string | null;
   page_url?: string | null;
 };
 

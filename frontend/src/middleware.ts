@@ -7,6 +7,10 @@ function hasPublicLocale(pathname: string) {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return NextResponse.next();
+  }
+
   if (pathname === "/ar" || pathname.startsWith("/ar/")) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.replace(/^\/ar/, "") || "/";

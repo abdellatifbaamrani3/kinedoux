@@ -56,6 +56,10 @@ class Settings(BaseSettings):
     SNAP_PIXEL_ID: str = ""
     SNAP_CAPI_ACCESS_TOKEN: str = ""
 
+    # 8. Private order desk. Hashed on boot. Never sent to the website.
+    ADMIN_EMAIL: str = ""
+    ADMIN_PASSWORD: str = ""
+
     @property
     def sqlalchemy_database_url(self) -> str:
         return normalize_database_url(self.DATABASE_URL)

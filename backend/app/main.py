@@ -11,6 +11,8 @@ from app.database import SessionLocal, engine
 from app.models import Base
 from app.seed import seed_initial_products
 from app.services import capi_service, order_service
+from app.services.admin_auth import ensure_admin
+from app.services.admin_desk import backfill_places
 from app.services.tasks import spawn
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -22,6 +24,8 @@ def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     with SessionLocal() as db:
         seed_initial_products(db)
+        backfill_places(db)
+        ensure_admin(db)
 
 
 @asynccontextmanager
@@ -48,7 +52,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     max_age=86400,
 )

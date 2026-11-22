@@ -9,6 +9,8 @@ export const META_PIXEL_ID = /^\d{8,20}$/.test(FROM_ENV) ? FROM_ENV : "239971051
 export function metaPixelBootScript(id: string): string {
   if (!/^\d{8,20}$/.test(id)) return "";
   return `(function(pixelId){
+    var path = location.pathname;
+    if (path === "/admin" || path.indexOf("/admin/") === 0) return;
     if (window.fbq) return;
     var fbq = window.fbq = function(){
       if (fbq.callMethod) fbq.callMethod.apply(fbq, arguments);

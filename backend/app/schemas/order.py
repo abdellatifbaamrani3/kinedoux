@@ -34,6 +34,9 @@ class TrackingContext(BaseModel):
     utm_source: Annotated[str, StringConstraints(strip_whitespace=True, max_length=100)] | None = None
     utm_medium: Annotated[str, StringConstraints(strip_whitespace=True, max_length=100)] | None = None
     utm_campaign: Annotated[str, StringConstraints(strip_whitespace=True, max_length=150)] | None = None
+    utm_content: Annotated[str, StringConstraints(strip_whitespace=True, max_length=150)] | None = None
+    visitor_id: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] | None = None
+    session_id: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] | None = None
     page_url: Annotated[str, StringConstraints(strip_whitespace=True, max_length=1000)] | None = None
 
 

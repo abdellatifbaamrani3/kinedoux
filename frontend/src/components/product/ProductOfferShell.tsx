@@ -7,6 +7,7 @@ import { useLocale } from "@/i18n/locale-context";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { defaultOffer, type Offer, type Product } from "@/data/products";
+import { trackStore } from "@/lib/store-track";
 import { trackEvent } from "@/lib/tracking";
 import { ProductGallery } from "./ProductGallery";
 import { OfferTierSelector } from "./OfferTierSelector";
@@ -47,6 +48,7 @@ export function ProductOfferShell({
       currency: "MAD",
       contents: [{ id: product.slug, quantity: first.units, item_price: first.price, name: product.nameAr }],
     });
+    trackStore("product_view", { product_slug: product.slug });
   }, [product]);
 
   function trackAdd(next: Offer) {
@@ -57,6 +59,7 @@ export function ProductOfferShell({
       currency: "MAD",
       contents: [{ id: product.slug, quantity: next.units, item_price: next.price, name: product.nameAr }],
     });
+    trackStore("add_to_cart", { product_slug: product.slug });
   }
 
   function choose(next: Offer) {

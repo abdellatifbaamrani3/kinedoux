@@ -5,6 +5,7 @@
  * This module flushes later events into that same fbq queue. It does not wait.
  */
 import { relayEventToServer, type TrackingContextPayload } from "./api";
+import { ensureStoreIds } from "./store-track";
 import { META_PIXEL_ID } from "./meta-pixel";
 import type { PhoneValidationResult } from "./phone";
 
@@ -138,6 +139,7 @@ type Attribution = {
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
+  utm_content?: string;
 };
 
 function readAttribution(): Attribution {
@@ -160,7 +162,7 @@ export function captureAttribution(): void {
     if (fbclid) found.fbclid = fbclid;
     if (ttclid) found.ttclid = ttclid;
     if (sccid) found.sccid = sccid;
-    for (const key of ["utm_source", "utm_medium", "utm_campaign"] as const) {
+    for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content"] as const) {
       const v = q.get(key);
       if (v) found[key] = v.slice(0, 150);
     }
@@ -180,6 +182,7 @@ export function captureAttribution(): void {
 
 export function getTrackingContext(): TrackingContextPayload {
   if (typeof window === "undefined") return {};
+  const ids = ensureStoreIds();
   const attr = readAttribution();
   return {
     fbp: readExactCookie("_fbp") || readCookie("_fbp"),
@@ -191,6 +194,9 @@ export function getTrackingContext(): TrackingContextPayload {
     utm_source: attr.utm_source || null,
     utm_medium: attr.utm_medium || null,
     utm_campaign: attr.utm_campaign || null,
+    utm_content: attr.utm_content || null,
+    visitor_id: ids.visitor,
+    session_id: ids.session,
     page_url: window.location.href,
   };
 }

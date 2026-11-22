@@ -88,6 +88,8 @@ def _bootstrap(database_url, sheet_server):
         META_PIXEL_ID="",
         TIKTOK_PIXEL_ID="",
         SNAP_PIXEL_ID="",
+        ADMIN_EMAIL="admin@kinedoux.com",
+        ADMIN_PASSWORD="test-admin-pass",
     )
     # 1) real Alembic migration, exactly what entrypoint.sh runs
     result = subprocess.run(

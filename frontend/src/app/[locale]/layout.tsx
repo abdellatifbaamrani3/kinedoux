@@ -9,6 +9,7 @@ import { setRequestLocale } from "@/i18n/get-locale";
 import { isLocale, LOCALES } from "@/i18n/locale";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { uiCopy } from "@/i18n/ui";
+import { META_PIXEL_ID } from "@/lib/meta-pixel";
 import { SITE_URL } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -66,6 +67,11 @@ export default async function LocaleLayout({
       <main>{children}</main>
       <Footer />
       <FunnelShell />
+      <noscript>
+        {/* Meta's noscript pixel is a 1px image. next/image cannot render inside noscript. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img height={1} width={1} style={{ display: "none" }} alt="" src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`} />
+      </noscript>
     </LocaleProvider>
   );
 }

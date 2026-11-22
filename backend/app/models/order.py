@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, Uuid, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, JSONType
@@ -9,6 +9,7 @@ from app.models.base import Base, JSONType
 
 class Order(Base):
     __tablename__ = "orders"
+    __table_args__ = (Index("ix_orders_phone_created", "customer_phone_e164", "created_at"),)
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     order_number: Mapped[str] = mapped_column(String(32), unique=True, index=True)
@@ -40,7 +41,16 @@ class Order(Base):
     utm_source: Mapped[str | None] = mapped_column(String(100), nullable=True)
     utm_medium: Mapped[str | None] = mapped_column(String(100), nullable=True)
     utm_campaign: Mapped[str | None] = mapped_column(String(150), nullable=True)
+    utm_content: Mapped[str | None] = mapped_column(String(150), nullable=True)
     page_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    city: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
+    address: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    call_attempts: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tracking_number: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    fulfillment_status: Mapped[str] = mapped_column(String(40), default="new", server_default="new", index=True)
+    analytics_session_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
     sheet_synced: Mapped[bool] = mapped_column(Boolean, default=False)
     sheet_synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

@@ -17,6 +17,8 @@ from app.models.order import Order, OrderItem
 from app.models.product import Product
 from app.schemas.order import OrderCreate
 from app.services import capi_service, sheets_webhook
+from app.services.admin_desk import apply_place
+from app.services.store_track import attach_order
 from app.services.offers import (
     PricingError,
     price_items,
@@ -125,8 +127,11 @@ def create_order(
             utm_source=t.utm_source,
             utm_medium=t.utm_medium,
             utm_campaign=t.utm_campaign,
+            utm_content=t.utm_content,
             page_url=t.page_url,
+            fulfillment_status="new",
         )
+        apply_place(order)
         _write_items(order, items)
         try:
             with db.begin_nested():
@@ -142,6 +147,7 @@ def create_order(
     else:
         raise RuntimeError("could not allocate a unique order number")
 
+    attach_order(db, order, t)
     db.commit()
     db.refresh(order)
     return order, True

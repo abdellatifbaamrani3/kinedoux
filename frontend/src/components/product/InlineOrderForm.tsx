@@ -12,6 +12,7 @@ import { uiCopy } from "@/i18n/ui";
 import { api } from "@/lib/api";
 import { firePurchaseOnce, settleCodOrder } from "@/lib/confirm-order";
 import { phonePlaceholder, validateAndFormatPhone } from "@/lib/phone";
+import { trackStore } from "@/lib/store-track";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId, trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,7 @@ export function InlineOrderForm({
       currency: "MAD",
       contents: [{ id: product.slug, quantity: offer.units, item_price: offer.price, name: product.nameAr }],
     });
+    trackStore("checkout_form_start", { product_slug: product.slug });
   }
 
   async function onSubmit(e: FormEvent) {
