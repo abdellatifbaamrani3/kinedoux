@@ -7,6 +7,7 @@ import { uiCopy } from "@/i18n/ui";
 import { localizeProducts } from "@/i18n/products-copy";
 import { whatsappLink } from "@/lib/utils";
 import { BrandLogo } from "./BrandLogo";
+import { SocialLinks } from "./SocialLinks";
 
 export async function Footer() {
   const locale = await getLocale();
@@ -66,6 +67,8 @@ export async function Footer() {
           >
             <Phone className="h-4 w-4" /> {ui.footerWhatsapp}
           </a>
+          <p className="mb-2 mt-5 text-sm font-bold text-leaf">{ui.follow}</p>
+          <SocialLinks locale={locale} onDark />
         </div>
       </div>
       <div className="border-t border-white/10">

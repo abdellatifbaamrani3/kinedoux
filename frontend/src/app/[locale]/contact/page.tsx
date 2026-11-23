@@ -5,6 +5,7 @@ import { localeFromParams } from "@/i18n/get-locale";
 import { contactCopy, faqCopy } from "@/i18n/home-copy";
 import { uiCopy } from "@/i18n/ui";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 import { ContactForm } from "./ContactForm";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -39,6 +40,10 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             </article>
           );
         })}
+      </section>
+      <section className="kd-container pb-8">
+        <p className="mb-3 text-sm font-bold text-brand-dark">{ui.follow}</p>
+        <SocialLinks locale={locale} />
       </section>
       <section className="kd-container pb-8">
         <ContactForm />

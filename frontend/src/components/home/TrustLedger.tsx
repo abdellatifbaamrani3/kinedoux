@@ -4,6 +4,7 @@ import { getLocale } from "@/i18n/get-locale";
 import { homeCopy } from "@/i18n/home-copy";
 import { uiCopy } from "@/i18n/ui";
 import { whatsappLink } from "@/lib/utils";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export async function TrustLedger() {
@@ -41,6 +42,7 @@ export async function TrustLedger() {
               <Mail className="h-4 w-4" aria-hidden />
               contact@kinedoux.com
             </a>
+            <SocialLinks locale={locale} onDark />
           </div>
         </div>
       </div>
