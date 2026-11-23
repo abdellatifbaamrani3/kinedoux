@@ -5,7 +5,7 @@ import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
 
 export const SOCIAL = {
-  facebook: "https://www.facebook.com/kinedoux",
+  facebook: "https://www.facebook.com/people/Kinedoux/61596222421163/",
   instagram: "https://www.instagram.com/kinedoux",
 } as const;
 
