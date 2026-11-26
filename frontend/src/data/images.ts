@@ -68,11 +68,11 @@ export const IMAGES = {
     },
     "kenidoux-palma": {
       ...set("palma"),
-      main: "/images/palma/main.svg",
-      mechanism: "/images/palma/mechanism.svg",
-      lifestyle: "/images/palma/lifestyle.svg",
-      kit: "/images/palma/kit.svg",
-      sections: ["/images/palma/lifestyle.svg", "/images/palma/mechanism.svg", "/images/palma/kit.svg"],
+      main: "/images/palma/neck.webp",
+      mechanism: "/images/palma/cutaway.webp",
+      lifestyle: "/images/palma/sofa.webp",
+      kit: "/images/palma/nodes.webp",
+      sections: ["/images/palma/sofa.webp", "/images/palma/cutaway.webp", "/images/palma/heat.webp"],
     },
   } as Record<string, ProductImageSet>,
 };
