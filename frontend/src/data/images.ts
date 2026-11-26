@@ -11,7 +11,7 @@ export type ProductImageSet = {
   sections: [string, string, string];
 };
 
-const set = (key: "lumba" | "posta" | "calma"): ProductImageSet => ({
+const set = (key: "lumba" | "posta" | "calma" | "palma"): ProductImageSet => ({
   main: `/images/${key}/main.webp`,
   mechanism: `/images/${key}/mechanism.svg`,
   lifestyle: `/images/${key}/lifestyle.svg`,
@@ -65,6 +65,14 @@ export const IMAGES = {
       lifestyle: "/images/calma/knee.webp",
       kit: "/images/calma/kit.webp",
       sections: ["/images/calma/apply.webp", "/images/calma/buttons.webp", "/images/calma/knee.webp"],
+    },
+    "kenidoux-palma": {
+      ...set("palma"),
+      main: "/images/palma/main.svg",
+      mechanism: "/images/palma/mechanism.svg",
+      lifestyle: "/images/palma/lifestyle.svg",
+      kit: "/images/palma/kit.svg",
+      sections: ["/images/palma/lifestyle.svg", "/images/palma/mechanism.svg", "/images/palma/kit.svg"],
     },
   } as Record<string, ProductImageSet>,
 };

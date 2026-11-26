@@ -97,6 +97,7 @@ def contents_from_items(items: list[dict]) -> list[dict]:
         "kenidoux-lumba": "كينيدو لومبا",
         "kenidoux-posta": "كينيدو بوسطا",
         "kenidoux-calma": "كينيدو كالما",
+        "kenidoux-palma": "كينيدو بالما",
     }
     for item in items:
         qty = int(item.get("quantity", 1))

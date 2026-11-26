@@ -22,6 +22,7 @@ const CAUSE_INDEX: Record<string, number> = {
   "kenidoux-lumba": 1,
   "kenidoux-posta": 2,
   "kenidoux-calma": 3,
+  "kenidoux-palma": 4,
 };
 
 export async function ProductLandingView({ product: source }: { product: Product }) {
@@ -33,7 +34,7 @@ export async function ProductLandingView({ product: source }: { product: Product
   const emotional = product.sections.find((s) => s.kind === "emotional");
   const science = product.sections.find((s) => s.kind === "science");
   const materials = product.sections.find((s) => s.kind === "materials");
-  const causeNumber = CAUSE_INDEX[product.slug] ?? 1;
+  const causeNumber = CAUSE_INDEX[product.slug] ?? 0;
   const fake = comparisonFake(locale);
 
   return (
@@ -240,7 +241,7 @@ export async function ProductLandingView({ product: source }: { product: Product
               sub={HOME.causes.sub}
               tone="dark"
             />
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {HOME.causes.items.map((c, index) => {
                 const active = index + 1 === causeNumber;
                 return (

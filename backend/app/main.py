@@ -21,7 +21,7 @@ log = logging.getLogger("kenidoux")
 
 
 def init_db() -> None:
-    """Fallback for runs without entrypoint.sh: create missing tables, then seed the 3 products."""
+    """Fallback for runs without entrypoint.sh: create missing tables, then seed the catalogue."""
     Base.metadata.create_all(bind=engine)
     with SessionLocal() as db:
         seed_initial_products(db)

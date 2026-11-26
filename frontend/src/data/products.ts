@@ -1,6 +1,6 @@
 import { IMAGES } from "./images";
 
-export type ProductSlug = "kenidoux-lumba" | "kenidoux-posta" | "kenidoux-calma";
+export type ProductSlug = "kenidoux-lumba" | "kenidoux-posta" | "kenidoux-calma" | "kenidoux-palma";
 
 export type Offer = {
   id: string;
@@ -202,6 +202,7 @@ const lumba: Product = {
   crossSellPitches: {
     "kenidoux-posta": "أضف الحزام الهوائي لأسفل الظهر بنفس الكولية",
     "kenidoux-calma": "أضف حزام أسفل الظهر مع نفس الكولية",
+    "kenidoux-palma": "أضف حزام أسفل الظهر مع نفس الكولية",
   },
   gallery: [
     {
@@ -359,6 +360,7 @@ const posta: Product = {
   crossSellPitches: {
     "kenidoux-lumba": "كمّل براحة الرقبة ومصحح الوقفة الخفيف",
     "kenidoux-calma": "أضف باقة الوقفة ووسادة الرقبة لنفس الكولية",
+    "kenidoux-palma": "أضف باقة الوقفة ووسادة الرقبة لنفس الكولية",
   },
   gallery: gallery("kenidoux-posta"),
   image: IMAGES.products["kenidoux-posta"].main,
@@ -496,6 +498,7 @@ const calma: Product = {
   crossSellPitches: {
     "kenidoux-lumba": "أضف كاسات المساء لراحة الكتاف، فنفس الكولية",
     "kenidoux-posta": "أضف كالما لتدليك الرقبة والكتفين بعد نهار الشاشة",
+    "kenidoux-palma": "أضف كاسات المساء لراحة الكتاف، فنفس الكولية",
   },
   gallery: gallery("kenidoux-calma"),
   image: IMAGES.products["kenidoux-calma"].main,
@@ -503,7 +506,141 @@ const calma: Product = {
     "كينيدو كالما — كاسات حرارية ذكية للاسترخاء المسائي، بلا جرح وبلا نار. توصيل مجاني والخلاص عند الاستلام.",
 };
 
-export const PRODUCTS: Product[] = [lumba, posta, calma];
+const palma: Product = {
+  slug: "kenidoux-palma",
+  nameAr: "كينيدو بالما",
+  nameEn: "Kinédoux Palma™",
+  latinSubtitle: "Kinédoux Palma™ — Masseur de main, alliage chromé et ABS",
+  category: "راحة الكف واليد",
+  cardHeading: "كينيدو بالما — مدلك يدوي للكف",
+  cardSubheading:
+    "جسم بلاستيك ABS، ورأس من سبيكة الكروم كيلمس الكف. تشدّو فيدك وتمرّرو على الكف والأصابع، فالدار أو فالمكتب.",
+  scarcityBadge: "توصيل مجاني بعد التأكيد · الخلاص نقداً عند الباب",
+  scarcityShort: "توصيل فابور",
+  stock: 18,
+  viewers: 0,
+  price: 299,
+  compareAt: 299,
+  crossSellPrice: 199,
+  crossSellNote: "بدل 299 د.م",
+  offers: [
+    {
+      id: "palma-1",
+      title: "جهاز واحد",
+      subtitle: "كينيدو بالما + التوصيل المجاني",
+      units: 1,
+      price: 299,
+      compareAt: 299,
+      badge: "توصيل مجاني",
+      isDefault: true,
+    },
+    {
+      id: "palma-2",
+      title: "جهازين — ليك وللدار",
+      subtitle: "واحد ليك وواحد للدار. التاني بـ 200 د.م بدل 299، فنفس الكولية.",
+      units: 2,
+      price: 499,
+      compareAt: 598,
+      badge: "هدية للدار",
+    },
+  ],
+  bonuses: [
+    "رأس من سبيكة الكروم يلمس الكف",
+    "جسم بلاستيك ABS خفيف تشدّو فيدك",
+    "توصيل مجاني حتى لباب الدار",
+    "الخلاص نقداً ملي الكولية فيدك",
+  ],
+  kitTitle: "شنو كيجي فالكولية ديالك؟",
+  kitContents: ["جهاز كينيدو بالما", "توصيل مجاني حتى لباب الدار"],
+  heroHook: {
+    title: "اليد اللي كتكتب وكتطبخ وكتخدم كتحتاج دقايق للكف.",
+    body: "كينيدو بالما جهاز كتشدّو فيدك. الجسم بلاستيك ABS، والرأس اللي كيلمس الكف من سبيكة الكروم. تمرّرو على الكف والأصابع، فالدار أو فالمكتب.",
+  },
+  sections: [
+    {
+      kind: "emotional",
+      title: "دقايق للكف من بعد الكتابة أو الشقا",
+      body: "شد بالما فيدك ومرّر الرأس على الكف والأصابع. وقّف ملي اليد ترتاح.",
+      bullets: ["كتشدّو فيدك", "الرأس كيلمس الكف والأصابع", "فالدار أو فالمكتب"],
+      image: IMAGES.products["kenidoux-palma"].sections[0],
+    },
+    {
+      kind: "science",
+      title: "رأس من سبيكة الكروم، وجسم ABS خفيف",
+      body: "الجزء اللي كيلمس اليد من سبيكة الكروم. الجسم بلاستيك ABS باش يبقى خفيف وأنت كتمرّرو.",
+      bullets: ["رأس من سبيكة الكروم", "جسم ABS خفيف", "تمرّرو أنت، وتوقف ملي بغيتي"],
+      image: IMAGES.products["kenidoux-palma"].sections[1],
+    },
+    {
+      kind: "materials",
+      title: "جوج خامات، وجهاز واحد فيدك",
+      body: "الرأس اللي كيلمس الكف من سبيكة الكروم، والجسم اللي كتشدّو بلاستيك ABS.",
+      bullets: [],
+      cards: [
+        {
+          title: "سبيكة الكروم",
+          latin: "Alliage Chromé",
+          body: "الرأس اللي كيلمس الكف والأصابع.",
+        },
+        {
+          title: "بلاستيك ABS",
+          latin: "Corps ABS",
+          body: "الجسم اللي كتشدّو. خفيف، وتمرّرو براحتك.",
+        },
+        {
+          title: "استعمال يدوي",
+          latin: "Prise en main",
+          body: "تشدّو فيدك، تمرّرو على الكف، وتوقف ملي ترتاح.",
+        },
+      ],
+      image: IMAGES.products["kenidoux-palma"].sections[2],
+    },
+  ],
+  steps: [
+    { title: "شد الجهاز", body: "شد بالما فيدك، والرأس مقابل الكف." },
+    { title: "مرّر بضغط خفيف", body: "على الكف والأصابع. وقف قبل ما يولي الضغط قاصح." },
+    { title: "وقّف ملي ترتاح", body: "دقايق قليلة كافية. إلا حسيتي بشي حاجة ماشي مريحة، حبس." },
+  ],
+  comparisonOriginal: [
+    "جسم ABS ورأس من سبيكة الكروم",
+    "تشدّو فيدك وتمرّرو على الكف",
+    "تبديل فابور فـ 14 يوم",
+    "التمرير على الكف والأصابع",
+    "مواكبة من الدار البيضاء",
+  ],
+  crossSellPitches: {
+    "kenidoux-lumba": "أضف مدلك الكف مع نفس الكولية",
+    "kenidoux-posta": "أضف مدلك الكف مع نفس الكولية",
+    "kenidoux-calma": "أضف مدلك الكف مع نفس الكولية",
+  },
+  gallery: [
+    {
+      src: IMAGES.products["kenidoux-palma"].main,
+      label: "الصورة الرئيسية",
+      alt: "رسم كينيدو بالما: جسم ABS ورأس من سبيكة الكروم",
+    },
+    {
+      src: IMAGES.products["kenidoux-palma"].mechanism,
+      label: "كيفاش كتخدم",
+      alt: "رأس كينيدو بالما من سبيكة الكروم",
+    },
+    {
+      src: IMAGES.products["kenidoux-palma"].lifestyle,
+      label: "طريقة الاستعمال",
+      alt: "كينيدو بالما كتشدّو فيدك وتمرّرو على الكف",
+    },
+    {
+      src: IMAGES.products["kenidoux-palma"].kit,
+      label: "محتويات العلبة",
+      alt: "كينيدو بالما مع التوصيل المجاني",
+    },
+  ],
+  image: IMAGES.products["kenidoux-palma"].main,
+  metaDescription:
+    "كينيدو بالما — مدلك يدوي للكف، جسم ABS ورأس من سبيكة الكروم. توصيل مجاني، والخلاص نقداً عند الباب.",
+};
+
+export const PRODUCTS: Product[] = [lumba, posta, calma, palma];
 export const PRODUCT_MAP: Record<string, Product> = Object.fromEntries(PRODUCTS.map((p) => [p.slug, p]));
 
 export function getProduct(slug: string): Product | undefined {
@@ -529,6 +666,7 @@ export function crossSellOrder(primary: ProductSlug): ProductSlug[] {
     "kenidoux-lumba": ["kenidoux-calma", "kenidoux-posta"],
     "kenidoux-posta": ["kenidoux-calma", "kenidoux-lumba"],
     "kenidoux-calma": ["kenidoux-lumba", "kenidoux-posta"],
+    "kenidoux-palma": ["kenidoux-lumba", "kenidoux-calma"],
   };
   return matrix[primary];
 }

@@ -37,13 +37,14 @@ const HOME_FR = {
   quiz: {
     eyebrow: "Test rapide",
     title: "Deux questions, et on vous dit par où commencer",
-    sub: "On ne vous vend pas les trois produits si vous n’en avez pas besoin.",
+    sub: "On ne vous propose un produit que s’il correspond à votre réponse.",
     q1: {
       label: "Qu’est-ce qui pèse le plus ?",
       options: [
         { id: "back", label: "Le bas du dos après la conduite ou une longue position assise" },
         { id: "posture", label: "Les épaules et la nuque devant l’ordinateur ou le téléphone" },
         { id: "shoulders", label: "La fatigue des épaules et du dos le soir" },
+        { id: "hands", label: "La main et la paume après l’écriture, la cuisine ou le travail" },
       ],
     },
     q2: {
@@ -52,6 +53,7 @@ const HOME_FR = {
         { id: "drive", label: "En voiture ou sur la chaise du travail" },
         { id: "screen", label: "Devant l’écran ou en utilisant le téléphone" },
         { id: "evening", label: "À la maison, après une longue journée" },
+        { id: "grip", label: "Quand je travaille avec mes mains : écriture, cuisine ou port" },
       ],
     },
     resultTitle: "On vous conseille de commencer par",
@@ -62,7 +64,7 @@ const HOME_FR = {
   },
   products: {
     eyebrow: "Les produits",
-    title: "Trois solutions. Choisissez celle qui vous ressemble.",
+    title: "Choisissez celle qui vous ressemble.",
   },
   bundle: {
     title: "Le pack complet — dos, posture et détente",
@@ -136,13 +138,14 @@ const HOME_FR = {
     ],
   },
   causes: {
-    eyebrow: "Trois solutions, une chose bien faite",
+    eyebrow: "Quatre solutions, une chose bien faite",
     title: "Chaque produit fait une chose, et complète les autres",
-    sub: "Bas du dos dans la journée, posture légère devant l’écran, détente chaude avant de dormir.",
+    sub: "Bas du dos dans la journée, posture légère devant l’écran, détente chaude avant de dormir, et quelques minutes pour la main.",
     items: [
       { n: "1", title: "Bas du dos après la conduite", body: "Soutien à air, assis ou au volant. Les colonnes se gonflent en quelques pressions.", link: "Voir Kinédoux Lumba" },
       { n: "2", title: "La posture devant l’écran", body: "Un rappel par vibration quand vous vous penchez. Pas de sangles dures.", link: "Voir Kinédoux Posta" },
       { n: "3", title: "Épaules et fatigue du soir", body: "Ventouses chaudes, sans marque et sans feu. 15 minutes avant de dormir.", link: "Voir Kinédoux Calma" },
+      { n: "4", title: "La main après l’écriture et le travail", body: "Un appareil tenu dans la main. Corps ABS, tête en alliage chromé, pour la paume et les doigts.", link: "Voir Kinédoux Palma" },
     ],
     footer: "Chaque produit fait une chose bien. Le pack complet couvre les trois.",
   },
@@ -196,13 +199,14 @@ const HOME_EN = {
   quiz: {
     eyebrow: "Quick quiz",
     title: "Answer two questions and we’ll tell you where to start",
-    sub: "We won’t sell you all three unless you need them.",
+    sub: "We only suggest a product that matches your answer.",
     q1: {
       label: "What feels heaviest?",
       options: [
         { id: "back", label: "Lower back after driving or sitting for a long time" },
         { id: "posture", label: "Shoulders and neck in front of a computer or phone" },
         { id: "shoulders", label: "Shoulder and back fatigue in the evening" },
+        { id: "hands", label: "The hand and palm after writing, cooking, or a work day" },
       ],
     },
     q2: {
@@ -211,6 +215,7 @@ const HOME_EN = {
         { id: "drive", label: "In the car or in a work chair" },
         { id: "screen", label: "In front of a screen or on the phone" },
         { id: "evening", label: "At home, after a long day" },
+        { id: "grip", label: "When I work with my hands: writing, cooking, or carrying" },
       ],
     },
     resultTitle: "We suggest you start with",
@@ -221,7 +226,7 @@ const HOME_EN = {
   },
   products: {
     eyebrow: "Products",
-    title: "Three solutions. Pick the one that fits.",
+    title: "Pick the one that fits.",
   },
   bundle: {
     title: "The full kit — back, posture, and evening ease",
@@ -295,13 +300,14 @@ const HOME_EN = {
     ],
   },
   causes: {
-    eyebrow: "Three solutions, one job done well",
+    eyebrow: "Four solutions, one job done well",
     title: "Each product does one thing, and completes the others",
-    sub: "Lower back through the day, light posture at a screen, warm ease before sleep.",
+    sub: "Lower back through the day, light posture at a screen, warm ease before sleep, and a few minutes for the hand.",
     items: [
       { n: "1", title: "Lower back after driving", body: "Air support while you sit or drive. The columns inflate with a few pumps.", link: "See Kinédoux Lumba" },
       { n: "2", title: "Posture in front of a screen", body: "A soft vibration when you slump. No hard straps.", link: "See Kinédoux Posta" },
       { n: "3", title: "Shoulders and evening fatigue", body: "Warm cups, no marks and no fire. 15 minutes before sleep is enough.", link: "See Kinédoux Calma" },
+      { n: "4", title: "The hand after writing and work", body: "A device you hold. ABS body, chrome-alloy head, for the palm and fingers.", link: "See Kinédoux Palma" },
     ],
     footer: "Each product does one job well. The full kit covers all three.",
   },

@@ -84,7 +84,10 @@ def test_health_and_seed(client):
     assert r.status_code == 200 and r.json() == {"status": "ok", "brand": "kenidoux", "database": "connected"}
 
     products = {p["slug"]: p for p in client.get(f"{API}/products").json()}
-    assert set(products) == {"kenidoux-lumba", "kenidoux-posta", "kenidoux-calma"}
+    assert set(products) == {"kenidoux-lumba", "kenidoux-posta", "kenidoux-calma", "kenidoux-palma"}
+    assert products["kenidoux-palma"]["base_price_mad"] == 299
+    assert products["kenidoux-palma"]["cross_sell_price_mad"] == 199
+    assert [o["price_mad"] for o in products["kenidoux-palma"]["offers_json"]] == [299, 499]
     assert products["kenidoux-lumba"]["base_price_mad"] == 499
     assert [o["price_mad"] for o in products["kenidoux-lumba"]["offers_json"]] == [499, 849, 1149]
     assert [o["price_mad"] for o in products["kenidoux-posta"]["offers_json"]] == [379, 649, 899]

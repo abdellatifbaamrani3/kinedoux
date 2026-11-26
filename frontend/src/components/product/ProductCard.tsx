@@ -15,7 +15,8 @@ export function ProductCard({ product }: { product: Product }) {
   const buyNow = useCartStore((s) => s.buyNow);
   const locale = useLocale();
   const ui = uiCopy(locale);
-  const popular = defaultOffer(product);
+  const chosen = defaultOffer(product);
+  const gift = product.offers.find((offer) => offer.units === 2);
   const save = product.compareAt - product.price;
   const price = money(product.price, locale);
 
@@ -57,12 +58,12 @@ export function ProductCard({ product }: { product: Product }) {
             )}
           </div>
           <p className="mt-2 text-xs font-bold text-brand">
-            {popular.units > 1
-              ? ui.popularLine(popular.units, money(popular.price, locale))
-              : ui.singleLine(money(popular.price, locale))}
+            {gift
+              ? ui.giftLine(money(gift.price, locale), money(Math.round(gift.price / gift.units), locale))
+              : ui.singleLine(price)}
           </p>
         </div>
-        <button type="button" className="kd-cta py-3 text-base" onClick={() => buyNow(product, popular)}>
+        <button type="button" className="kd-cta py-3 text-base" onClick={() => buyNow(product, chosen)}>
           {ui.orderNow}
         </button>
         <Link href={localePath(`/products/${product.slug}`, locale)} className="mt-3 text-center text-sm font-bold text-brand hover:underline">

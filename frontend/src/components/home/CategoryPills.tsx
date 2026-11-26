@@ -18,13 +18,14 @@ export function CategoryPills({
   const ui = uiCopy(locale);
   const names =
     locale === "ar"
-      ? { lumba: "لومبا", posta: "بوسطا", calma: "كالما" }
-      : { lumba: "Lumba", posta: "Posta", calma: "Calma" };
+      ? { lumba: "لومبا", posta: "بوسطا", calma: "كالما", palma: "بالما" }
+      : { lumba: "Lumba", posta: "Posta", calma: "Calma", palma: "Palma" };
   const tabs: { id: CategoryFilterId; label: string }[] = [
     { id: "all", label: ui.catAll },
     { id: "kenidoux-lumba", label: names.lumba },
     { id: "kenidoux-posta", label: names.posta },
     { id: "kenidoux-calma", label: names.calma },
+    { id: "kenidoux-palma", label: names.palma },
   ];
 
   return (

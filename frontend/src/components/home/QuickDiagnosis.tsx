@@ -12,18 +12,21 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 const LUMBA = "kenidoux-lumba";
 const POSTA = "kenidoux-posta";
 const CALMA = "kenidoux-calma";
+const PALMA = "kenidoux-palma";
 
 const WEIGHTS: Record<string, Partial<Record<string, number>>> = {
   back: { [LUMBA]: 2 },
   posture: { [POSTA]: 2 },
   shoulders: { [CALMA]: 2 },
+  hands: { [PALMA]: 3 },
   drive: { [LUMBA]: 2 },
   screen: { [POSTA]: 2 },
   evening: { [CALMA]: 2 },
+  grip: { [PALMA]: 3 },
 };
 
 function recommend(a1: string, a2: string): string {
-  const scores: Record<string, number> = { [LUMBA]: 0, [POSTA]: 0, [CALMA]: 0 };
+  const scores: Record<string, number> = { [LUMBA]: 0, [POSTA]: 0, [CALMA]: 0, [PALMA]: 0 };
   for (const answer of [a1, a2]) {
     for (const [slug, points] of Object.entries(WEIGHTS[answer] ?? {})) {
       scores[slug] += points ?? 0;

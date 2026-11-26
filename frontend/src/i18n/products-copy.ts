@@ -73,6 +73,7 @@ const FR = {
     crossSellPitches: {
       "kenidoux-posta": "Ajoutez la ceinture à air pour le bas du dos dans le même colis",
       "kenidoux-calma": "Ajoutez la ceinture du bas du dos dans le même colis",
+      "kenidoux-palma": "Ajoutez la ceinture du bas du dos dans le même colis",
     },
     metaDescription: "Kinédoux Lumba — ceinture à air pour le bas du dos. Livraison offerte, confirmation depuis Casablanca, paiement à la porte.",
   },
@@ -136,6 +137,7 @@ const FR = {
     crossSellPitches: {
       "kenidoux-lumba": "Complétez avec le confort du bas du dos",
       "kenidoux-calma": "Ajoutez Calma pour les épaules après une journée d’écran",
+      "kenidoux-palma": "Ajoutez le pack posture et le coussin de nuque dans le même colis",
     },
     metaDescription: "Kinédoux Posta — rappel de posture léger. Livraison offerte au Maroc et paiement à la réception.",
   },
@@ -200,8 +202,76 @@ const FR = {
     crossSellPitches: {
       "kenidoux-lumba": "Ajoutez les ventouses du soir pour les épaules, dans le même colis",
       "kenidoux-posta": "Ajoutez Calma après une journée d’écran",
+      "kenidoux-palma": "Ajoutez les ventouses du soir pour les épaules, dans le même colis",
     },
     metaDescription: "Kinédoux Calma — ventouses chaudes pour le soir, sans marque et sans feu. Livraison offerte et paiement à la réception.",
+  },
+  "kenidoux-palma": {
+    nameAr: "Kinédoux Palma",
+    category: "Confort de la main",
+    cardHeading: "Kinédoux Palma — masseur de main",
+    cardSubheading:
+      "Corps en ABS, tête en alliage chromé sur la paume. Vous le tenez et le passez sur la paume et les doigts, à la maison ou au bureau.",
+    scarcityBadge: "Livraison offerte après confirmation · paiement à la porte",
+    scarcityShort: free.fr,
+    crossSellNote: "au lieu de 299 DH",
+    offers: offers("fr", [
+      { title: "Un appareil", subtitle: "Kinédoux Palma + livraison offerte", badge: free.fr },
+      { title: "Deux appareils — pour vous et la maison", subtitle: "Un pour vous, un pour la maison. Le deuxième à 200 DH au lieu de 299, dans le même colis.", badge: popular.fr },
+    ]),
+    bonuses: [
+      "Tête en alliage chromé qui touche la paume",
+      "Corps ABS léger, tenu dans la main",
+      "Livraison offerte jusqu’à la porte",
+      "Paiement en espèces quand le colis est dans vos mains",
+    ],
+    kitTitle: "Qu’est-ce qui arrive dans votre colis ?",
+    kitContents: ["Appareil Kinédoux Palma", "Livraison offerte jusqu’à la porte"],
+    heroHook: {
+      title: "La main qui écrit, cuisine et travaille a besoin de quelques minutes.",
+      body: "Kinédoux Palma se tient dans la main. Le corps est en ABS, la tête qui touche la paume est en alliage chromé. Vous la passez sur la paume et les doigts, à la maison ou au bureau.",
+    },
+    sections: [
+      {
+        title: "Quelques minutes pour la main, après l’écriture ou le travail",
+        body: "Tenez Palma et passez la tête sur la paume et les doigts. Arrêtez quand la main est reposée.",
+        bullets: ["Se tient dans la main", "La tête touche la paume et les doigts", "À la maison ou au bureau"],
+      },
+      {
+        title: "Tête en alliage chromé, corps ABS léger",
+        body: "La partie qui touche la main est en alliage chromé. Le corps ABS reste léger pendant que vous passez l’appareil.",
+        bullets: ["Tête en alliage chromé", "Corps ABS léger", "Vous le passez, et vous arrêtez quand vous voulez"],
+      },
+      {
+        title: "Deux matières, un appareil dans la main",
+        body: "La tête qui touche la paume est en alliage chromé. Le corps que vous tenez est en plastique ABS.",
+        bullets: [],
+        cards: [
+          { title: "Alliage chromé", body: "La tête qui touche la paume et les doigts." },
+          { title: "Plastique ABS", body: "Le corps que vous tenez. Léger, à votre rythme." },
+          { title: "Prise en main", body: "Vous le tenez, vous le passez sur la paume, vous arrêtez quand la main est reposée." },
+        ],
+      },
+    ],
+    steps: [
+      { title: "Prenez l’appareil", body: "Tenez Palma, la tête vers la paume." },
+      { title: "Passez avec une pression légère", body: "Sur la paume et les doigts. Arrêtez avant que la pression devienne dure." },
+      { title: "Arrêtez quand la main est reposée", body: "Quelques minutes suffisent. Si quelque chose ne va pas, arrêtez." },
+    ],
+    comparisonOriginal: [
+      "Corps ABS et tête en alliage chromé",
+      "Tenu dans la main, passé sur la paume",
+      "Échange offert sous 14 jours",
+      "Passage sur la paume et les doigts",
+      "Suivi depuis Casablanca",
+    ],
+    crossSellPitches: {
+      "kenidoux-lumba": "Ajoutez le masseur de main dans le même colis",
+      "kenidoux-posta": "Ajoutez le masseur de main dans le même colis",
+      "kenidoux-calma": "Ajoutez le masseur de main dans le même colis",
+    },
+    metaDescription:
+      "Kinédoux Palma — masseur de main tenu en main, corps ABS et tête en alliage chromé. Livraison offerte, paiement à la porte.",
   },
 } as const;
 
@@ -266,6 +336,7 @@ const EN = {
     crossSellPitches: {
       "kenidoux-posta": "Add the air belt for the lower back in the same box",
       "kenidoux-calma": "Add the lower-back belt in the same box",
+      "kenidoux-palma": "Add the lower-back belt in the same box",
     },
     metaDescription: "Kinédoux Lumba — air belt for lower-back comfort. Free delivery, confirmation from Casablanca, pay at the door.",
   },
@@ -329,6 +400,7 @@ const EN = {
     crossSellPitches: {
       "kenidoux-lumba": "Add lower-back comfort in the same box",
       "kenidoux-calma": "Add Calma for the shoulders after a screen day",
+      "kenidoux-palma": "Add the posture pack and neck cushion in the same box",
     },
     metaDescription: "Kinédoux Posta — a light posture reminder. Free delivery in Morocco and cash on delivery.",
   },
@@ -393,8 +465,76 @@ const EN = {
     crossSellPitches: {
       "kenidoux-lumba": "Add the evening cups for the shoulders, in the same box",
       "kenidoux-posta": "Add Calma after a day of screens",
+      "kenidoux-palma": "Add the evening cups for the shoulders, in the same box",
     },
     metaDescription: "Kinédoux Calma — warm cups for the evening, no marks and no fire. Free delivery and cash on delivery.",
+  },
+  "kenidoux-palma": {
+    nameAr: "Kinédoux Palma",
+    category: "Hand comfort",
+    cardHeading: "Kinédoux Palma — handheld hand massager",
+    cardSubheading:
+      "ABS body, chrome-alloy head on the palm. Hold it and pass it over the palm and fingers, at home or at a desk.",
+    scarcityBadge: "Free delivery after confirmation · pay at the door",
+    scarcityShort: free.en,
+    crossSellNote: "instead of 299 DH",
+    offers: offers("en", [
+      { title: "One device", subtitle: "Kinédoux Palma + free delivery", badge: free.en },
+      { title: "Two devices — for you and home", subtitle: "One for you, one for the house. The second is 200 DH instead of 299, same box.", badge: popular.en },
+    ]),
+    bonuses: [
+      "Chrome-alloy head that touches the palm",
+      "Light ABS body you hold in your hand",
+      "Free delivery to the door",
+      "Cash when the parcel is in your hands",
+    ],
+    kitTitle: "What arrives in your box?",
+    kitContents: ["Kinédoux Palma device", "Free delivery to the door"],
+    heroHook: {
+      title: "The hand that writes, cooks, and works needs a few minutes.",
+      body: "Kinédoux Palma is held in the hand. The body is ABS, and the head that touches the palm is chrome alloy. Pass it over the palm and fingers, at home or at a desk.",
+    },
+    sections: [
+      {
+        title: "A few minutes for the hand, after writing or work",
+        body: "Hold Palma and pass the head over the palm and fingers. Stop when the hand feels rested.",
+        bullets: ["Held in the hand", "The head touches the palm and fingers", "At home or at a desk"],
+      },
+      {
+        title: "Chrome-alloy head, light ABS body",
+        body: "The part that touches the hand is chrome alloy. The ABS body stays light while you pass it.",
+        bullets: ["Chrome-alloy head", "Light ABS body", "You pass it, and you stop when you want"],
+      },
+      {
+        title: "Two materials, one device in the hand",
+        body: "The head that touches the palm is chrome alloy. The body you hold is ABS plastic.",
+        bullets: [],
+        cards: [
+          { title: "Chrome alloy", body: "The head that touches the palm and fingers." },
+          { title: "ABS plastic", body: "The body you hold. Light, at your own pace." },
+          { title: "Held in the hand", body: "Hold it, pass it over the palm, stop when the hand feels rested." },
+        ],
+      },
+    ],
+    steps: [
+      { title: "Take the device", body: "Hold Palma with the head toward the palm." },
+      { title: "Pass it with light pressure", body: "Over the palm and fingers. Stop before the pressure feels hard." },
+      { title: "Stop when the hand feels rested", body: "A few minutes is enough. If something feels wrong, stop." },
+    ],
+    comparisonOriginal: [
+      "ABS body and chrome-alloy head",
+      "Held in the hand and passed over the palm",
+      "Free exchange within 14 days",
+      "Passed over the palm and fingers",
+      "Follow-up from Casablanca",
+    ],
+    crossSellPitches: {
+      "kenidoux-lumba": "Add the hand massager in the same box",
+      "kenidoux-posta": "Add the hand massager in the same box",
+      "kenidoux-calma": "Add the hand massager in the same box",
+    },
+    metaDescription:
+      "Kinédoux Palma — handheld hand massager, ABS body and chrome-alloy head. Free delivery, pay at the door.",
   },
 } as const;
 
