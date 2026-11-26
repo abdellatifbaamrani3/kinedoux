@@ -1,14 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 import type { Product } from "@/data/products";
+import { sectionImageSize } from "@/data/section-image-size";
 import { useLocale } from "@/i18n/locale-context";
 import { localePath } from "@/i18n/locale";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { useOfferActions } from "./offer-context";
+import { SectionImage } from "./SectionImage";
 
 export function ProductCrossSell({
   products,
@@ -36,18 +37,7 @@ export function ProductCrossSell({
             href={localePath(`/products/${item.slug}`, locale)}
             className="overflow-hidden rounded-2xl border border-brand/10 bg-white"
           >
-            <span className="relative block aspect-[4/3] bg-sage">
-              <Image
-                src={item.image}
-                alt={item.nameAr}
-                fill
-                sizes="(max-width: 640px) 92vw, 280px"
-                quality={70}
-                loading="lazy"
-                unoptimized={item.image.endsWith(".svg")}
-                className="object-cover"
-              />
-            </span>
+            <SectionImage {...sectionImageSize(item.image)} src={item.image} alt={item.nameAr} frame="4/3" />
             <span className="block p-4">
               <span className="block font-bold text-brand-dark">{item.nameAr}</span>
               <span className="mt-1 block text-sm leading-6 text-muted">{item.outcome}</span>

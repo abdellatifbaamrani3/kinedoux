@@ -117,6 +117,17 @@ body {
   }
 }
 
+.kd-section-portrait {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin-inline: auto;
+  max-height: 70vh;
+  max-height: 70svh;
+  object-fit: contain;
+}
+
 input,
 textarea,
 select {

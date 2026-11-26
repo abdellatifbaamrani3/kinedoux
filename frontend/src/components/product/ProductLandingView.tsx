@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ShieldCheck } from "lucide-react";
 
 import { getLocale } from "@/i18n/get-locale";
@@ -9,11 +8,13 @@ import { localizeProduct, localizeProducts } from "@/i18n/products-copy";
 import { uiCopy } from "@/i18n/ui";
 import { fullKitOffer, type Product } from "@/data/products";
 import { IMAGES } from "@/data/images";
+import { sectionImageSize } from "@/data/section-image-size";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { whatsappLink } from "@/lib/utils";
 import { ProductOfferShell } from "./ProductOfferShell";
 import { ProductCrossSell } from "./ProductCrossSell";
 import { ProductProof } from "./ProductProof";
+import { SectionImage } from "./SectionImage";
 
 export async function ProductLandingView({ product: source }: { product: Product }) {
   const locale = await getLocale();
@@ -72,9 +73,7 @@ export async function ProductLandingView({ product: source }: { product: Product
         <section id="how" className="px-4 py-6 lg:px-0">
           <h2 className="text-lg font-bold text-brand-dark">{ui.howEyebrow}</h2>
           {howImage ? (
-            <div className="relative mt-3 h-40 overflow-hidden rounded-2xl border border-brand/10">
-              <Image src={howImage} alt={howAlt} fill sizes="(max-width: 1024px) 92vw, 40vw" quality={70} unoptimized={howImage.endsWith(".svg")} className="object-cover" />
-            </div>
+            <SectionImage {...sectionImageSize(howImage)} src={howImage} alt={howAlt} className="mt-3" />
           ) : null}
           <ol className="mt-3 grid gap-3">
             {product.steps.map((step, index) => (
@@ -105,17 +104,12 @@ export async function ProductLandingView({ product: source }: { product: Product
               </ul>
             ) : null}
             <h3 className="mt-5 text-base font-bold text-brand-dark">{product.kitTitle}</h3>
-            <div className="relative mt-3 aspect-[4/3] overflow-hidden rounded-2xl border border-brand/10">
-              <Image
-                src={kitSrc}
-                alt={product.kitImageAlt ?? product.kitTitle}
-                fill
-                sizes="(max-width: 1024px) 92vw, 40vw"
-                quality={70}
-                unoptimized={kitSrc.endsWith(".svg")}
-                className="object-cover"
-              />
-            </div>
+            <SectionImage
+              {...sectionImageSize(kitSrc)}
+              src={kitSrc}
+              alt={product.kitImageAlt ?? product.kitTitle}
+              className="mt-3"
+            />
             <ul className="mt-3 grid gap-2">
               {product.kitContents.map((item) => (
                 <li key={item} className="text-sm leading-6 text-brand-dark">
