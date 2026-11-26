@@ -13,8 +13,10 @@ import { firePurchaseOnce, settleCodOrder } from "@/lib/confirm-order";
 import { validateAndFormatPhone } from "@/lib/phone";
 import { trackStore } from "@/lib/store-track";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId, trackEvent } from "@/lib/tracking";
-import { cn } from "@/lib/utils";
+import { trackWhatsappClick } from "@/lib/whatsapp-track";
+import { cn, whatsappLink } from "@/lib/utils";
 import { offerOrderText } from "./offer-card-copy";
+import { OrderBump } from "./OrderBump";
 
 const fieldClass =
   "min-h-12 w-full rounded-[10px] border border-transparent bg-alabaster px-4 text-base text-brand-dark outline-none focus:border-brand/20";
@@ -209,6 +211,7 @@ export function InlineOrderForm({
         />
       </label>
       {error ? <p className="text-kd-secondary font-bold text-coral">{error}</p> : null}
+      <OrderBump product={product} />
       <button
         type="submit"
         className="kd-order-shine inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-4 text-center text-kd-button font-bold text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-60"
@@ -218,6 +221,15 @@ export function InlineOrderForm({
         {submitting ? ui.confirming : offerOrderText(product, offer, locale)}
       </button>
       <p className="text-center text-kd-small font-medium leading-6 text-muted">{ui.orderCallNote}</p>
+      <a
+        href={whatsappLink(ui.askProduct(product.nameAr.replace(/^كينيدو\s+/, "")))}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackWhatsappClick(product.slug, product.nameAr)}
+        className="inline-flex min-h-12 w-full items-center justify-center rounded-full border-2 border-wa bg-white px-4 text-center text-kd-button font-bold text-[#075E54] hover:bg-sage"
+      >
+        {ui.orderAsk}
+      </a>
     </form>
   );
 }

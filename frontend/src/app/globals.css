@@ -242,3 +242,6 @@ select {
     display: none;
   }
 }
+.kd-section-frame.rounded-none {
+  border-radius: 0;
+}

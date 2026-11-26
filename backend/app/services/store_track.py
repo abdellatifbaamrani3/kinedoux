@@ -23,6 +23,7 @@ PUBLIC_EVENTS = {
     "scroll_depth",
     "time_on_page",
     "outbound_click",
+    "whatsapp_click",
 }
 ALIASES = {"checkout_form_start": "checkout_started", "order_submitted": "order_placed"}
 _ID = re.compile(r"^[A-Za-z0-9]{16,64}$")

@@ -35,11 +35,11 @@ export function StickyAddToCart({
     };
   }, [product.slug]);
 
-  if (!visible) return null;
-
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-brand/10 bg-white lg:hidden"
+      data-sticky-order=""
+      data-sticky-open={visible ? "1" : "0"}
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-brand/10 bg-white transition-transform lg:hidden data-[sticky-open=0]:pointer-events-none data-[sticky-open=0]:translate-y-full"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex items-center gap-3 px-4 py-2">

@@ -11,7 +11,8 @@ type StoreEventName =
   | "order_submit_error"
   | "scroll_depth"
   | "time_on_page"
-  | "outbound_click";
+  | "outbound_click"
+  | "whatsapp_click";
 
 type Attribution = {
   fbclid?: string;

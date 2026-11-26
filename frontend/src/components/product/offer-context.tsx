@@ -2,8 +2,13 @@
 
 import { createContext, useContext, type ReactNode } from "react";
 
+import type { Offer, Product } from "@/data/products";
+
 type OfferActions = {
+  product: Product;
+  offer: Offer;
   selectBundle: () => void;
+  scrollToForm: () => void;
 };
 
 const OfferActionsContext = createContext<OfferActions | null>(null);

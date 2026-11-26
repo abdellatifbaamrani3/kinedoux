@@ -32,8 +32,8 @@ export function validateAndFormatPhone(rawInput: string, locale: "ar" | "fr" | "
     };
   }
 
-  // 2. Morocco: 06XXXXXXXX, 07XXXXXXXX, +2126XXXXXXXX, 002126XXXXXXXX, 2126XXXXXXXX
-  const maMatch = cleaned.match(/^(?:\+?212|00212|0)?([67][0-9]{8})$/);
+  // 2. Morocco: 05/06/07, also +212, 00212, 212. Stored as 0XXXXXXXXX.
+  const maMatch = cleaned.match(/^(?:\+?212|00212|0)?([567][0-9]{8})$/);
   if (maMatch && (mode === "MA" || mode === "BOTH")) {
     const subscriber = maMatch[1];
     return {
@@ -53,21 +53,19 @@ export function validateAndFormatPhone(rawInput: string, locale: "ar" | "fr" | "
     localDisplay: cleaned,
     errorMessage:
       locale === "fr"
-        ? "Entrez un numéro marocain valide (exemple : 0612345678 ou 0712345678)"
+        ? "Entrez un numéro marocain valide, comme 06 12 34 56 78"
         : locale === "en"
-          ? "Enter a valid Moroccan number (example: 0612345678 or 0712345678)"
+          ? "Enter a valid Moroccan number, like 06 12 34 56 78"
           : mode === "KSA"
             ? "يرجى إدخال رقم جوال سعودي صحيح (مثال: 0512345678)"
-            : mode === "MA"
-              ? "دخل رقم مغربي صحيح (مثال: 0612345678 أو 0712345678)"
-              : "يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0612345678 أو 0512345678)",
+            : "دخّل رقم مغربي صحيح، بحال 06 12 34 56 78",
   };
 }
 
 export function phonePlaceholder(locale: "ar" | "fr" | "en" = "ar"): string {
   const mode = process.env.NEXT_PUBLIC_PHONE_VALIDATION_MODE || "MA";
-  if (locale === "fr") return mode === "KSA" ? "05XXXXXXXX" : "06XXXXXXXX ou 07XXXXXXXX";
-  if (locale === "en") return mode === "KSA" ? "05XXXXXXXX" : "06XXXXXXXX or 07XXXXXXXX";
+  if (locale === "fr") return mode === "KSA" ? "05XXXXXXXX" : "06 12 34 56 78";
+  if (locale === "en") return mode === "KSA" ? "05XXXXXXXX" : "06 12 34 56 78";
   if (mode === "KSA") return "05XXXXXXXX";
-  return "06XXXXXXXX أو 07XXXXXXXX";
+  return "06 12 34 56 78";
 }

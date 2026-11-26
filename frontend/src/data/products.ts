@@ -96,8 +96,29 @@ export type Product = {
    * Real reviews only. Leave [] until a real message exists.
    * The product page does not render "شنو قالو الزبناء" while this is empty.
    * Add: { firstName, city, product, text, image?, videoUrl? }
+   * Put a real WhatsApp screenshot on `image` (a file that already exists under /public).
    */
   testimonials: Testimonial[];
+  /** Short scene at the top of the problem section. */
+  painScene: string;
+  /** Three lines for "شكون محتاجو؟". */
+  whoFor: string[];
+  howTitle: string;
+  finalTitle: string;
+  compareTitle: string;
+  /** Market column. Same length as comparisonOriginal. No invented specs. */
+  compareMarket: string[];
+  photos: {
+    problem: string;
+    solution: string;
+    how: string;
+    result?: string;
+    heat?: string;
+    heatTitle?: string;
+    heatBody?: string;
+    box: string;
+    final?: string;
+  };
 };
 
 const ALL: ProductSlug[] = ["kenidoux-lumba", "kenidoux-posta", "kenidoux-calma"];
@@ -128,6 +149,27 @@ const lumba: Product = {
   outcome: "ظهر مرتاح بعد السياقة والجلسة الطويلة",
   chips: ["جالس أو سايق", "5 ضغطات", "70–130 سم"],
   testimonials: [],
+  painScene:
+    "سوايع فالكرسي ولا فالطوموبيل، وملي كتنوض كتحس بأسفل الظهر تقيل. ماشي غير نتا، هادي حالة بزاف ديال الناس اللي خدامين جالسين.",
+  whoFor: ["السائقين والخدامين جالسين", "اللي كيشقاو بالنهار", "الواليدين: ساهل يستعملوه"],
+  howTitle: "3 خطوات بسيطة، 10 دقايق فالنهار",
+  finalTitle: "ظهرك خدام معاك. عطيه دعم واضح اليوم.",
+  compareTitle: "علاش تختار كينيدو عوض حزام السوق العادي؟",
+  compareMarket: [
+    "خامة رقيقة كترتخا وكضيّع الهواء",
+    "بدون دليل بالدارجة وبدون متابعة",
+    "بدون ضمان واضح",
+    "مقاس واحد ومزعج",
+    "إعلان عام بلا مواكبة بعد الطلب",
+  ],
+  photos: {
+    problem: "/images/lumba/drive-2.webp",
+    solution: "/images/lumba/columns-closeup.webp",
+    how: "/images/lumba/guide-booklet.webp",
+    result: "/images/lumba/before-after.webp",
+    box: "/images/lumba/kit-mint.webp",
+    final: "/images/lumba/woman-salon.webp",
+  },
   scarcityBadge: "توصيل مجاني بعد التأكيد · الخلاص نقداً عند الباب",
   scarcityShort: "توصيل فابور",
   stock: 24,
@@ -179,7 +221,7 @@ const lumba: Product = {
   sections: [
     {
       kind: "emotional",
-      title: "رجّع لظهرك شوية خفة فالدار، فالخدمة وفالصلاة",
+      title: "كتوصل للدار وظهرك عيان؟",
       body: "ملي أسفل الظهر كيكون تقيل، الوقوف من الكرسي، الركوع، وحتى النعاس كيبانو أصعب. لومبا كينتافخ عمودياً بـ 5 ضغطات باش يعطي مساحة مريحة ودعم ثابت، بلا ما يعيق الحركة.",
       bullets: [
         "ينتافخ بـ 5 ضغطات بسيطة بالمضخة",
@@ -190,7 +232,7 @@ const lumba: Product = {
     },
     {
       kind: "science",
-      title: "أعمدة هوائية عمودية: دعم من الداخل، ماشي تزيار الكرش",
+      title: "ظهرك مسنود من الداخل، بلا ما تزيّر كرشك",
       body: "الأحزمة العادية كتضغط على البطن. لومبا كيعتمد على أعمدة هوائية كتمتد للفوق ملي كتنفخ، وكتخفّف الثقل على أسفل الظهر وتعطي إحساس بالدعم وأنت لابسو.",
       bullets: [
         "أعمدة هوائية عمودية كتعطي تمدد لطيف",
@@ -201,7 +243,7 @@ const lumba: Product = {
     },
     {
       kind: "materials",
-      title: "خامات مختارة باش يبقى الهواء، وتبقى الراحة",
+      title: "ما كيرتخاش بعد ساعة بحال حزام السوق",
       body: "كل طبقة عندها سبب: ثبات النفخ، تهوية على البشرة، وتحكم ساهل فالتفريغ.",
       bullets: [],
       cards: [
@@ -303,6 +345,26 @@ const posta: Product = {
   outcome: "وقفة خفيفة بالنهار، وراحة للرقبة بالعشية",
   chips: ["اهتزاز صامت", "وسادة رقبة", "بلا بلوتوث"],
   testimonials: [],
+  painScene: "النهار كامل قدام الشاشة، والرقبة والكتاف كيتقلو بلا ما تحس. فالعشية كيبان التعب.",
+  whoFor: ["خدامين قدام البيسي", "الطلبة", "اللي كيبغيو وقفة واثقة بلا حزام قاصح"],
+  howTitle: "بالنهار كيفكّرك، بالليل الوسادة كترخّي الرقبة",
+  finalTitle: "وقف بوقفة مريحة، أنيقة وما كاتبانش تحت الحوايج",
+  compareTitle: "علاش تختار بوسطا عوض حزام قاصح؟",
+  compareMarket: [
+    "أحزمة قاصحة تحت الإبط",
+    "بدون دليل بالدارجة وبدون متابعة",
+    "بدون ضمان واضح",
+    "بدون متابعة من بعد الطلب",
+    "إعلان عام بلا مواكبة بعد الطلب",
+  ],
+  photos: {
+    problem: "/images/posta/laptop.webp",
+    solution: "/images/posta/button.webp",
+    // button.webp is also the old how photo. how.webp is the other existing file so the two sections are not the same picture.
+    how: "/images/posta/how.webp",
+    box: "/images/posta/kit.webp",
+    final: "/images/posta/office.webp",
+  },
   scarcityBadge: "الباقة كاملة: المنبّه + وسادة الرقبة + برنامج 14 يوم",
   scarcityShort: "باقة كاملة",
   stock: 24,
@@ -353,7 +415,7 @@ const posta: Product = {
   sections: [
     {
       kind: "emotional",
-      title: "وقف بوقفة مريحة، أنيقة وما كاتبانش تحت الحوايج",
+      title: "كتلقا راسك محني قدام البيسي ولا التيليفون؟",
       body: "الوقفة المسرحة كتبدل الراحة قدام البيسي، وحتى الحضور فالدار وفالتصاور. عوض الأحزمة القاصحة، بوسطا خفيفة وما كتجرحش تحت الإبط.",
       bullets: [
         "خفيفة وما كاتبانش تحت الحوايج",
@@ -364,7 +426,7 @@ const posta: Product = {
     },
     {
       kind: "science",
-      title: "تذكير ذكي بالنهار، تمدد لطيف للرقبة بالليل",
+      title: "اهتزاز خفيف كيفكّرك تقاد، بلا تطبيق وبلا بلوتوث",
       body: "المستشعر كيرصد الانحناء وكيعطي اهتزاز صامت باش توقف راسك. بالعشية، الوسادة المنحنية كتعطي للرقبة قوس مريح بعد نهار الشاشات.",
       bullets: [
         "اهتزاز خفيف ملي كتحني أكثر من اللازم",
@@ -433,6 +495,24 @@ const calma: Product = {
   outcome: "دفء وشفط ناعم للكتاف قبل النعاس",
   chips: ["بلا نار", "15 دقيقة", "زر تحرير"],
   testimonials: [],
+  painScene: "الشقا والولاد والخدمة كيخليو الكتاف والظهر مشدودين. والحجامة التقليدية فيها الفوضى والخوف من الجرح.",
+  whoFor: ["الأمهات بعد نهار طويل", "اللي كيحبو الحجامة بلا جرح", "قبل النعاس للاسترخاء"],
+  howTitle: "15 دقيقة قبل النعاس",
+  finalTitle: "بلا جرح، بلا نار وبلا فوضى.",
+  compareTitle: "علاش تختار كالما بلا نار وبلا جرح؟",
+  compareMarket: [
+    "الحجامة التقليدية فيها نار وجرح",
+    "بدون دليل بالدارجة وبدون متابعة",
+    "بدون ضمان واضح",
+    "كأس ثابت بلا زر تحرير",
+    "إعلان عام بلا مواكبة بعد الطلب",
+  ],
+  photos: {
+    problem: "/images/calma/knee.webp",
+    solution: "/images/calma/studio.webp",
+    how: "/images/calma/buttons.webp",
+    box: "/images/calma/kit.webp",
+  },
   scarcityBadge: "كتزاد مع لومبا فنفس الكولية، بلا توصيل زايد",
   scarcityShort: "بلا جرح",
   stock: 24,
@@ -494,7 +574,7 @@ const calma: Product = {
   sections: [
     {
       kind: "emotional",
-      title: "15 دقيقة قبل النعاس تكفي باش تطيح ستريس النهار",
+      title: "الكتاف مشدودين فالعشية وما كتقدرش ترتاح؟",
       body: "من بعد الخدمة، الرياضة، أو غير باش تدلّل الوالدين بجلسة دافئة فالدار. كالما كتشغل بضغطة زر، بتوقيت أوتوماتيكي وزر فك الضغط فأي لحظة.",
       bullets: [
         "توقيت أوتوماتيكي (حتى 20 دقيقة)",
@@ -505,7 +585,7 @@ const calma: Product = {
     },
     {
       kind: "science",
-      title: "دفء + شفط ناعم + ضوء دافئ، فجهاز واحد",
+      title: "الحجامة بنسخة عصرية: دفء وشفط ناعم، بلا نار وبلا جرح",
       body: "عوض كأس ثابت كيحبس الجلد، كالما كتدير شدّ وإرخاء لطيف مع مستويات قوة وحرارة تقدر تضبطهم. الضوء الدافئ كيزيد إحساس الاسترخاء على الكتاف والظهر.",
       bullets: [
         "6 مستويات للقوة و6 للحرارة المهدئة",
@@ -574,6 +654,27 @@ const palma: Product = {
   outcome: "تدليك للرقبة والكتاف وأنت جالس أو راقد",
   chips: ["حزام ثابت", "يدين", "دفء"],
   testimonials: [],
+  painScene: "الراس محني على التيليفون، والكتاف تقال من الجلسة. كتبغي غير شي يدين يعجنو ليك الرقبة.",
+  whoFor: ["خدامين قدام الشاشة", "الواليدين", "اللي كيرتاحو جالسين ولا راقدين"],
+  howTitle: "حطّو، شدّ الحزام، وارتاح جالس ولا راقد",
+  finalTitle: "جالس أو راقد. الحزام كيثبت الجهاز.",
+  compareTitle: "علاش تختار كينيدو بالما؟",
+  compareMarket: [
+    "بدون دليل بالدارجة وبدون متابعة",
+    "بدون ضمان واضح",
+    "إعلان عام بلا مواكبة بعد الطلب",
+    "بدون متابعة من بعد الطلب",
+    "بدون مواكبة من الدار البيضاء",
+  ],
+  photos: {
+    problem: "/images/palma/sofa.webp",
+    solution: "/images/palma/cutaway.webp",
+    how: "/images/palma/rest.webp",
+    heat: "/images/palma/heat.webp",
+    heatTitle: "دفء على الوجه اللي كيلمس الكتف",
+    heatBody: "الوجه الداخلي فيه دفء باين.",
+    box: "/images/palma/nodes.webp",
+  },
   scarcityBadge: "توصيل مجاني بعد التأكيد · الخلاص نقداً عند الباب",
   scarcityShort: "توصيل فابور",
   stock: 18,
@@ -618,14 +719,14 @@ const palma: Product = {
   sections: [
     {
       kind: "emotional",
-      title: "دقايق للرقبة، جالس أو راقد",
+      title: "رقبتك مشدودة من بعد نهار طويل؟",
       body: "ثبت الحزام وخلي اليدين يخدموا على الرقبة والكتاف. وقّف ملي ترتاح.",
       bullets: ["حزام كيثبت الجهاز", "يدين كيعجنو الرقبة والكتاف", "جالس في الصالون أو راقد"],
       image: IMAGES.products["kenidoux-palma"].sections[0],
     },
     {
       kind: "science",
-      title: "يدين كيعجنو، ودفء على الكتاف",
+      title: "يدين كيعجنو الرقبة والكتاف، ودفء خفيف",
       body: "من الداخل محرك كيحرك اليدين على الرقبة والكتاف. الدفء باين على الوجه اللي كيلمس الكتف.",
       bullets: ["يدين كيعجنو الرقبة والكتاف", "دفء على الوجه الداخلي", "حزام باش يبقى الجهاز ثابت"],
       image: IMAGES.products["kenidoux-palma"].sections[1],

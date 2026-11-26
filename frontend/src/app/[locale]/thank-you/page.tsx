@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 import { getProduct } from "@/data/products";
+import { CONFIRMATION_PHONE } from "@/data/order-upgrade";
+import { ThankYouUpsell } from "@/components/product/ThankYouUpsell";
 import { useLocale } from "@/i18n/locale-context";
 import { localePath } from "@/i18n/locale";
 import { money } from "@/i18n/money";
@@ -56,9 +58,15 @@ function ThankYouInner() {
     };
   }, [orderId]);
 
+  const preview = process.env.NODE_ENV !== "production" && params.get("preview") === "1" && !orderId;
+  const sample = preview ? getProduct("kenidoux-lumba") : undefined;
   const number = order?.order_number || last?.orderNumber;
-  const total = order?.total_mad ?? last?.totalMad;
-  const first = order?.customer_first_name || last?.customerName.split(" ")[0] || "";
+  const total = order?.total_mad ?? last?.totalMad ?? (preview ? sample?.price : undefined);
+  const first = order?.customer_first_name || last?.customerName.split(" ")[0] || (preview ? "محمد" : "");
+  const firstItem = order?.items?.[0];
+  const thumbProduct = getProduct(firstItem?.product_slug || (preview ? "kenidoux-lumba" : ""));
+  const thumb = thumbProduct?.gallery[0]?.src || thumbProduct?.image;
+  const offerName = firstItem?.title_ar || (preview ? sample?.offers[0]?.title : "");
   const wa = whatsappLink(ui.thanksWaMessage(first, number || ""));
   const offers =
     order && !order.upsell_added
@@ -106,30 +114,26 @@ function ThankYouInner() {
   return (
     <section className="bg-alabaster">
       <div className="kd-container max-w-xl py-12 text-center md:py-16">
-        <p className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sage text-2xl text-brand">✓</p>
-        <p className="kd-kicker mt-4">{ui.thanksKicker}</p>
-        <h1 className="kd-h1 mt-2">{first ? ui.thanksNamed(first) : ui.thanksTitle}</h1>
-        <p className="mx-auto mt-4 max-w-md leading-8 text-muted">{ui.thanksSafe}</p>
+        <p className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage text-3xl text-brand">✓</p>
+        <h1 className="kd-h1 mt-4">{first ? ui.thanksNamed(first) : ui.thanksTitle}</h1>
 
-        {number ? (
-          <div className="kd-card mx-auto mt-8 p-6 text-start">
-            <p className="text-sm text-muted">{ui.orderNumber}</p>
-            <p className="font-sans text-2xl font-extrabold tabular-nums text-brand">{number}</p>
-            {order?.items?.length ? (
-              <ul className="mt-4 space-y-1 text-sm">
-                {order.items.map((i) => (
-                  <li key={i.offer_id + i.product_slug}>
-                    {i.quantity}× {i.title_ar} — {money(i.price_mad, locale)}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+        {number || preview ? (
+          <div className="kd-card mx-auto mt-8 p-4 text-start">
+            <div className="flex gap-3">
+              {thumb ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={thumb} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
+              ) : null}
+              <div>
+                {offerName ? <p className="text-kd-h3 font-bold text-brand-dark">{offerName}</p> : null}
+                {number ? <p className="mt-1 font-sans text-kd-small font-medium tabular-nums text-muted">{number}</p> : null}
+              </div>
+            </div>
             {total != null ? (
-              <p className="mt-4 border-t border-brand/10 pt-4 text-lg font-extrabold">
-                {ui.dueAtDoor} <span className="tabular-nums">{money(total, locale)}</span>
+              <p className="mt-4 border-t border-brand/10 pt-4 text-kd-secondary font-bold text-brand-dark">
+                {ui.thanksSummary(total.toLocaleString("en-US"))}
               </p>
             ) : null}
-            <p className="mt-2 text-sm font-bold text-brand">{ui.thanksNoFees}</p>
           </div>
         ) : (
           <p className="mt-6 text-sm text-muted">{ui.orderMissing}</p>
@@ -181,24 +185,36 @@ function ThankYouInner() {
 
         {addState === "added" ? <p className="mt-4 text-sm font-bold text-brand">{ui.thanksUpsellAdded}</p> : null}
 
-        <ol className="mt-8 space-y-3 text-start">
-          {ui.thanksSteps.map((step, i) => (
-            <li key={step.title} className="flex gap-3 rounded-2xl bg-white p-4 ring-1 ring-brand/10">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-extrabold text-brand">
-                {i + 1}
-              </span>
-              <span>
-                <span className="block font-extrabold text-brand-dark">{step.title}</span>
-                <span className="mt-1 block text-sm leading-7 text-muted">{step.body}</span>
-              </span>
-            </li>
-          ))}
+        <ThankYouUpsell productSlug={firstItem?.product_slug} />
+
+        <h2 className="mt-8 text-start text-kd-h2 font-bold text-brand-dark">{ui.thanksNow}</h2>
+        <ol className="mt-3 space-y-3 text-start">
+          {ui.thanksSteps.map((step, i) => {
+            const title = i === 0 && CONFIRMATION_PHONE ? ui.thanksCallFrom(CONFIRMATION_PHONE) : i === 0 ? ui.thanksCall : step.title;
+            return (
+              <li key={step.title} className="flex gap-3 rounded-2xl bg-white p-4 ring-1 ring-brand/10">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-extrabold text-brand">
+                  {i + 1}
+                </span>
+                <span>
+                  <span className="block font-extrabold text-brand-dark">{title}</span>
+                  {step.body ? <span className="mt-1 block text-sm leading-7 text-muted">{step.body}</span> : null}
+                </span>
+              </li>
+            );
+          })}
         </ol>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <a href={wa} className="kd-cta bg-wa text-brand-dark hover:bg-[#1ebe5d] sm:w-auto">
+        <div className="mt-8 flex flex-col gap-3">
+          {CONFIRMATION_PHONE ? (
+            <button type="button" className="kd-cta-secondary" onClick={() => downloadVCard(CONFIRMATION_PHONE)}>
+              {ui.thanksSave}
+            </button>
+          ) : null}
+          <a href={wa} className="kd-cta bg-wa text-brand-dark hover:bg-[#1ebe5d]">
             {ui.thanksWa}
           </a>
+          <p className="text-kd-secondary font-bold text-brand-dark">{ui.thanksAnswer}</p>
           <Link href={localePath("/", locale)} className="kd-cta-secondary">
             {ui.thanksHome}
           </Link>
@@ -206,6 +222,19 @@ function ThankYouInner() {
       </div>
     </section>
   );
+}
+
+function downloadVCard(phone: string) {
+  const card = ["BEGIN:VCARD", "VERSION:3.0", "FN:Kinédoux كينيدو", "ORG:Kinédoux", `TEL;TYPE=CELL:${phone}`, "END:VCARD"].join(
+    "\r\n",
+  );
+  const file = new Blob([card], { type: "text/vcard" });
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "kinedoux.vcf";
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function ThankYouLoading() {

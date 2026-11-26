@@ -74,7 +74,8 @@ def test_phone_modes():
     from app.services.phone_normalizer import validate_and_format_phone
 
     assert not validate_and_format_phone("0612345678", "KSA").is_valid
-    assert not validate_and_format_phone("0512345678", "MA").is_valid
+    ma_land = validate_and_format_phone("0512345678", "MA")
+    assert ma_land.is_valid and ma_land.country == "MA" and ma_land.e164_with_plus == "+212512345678"
     assert validate_and_format_phone("0512345678", "KSA").is_valid
 
 

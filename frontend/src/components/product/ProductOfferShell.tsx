@@ -10,12 +10,15 @@ import { defaultOffer, isBundleOffer, submitLine, type Offer, type Product } fro
 import { trackStore } from "@/lib/store-track";
 import { trackEvent } from "@/lib/tracking";
 import { useCartStore } from "@/store/useCartStore";
+import { sectionImageSize } from "@/data/section-image-size";
 import { ProductGallery } from "./ProductGallery";
 import { offerOrderText } from "./offer-card-copy";
 import { OfferTierSelector } from "./OfferTierSelector";
 import { StickyAddToCart } from "./StickyAddToCart";
 import { InlineOrderForm } from "./InlineOrderForm";
 import { OfferActionsProvider } from "./offer-context";
+import { SectionImage } from "./SectionImage";
+import { WhatsAppFloat } from "./WhatsAppFloat";
 
 export function ProductOfferShell({
   product,
@@ -24,6 +27,7 @@ export function ProductOfferShell({
   finalTitle,
   finalSub,
   finalNote,
+  finalImage,
 }: {
   product: Product;
   bundleOffer: Offer;
@@ -31,6 +35,7 @@ export function ProductOfferShell({
   finalTitle: string;
   finalSub: string;
   finalNote: string;
+  finalImage?: string;
 }) {
   const isCartOpen = useCartStore((s) => s.isCartOpen);
   const isCheckoutOpen = useCartStore((s) => s.isCheckoutOpen);
@@ -110,7 +115,7 @@ export function ProductOfferShell({
   ];
 
   return (
-    <OfferActionsProvider value={{ selectBundle }}>
+    <OfferActionsProvider value={{ product, offer, selectBundle, scrollToForm }}>
       <div className="overflow-x-clip lg:mx-auto lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,55fr)_minmax(0,45fr)] lg:items-start lg:gap-10 lg:px-8 lg:pt-6">
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
           <ProductGallery product={product} />
@@ -152,7 +157,11 @@ export function ProductOfferShell({
       </div>
 
       <section className="px-4 py-8 lg:px-8">
-        <div className="mx-auto max-w-6xl rounded-2xl border border-brand/10 bg-white px-5 py-8 text-center">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-brand/10 bg-white text-center">
+          {finalImage ? (
+            <SectionImage {...sectionImageSize(finalImage)} src={finalImage} alt={finalTitle} className="rounded-none" />
+          ) : null}
+          <div className="px-5 py-8">
           <h2 className="text-kd-h2 font-bold text-brand-dark">{finalTitle}</h2>
           <p className="mx-auto mt-3 max-w-[36em] text-kd-secondary text-muted">{finalSub}</p>
           <button
@@ -163,10 +172,12 @@ export function ProductOfferShell({
             {offerOrderText(product, offer, locale)}
           </button>
           <p className="mt-3 text-kd-small font-medium leading-6 text-muted">{finalNote}</p>
+          </div>
         </div>
       </section>
 
       {!isCartOpen && !isCheckoutOpen ? <StickyAddToCart product={product} offer={offer} onAdd={scrollToForm} /> : null}
+      {!isCartOpen && !isCheckoutOpen ? <WhatsAppFloat product={product} /> : null}
     </OfferActionsProvider>
   );
 }
