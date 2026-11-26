@@ -35,6 +35,16 @@ export type Testimonial = {
   videoUrl?: string;
 };
 
+export type GallerySlide = {
+  src: string;
+  label: string;
+  alt?: string;
+  /** cover fills the frame. blur shows the whole photo on a blurred copy of the same file. */
+  fit?: "cover" | "blur";
+  /** object-position. Defaults to center. */
+  focus?: string;
+};
+
 export type ProductSection = {
   kind: "emotional" | "science" | "materials";
   title: string;
@@ -72,7 +82,7 @@ export type Product = {
   stepsImageAlt?: string;
   comparisonOriginal: string[];
   crossSellPitches: Partial<Record<ProductSlug, string>>;
-  gallery: Array<{ src: string; label: string; alt?: string }>;
+  gallery: GallerySlide[];
   image: string;
   kitImageAlt?: string;
   scienceImageAlt?: string;
@@ -92,13 +102,17 @@ export type Product = {
 
 const ALL: ProductSlug[] = ["kenidoux-lumba", "kenidoux-posta", "kenidoux-calma"];
 
-const gallery = (slug: ProductSlug) => {
+const COVER_FOCUS: Record<string, string> = {
+  "/images/posta/laptop.webp": "30% center",
+};
+
+const gallery = (slug: ProductSlug): GallerySlide[] => {
   const img = IMAGES.products[slug];
   return [
-    { src: img.main, label: "الصورة الرئيسية" },
-    { src: img.mechanism, label: "كيفاش كتخدم" },
-    { src: img.lifestyle, label: "طريقة الاستعمال" },
-    { src: img.kit, label: "محتويات العلبة" },
+    { src: img.main, label: "الصورة الرئيسية", fit: "cover", focus: COVER_FOCUS[img.main] ?? "center" },
+    { src: img.mechanism, label: "كيفاش كتخدم", fit: "blur" },
+    { src: img.lifestyle, label: "طريقة الاستعمال", fit: "cover", focus: COVER_FOCUS[img.lifestyle] ?? "center" },
+    { src: img.kit, label: "محتويات العلبة", fit: "blur" },
   ];
 };
 
@@ -236,31 +250,40 @@ const lumba: Product = {
       src: "/images/lumba/man-shop-square.webp",
       label: "الصورة الرئيسية",
       alt: "مول الحانوت لابس حزام كينيدو لومبا وماسك المضخة",
+      fit: "cover",
+      focus: "center",
     },
     {
       src: "/images/lumba/before-after.webp",
       label: "قبل وبعد",
       alt: "كينيدو لومبا قبل وبعد النفخ — الأعمدة الهوائية كتطلع للفوق",
+      fit: "blur",
     },
     {
       src: "/images/lumba/woman-salon.webp",
       label: "فالصالون",
       alt: "سيدة مغربية لابسة حزام كينيدو لومبا فالصالون",
+      fit: "cover",
+      focus: "center",
     },
     {
       src: "/images/lumba/drive-2.webp",
       label: "فالطيوموبيل",
       alt: "سائق مغربي لابس حزام كينيدو لومبا فالطوموبيل",
+      fit: "cover",
+      focus: "center",
     },
     {
       src: "/images/lumba/kit-mint.webp",
       label: "محتويات العلبة",
       alt: "محتويات العلبة: الحزام، المضخة، وصلة التوسيع، والدليل",
+      fit: "blur",
     },
     {
       src: "/images/lumba/guide-booklet.webp",
       label: "الدليل",
       alt: "دليل كينيدو المصور بالدارجة — 3 خطوات",
+      fit: "blur",
     },
   ],
   image: IMAGES.products["kenidoux-lumba"].main,
@@ -658,31 +681,40 @@ const palma: Product = {
       src: "/images/palma/neck.webp",
       label: "على الرقبة",
       alt: "كينيدو بالما مثبت بالحزام على الرقبة والكتف",
+      fit: "cover",
+      focus: "88% center",
     },
     {
       src: "/images/palma/cutaway.webp",
       label: "كيفاش كيعجن",
       alt: "داخل الجهاز: المحرك كيحرك اليدين على الرقبة والكتاف",
+      fit: "blur",
     },
     {
       src: "/images/palma/sofa.webp",
       label: "فالدار",
       alt: "امرأة جالسة وبالما على رقبتها",
+      fit: "cover",
+      focus: "center",
     },
     {
       src: "/images/palma/rest.webp",
       label: "وأنت مرتاح",
       alt: "كينيدو بالما على الرقبة وهي راقدة",
+      fit: "cover",
+      focus: "center",
     },
     {
       src: "/images/palma/nodes.webp",
       label: "اليدين",
       alt: "يدين التدليك، الغطاء القماش، والحزام",
+      fit: "blur",
     },
     {
       src: "/images/palma/heat.webp",
       label: "الدفء",
       alt: "الوجه الداخلي ديال كينيدو بالما وفيه دفء على الكتف",
+      fit: "blur",
     },
   ],
   image: IMAGES.products["kenidoux-palma"].main,
