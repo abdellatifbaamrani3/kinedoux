@@ -18,7 +18,6 @@ import { StickyAddToCart } from "./StickyAddToCart";
 import { InlineOrderForm } from "./InlineOrderForm";
 import { OfferActionsProvider } from "./offer-context";
 import { SectionImage } from "./SectionImage";
-import { WhatsAppFloat } from "./WhatsAppFloat";
 
 export function ProductOfferShell({
   product,
@@ -177,7 +176,6 @@ export function ProductOfferShell({
       </section>
 
       {!isCartOpen && !isCheckoutOpen ? <StickyAddToCart product={product} offer={offer} onAdd={scrollToForm} /> : null}
-      {!isCartOpen && !isCheckoutOpen ? <WhatsAppFloat product={product} /> : null}
     </OfferActionsProvider>
   );
 }

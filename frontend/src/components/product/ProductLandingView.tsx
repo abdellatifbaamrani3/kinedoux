@@ -16,7 +16,7 @@ import { ProductCrossSell } from "./ProductCrossSell";
 import { ProductProof } from "./ProductProof";
 import { SectionImage } from "./SectionImage";
 import { MidOrderCta } from "./MidOrderCta";
-import { WhatsAppAskLink } from "./WhatsAppFloat";
+import { WhatsAppAskLink } from "./WhatsAppAskLink";
 
 const WHO_ICONS = [Armchair, Monitor, Users] as const;
 

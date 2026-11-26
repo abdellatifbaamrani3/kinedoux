@@ -101,6 +101,22 @@ body {
   }
 }
 
+@layer utilities {
+  .kd-hero-fade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--brand-dark) 35%, transparent) 0%,
+      color-mix(in srgb, var(--brand-dark) 0%, transparent) 20%,
+      color-mix(in srgb, var(--brand-dark) 0%, transparent) 45%,
+      color-mix(in srgb, var(--brand-dark) 80%, transparent) 100%
+    );
+  }
+}
+
 @media (min-width: 1024px) {
   .kd-hero-wrap {
     display: flex;

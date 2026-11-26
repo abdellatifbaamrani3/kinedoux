@@ -80,7 +80,7 @@ export function ProductGallery({ product }: { product: Product }) {
             );
           })}
         </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-gradient-to-t from-black/25 to-transparent" />
+        <div className="kd-hero-fade" aria-hidden="true" />
         <span className="absolute top-3 right-3 z-[2] rounded-full bg-sage px-2.5 py-1 text-[11px] font-bold text-brand">
           {ui.payOnDelivery}
         </span>
