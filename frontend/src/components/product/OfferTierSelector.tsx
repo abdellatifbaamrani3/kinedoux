@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
-
 import type { Offer } from "@/data/products";
+import { isBundleOffer } from "@/data/products";
 import { useLocale } from "@/i18n/locale-context";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
+import { offerTileLabel } from "./offer-label";
 
 export function OfferTierSelector({
   offers,
@@ -21,76 +21,46 @@ export function OfferTierSelector({
 }) {
   const locale = useLocale();
   const ui = uiCopy(locale);
+  const selected = offers.find((offer) => offer.id === selectedId) ?? offers[0];
+
   return (
-    <fieldset>
-      <legend className="mb-3 text-base font-bold text-brand-dark">{ui.offerLegend}</legend>
-      <div className="space-y-3">
-        {offers.filter((offer) => offer.showInPicker !== false).map((offer) => {
-          const selected = offer.id === selectedId;
+    <fieldset className="min-w-0">
+      <legend className="mb-2 text-sm font-bold text-brand-dark">{ui.offerPick}</legend>
+      <div className="grid grid-cols-3 gap-1.5">
+        {offers.map((offer) => {
+          const active = offer.id === selectedId;
           const save = offer.compareAt - offer.price;
+          const bundle = isBundleOffer(offer);
           return (
             <label
               key={offer.id}
               className={cn(
-                "flex cursor-pointer gap-3 rounded-2xl border-2 p-4 transition",
-                selected ? "border-brand bg-sage shadow-card" : "border-brand/10 bg-white hover:border-brand/30",
+                "flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl border-2 bg-white p-2 text-center focus-within:ring-2 focus-within:ring-action",
+                active ? "border-action bg-action/10" : "border-brand/10",
               )}
             >
               <input
                 type="radio"
                 name={name}
-                className="mt-1 accent-brand"
-                checked={selected}
+                value={offer.id}
+                checked={active}
                 onChange={() => onSelect(offer)}
+                aria-label={`${offer.title} — ${money(offer.price, locale)}`}
+                className="sr-only"
               />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-bold text-brand-dark">{offer.title}</span>
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-[11px] font-bold",
-                      offer.isDefault ? "bg-brand text-white" : "bg-sage text-brand",
-                    )}
-                  >
-                    {offer.badge}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm leading-6 text-muted">{offer.subtitle}</p>
-                <p className="mt-2 flex flex-wrap items-baseline gap-2">
-                  <span className="text-xl font-bold tabular-nums text-brand">{money(offer.price, locale)}</span>
-                  {save > 0 ? (
-                    <>
-                      <span className="text-sm tabular-nums text-muted line-through">{money(offer.compareAt, locale)}</span>
-                      <span className="text-xs font-bold text-brand">{ui.offerSave(save.toLocaleString("en-US"))}</span>
-                      {offer.units > 1 ? (
-                        <span className="text-xs text-muted">
-                          ({money(Math.round(offer.price / offer.units), locale)} {ui.perPiece})
-                        </span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <span className="text-xs font-bold text-muted">{ui.shippingIncluded}</span>
-                  )}
-                </p>
-              </div>
-              {offer.thumbSrc ? (
-                <span className="relative mt-0.5 h-16 w-16 shrink-0 overflow-hidden rounded-full ring-1 ring-brand/10">
-                  <Image
-                    src={offer.thumbSrc}
-                    alt=""
-                    width={64}
-                    height={64}
-                    sizes="64px"
-                    quality={70}
-                    loading="lazy"
-                    className="h-full w-full object-cover object-[center_20%]"
-                  />
+              <span className="text-[12px] font-bold leading-4 text-brand-dark">{offerTileLabel(offer, ui)}</span>
+              {bundle ? <span className="mt-1 block whitespace-pre-line text-[10px] font-bold leading-tight text-muted">{ui.bundleNames}</span> : null}
+              <span className="mt-1 text-[13px] font-bold tabular-nums leading-5 text-brand-dark">{money(offer.price, locale)}</span>
+              {save > 0 ? (
+                <span className="mx-auto mt-1 rounded-full bg-sage px-1.5 py-0.5 text-[10px] font-bold leading-4 text-brand">
+                  {ui.offerSave(save.toLocaleString("en-US"))}
                 </span>
               ) : null}
             </label>
           );
         })}
       </div>
+      {selected ? <p className="mt-2 text-xs leading-5 text-muted">{selected.subtitle}</p> : null}
     </fieldset>
   );
 }

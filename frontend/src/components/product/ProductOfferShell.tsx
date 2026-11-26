@@ -1,41 +1,44 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Check, ShieldCheck, Truck, Wallet } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ShieldCheck, Truck, Wallet } from "lucide-react";
 
 import { useLocale } from "@/i18n/locale-context";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
-import { defaultOffer, type Offer, type Product } from "@/data/products";
+import { defaultOffer, isBundleOffer, submitLine, type Offer, type Product } from "@/data/products";
 import { trackStore } from "@/lib/store-track";
 import { trackEvent } from "@/lib/tracking";
+import { useCartStore } from "@/store/useCartStore";
 import { ProductGallery } from "./ProductGallery";
 import { OfferTierSelector } from "./OfferTierSelector";
 import { StickyAddToCart } from "./StickyAddToCart";
 import { InlineOrderForm } from "./InlineOrderForm";
-import { useCartStore } from "@/store/useCartStore";
+import { OfferActionsProvider } from "./offer-context";
 
 export function ProductOfferShell({
   product,
+  bundleOffer,
   children,
-  guaranteeTitle,
   finalTitle,
   finalSub,
   finalNote,
-  trustPills,
 }: {
   product: Product;
+  bundleOffer: Offer;
   children: ReactNode;
-  guaranteeTitle: string;
   finalTitle: string;
   finalSub: string;
   finalNote: string;
-  trustPills: readonly string[];
 }) {
   const isCartOpen = useCartStore((s) => s.isCartOpen);
   const isCheckoutOpen = useCartStore((s) => s.isCheckoutOpen);
   const locale = useLocale();
   const ui = uiCopy(locale);
+  const offers = useMemo(() => {
+    const own = product.offers.filter((item) => item.showInPicker !== false && !isBundleOffer(item)).slice(0, 2);
+    return [...own, bundleOffer];
+  }, [product, bundleOffer]);
   const [offer, setOffer] = useState(() => defaultOffer(product));
   const trackedOffer = useRef<string | null>(null);
 
@@ -54,150 +57,116 @@ export function ProductOfferShell({
   function trackAdd(next: Offer) {
     if (trackedOffer.current === next.id) return;
     trackedOffer.current = next.id;
+    const line = submitLine(product, next);
     trackEvent("AddToCart", {
       value: next.price,
       currency: "MAD",
-      contents: [{ id: product.slug, quantity: next.units, item_price: next.price, name: product.nameAr }],
+      contents: [
+        {
+          id: line.product_slug,
+          quantity: next.units,
+          item_price: next.price,
+          name: isBundleOffer(next) ? next.title : product.nameAr,
+        },
+      ],
     });
-    trackStore("add_to_cart", { product_slug: product.slug, value_mad: next.price });
+    trackStore("add_to_cart", { product_slug: line.product_slug, value_mad: next.price });
   }
 
   function choose(next: Offer) {
     setOffer(next);
+    const line = submitLine(product, next);
     trackStore("variant_select", {
-      product_slug: product.slug,
+      product_slug: line.product_slug,
       value_mad: next.price,
-      metadata: { offer_id: next.id, units: next.units },
+      metadata: { offer_id: line.offer_id, units: next.units },
     });
     trackAdd(next);
   }
 
-  function scrollToForm() {
-    trackAdd(offer);
-    const el = document.getElementById("order-form");
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    const field = el?.querySelector("input");
-    if (field instanceof HTMLElement) field.focus();
+  function focusOrder() {
+    document.getElementById("order")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => {
+      document.getElementById("order-name")?.focus({ preventScroll: true });
+    }, 350);
   }
 
-  const save = offer.compareAt - offer.price;
+  function scrollToForm() {
+    trackAdd(offer);
+    focusOrder();
+  }
+
+  function selectBundle() {
+    const kit = offers.find(isBundleOffer);
+    if (kit) choose(kit);
+    focusOrder();
+  }
+
+  const trust = [
+    { icon: Wallet, label: ui.trustDoor },
+    { icon: Truck, label: ui.trustFree },
+    { icon: ShieldCheck, label: ui.trustDays },
+  ];
 
   return (
-    <>
-      <section className="bg-alabaster pt-4 lg:pt-10">
-        <div className="kd-container">
-          <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-14">
-            <div className="lg:order-2">
-              <div className="flex items-start gap-3 lg:block">
-                <div className="w-[42%] shrink-0 lg:w-auto">
-                  <ProductGallery product={product} />
-                </div>
-                <div className="min-w-0 flex-1 lg:hidden">
-                  <h1 className="text-2xl font-bold leading-snug text-brand-dark">{product.nameAr}</h1>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted">{product.heroHook.title}</p>
-                  <PriceBlock offer={offer} save={save} />
-                  <button type="button" className="kd-cta mt-3 px-3 py-3 text-sm" onClick={scrollToForm}>
-                    {ui.orderNow}
-                  </button>
-                </div>
-              </div>
-            </div>
+    <OfferActionsProvider value={{ selectBundle }}>
+      <div className="overflow-x-clip lg:mx-auto lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,55fr)_minmax(0,45fr)] lg:items-start lg:gap-10 lg:px-8 lg:pt-6">
+        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+          <ProductGallery product={product} />
+        </div>
 
-            <div>
-              <div className="hidden lg:block">
-                <span className="inline-block rounded-full bg-sage px-3 py-1 text-xs font-bold text-brand">{product.category}</span>
-                <h1 className="mt-3 text-4xl font-bold text-brand-dark">{product.nameAr}</h1>
-                <p className="mt-2 font-sans text-sm font-semibold tracking-wide text-muted">{product.latinSubtitle}</p>
-                <p className="mt-3 text-base leading-8 text-muted">{product.heroHook.title}</p>
-                <PriceBlock offer={offer} save={save} />
-              </div>
-
-              <div className="mt-4">
-                <OfferTierSelector offers={product.offers} selectedId={offer.id} onSelect={choose} />
-              </div>
-
-              <div className="mt-4">
-                <InlineOrderForm product={product} offer={offer} onBuyTap={() => trackAdd(offer)} />
-              </div>
-
-              <ul className="mt-5 space-y-3">
-                {product.bonuses.map((b) => (
-                  <li key={b} className="flex gap-3 text-sm text-muted">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sage text-brand">
-                      <Check className="h-3.5 w-3.5" aria-hidden />
-                    </span>
-                    {b}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 flex items-center justify-center gap-2 text-sm font-bold text-brand">
-                <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden />
-                {guaranteeTitle}
-              </p>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                <TrustMini icon={Wallet} title={ui.trustPayShort} compact />
-                <TrustMini icon={Truck} title={ui.trustShipShort} compact />
-                <TrustMini icon={ShieldCheck} title={ui.trustSwap} compact />
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-muted">
-                {trustPills.map((t) => (
-                  <span key={t}>{t}</span>
-                ))}
-              </div>
-            </div>
+        <div className="relative z-10 -mt-10 min-w-0 px-4 lg:sticky lg:top-32 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:max-h-[calc(100vh-9rem)] lg:self-start lg:overflow-y-auto lg:px-0">
+          <div id="offer" className="scroll-mt-32 rounded-2xl border border-brand/10 bg-white p-4">
+            <h1 className="text-[18px] font-bold leading-snug text-brand-dark">{product.nameAr}</h1>
+            <p className="mt-1 text-sm leading-6 text-muted">{product.outcome}</p>
+            <p className="mt-2 text-[22px] font-bold tabular-nums leading-none text-brand-dark">{money(offer.price, locale)}</p>
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {product.chips.map((chip) => (
+                <li key={chip} className="rounded-full bg-sage px-2 py-0.5 text-[11px] font-bold text-brand">
+                  {chip}
+                </li>
+              ))}
+            </ul>
           </div>
+
+          <div className="mt-3">
+            <OfferTierSelector offers={offers} selectedId={offer.id} onSelect={choose} />
+          </div>
+
+          <p className="mt-3 text-xs leading-5 text-muted">{ui.deliveryPromise}</p>
+          <div className="mt-2">
+            <InlineOrderForm product={product} offer={offer} onBuyTap={() => trackAdd(offer)} />
+          </div>
+
+          <ul className="mt-3 grid grid-cols-3 gap-1.5">
+            {trust.map((item) => (
+              <li key={item.label} className="flex flex-col items-center gap-1 rounded-2xl border border-brand/10 bg-white px-1 py-3 text-center">
+                <item.icon className="h-4 w-4 text-brand" aria-hidden />
+                <span className="text-[11px] font-bold text-brand-dark">{item.label}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </section>
 
-      {children}
+        <div className="min-w-0 lg:col-start-1 lg:row-start-2">{children}</div>
+      </div>
 
-      <section className="bg-brand-dark py-16 lg:py-28">
-        <div className="kd-container text-center">
-          <span className="mb-3 inline-block rounded-full bg-action px-3 py-1 text-xs font-bold text-white">{ui.swapPill}</span>
-          <h2 className="text-3xl font-bold text-white">{finalTitle}</h2>
-          <p className="mx-auto mt-4 max-w-lg text-lg text-leaf/80">{finalSub}</p>
-          <button type="button" className="kd-cta mx-auto mt-8 sm:w-auto" onClick={scrollToForm}>
-            {ui.addCta(money(offer.price, locale))}
+      <section className="px-4 py-6 lg:px-8">
+        <div className="mx-auto max-w-6xl rounded-2xl border border-brand/10 bg-white px-5 py-8 text-center">
+          <h2 className="text-xl font-bold text-brand-dark">{finalTitle}</h2>
+          <p className="mx-auto mt-2 max-w-lg text-sm leading-7 text-muted">{finalSub}</p>
+          <button
+            type="button"
+            className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-base font-bold text-white hover:bg-action-hover sm:w-auto sm:px-10"
+            onClick={scrollToForm}
+          >
+            {ui.orderCta(money(offer.price, locale))}
           </button>
-          <p className="mt-5 text-sm text-leaf/70">{finalNote}</p>
+          <p className="mt-3 text-xs leading-6 text-muted">{finalNote}</p>
         </div>
       </section>
 
-      <div className="pb-[88px] lg:pb-0" />
       {!isCartOpen && !isCheckoutOpen ? <StickyAddToCart product={product} offer={offer} onAdd={scrollToForm} /> : null}
-    </>
-  );
-}
-
-function PriceBlock({ offer, save }: { offer: Offer; save: number }) {
-  const locale = useLocale();
-  const ui = uiCopy(locale);
-  return (
-    <div className="mt-3">
-      <p className="flex flex-wrap items-baseline gap-2">
-        <span className="text-3xl font-bold tabular-nums text-brand-dark">{money(offer.price, locale)}</span>
-        {save > 0 ? <span className="text-sm tabular-nums text-muted line-through">{money(offer.compareAt, locale)}</span> : null}
-      </p>
-      <p className="mt-2 inline-flex rounded-full bg-sage px-3 py-1 text-xs font-bold text-brand">{ui.payOnDelivery}</p>
-      <p className="mt-2 text-xs font-bold text-muted">
-        {ui.trustDelivery} · {ui.shippingFree}
-      </p>
-    </div>
-  );
-}
-
-function TrustMini({
-  icon: Icon,
-  title,
-}: {
-  icon: typeof Truck;
-  title: string;
-  compact?: boolean;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1 rounded-xl bg-white p-2.5 text-center ring-1 ring-brand/10">
-      <Icon className="h-4 w-4 text-brand" />
-      <span className="text-[11px] font-bold text-brand-dark">{title}</span>
-    </div>
+    </OfferActionsProvider>
   );
 }

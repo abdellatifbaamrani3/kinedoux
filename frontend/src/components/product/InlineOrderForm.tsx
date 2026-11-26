@@ -4,17 +4,20 @@ import { useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { CITIES } from "@/data/cities";
-import type { Offer, Product } from "@/data/products";
+import { isBundleOffer, submitLine, type Offer, type Product } from "@/data/products";
 import { useLocale } from "@/i18n/locale-context";
 import { localePath } from "@/i18n/locale";
 import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { api } from "@/lib/api";
 import { firePurchaseOnce, settleCodOrder } from "@/lib/confirm-order";
-import { phonePlaceholder, validateAndFormatPhone } from "@/lib/phone";
+import { validateAndFormatPhone } from "@/lib/phone";
 import { trackStore } from "@/lib/store-track";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId, trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
+
+const fieldClass =
+  "min-h-12 w-full rounded-[10px] border border-transparent bg-alabaster px-4 text-base text-brand-dark outline-none focus:border-brand/20";
 
 export function InlineOrderForm({
   product,
@@ -34,12 +37,23 @@ export function InlineOrderForm({
   const [address, setAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitCount, setSubmitCount] = useState(0);
   const checkoutSent = useRef(false);
+  const lock = useRef(false);
 
   const phoneResult = useMemo(() => validateAndFormatPhone(phone, locale), [phone, locale]);
   const nameOk = name.trim().length >= 3;
   const cityOk = (CITIES as readonly string[]).includes(city);
   const canSubmit = nameOk && phoneResult.isValid && cityOk && !submitting;
+  const line = submitLine(product, offer);
+  const showNameError = submitCount > 0 && !nameOk;
+  const showCityError = submitCount > 0 && !cityOk;
+  const phoneError =
+    phone.length > 0 && !phoneResult.isValid
+      ? phoneResult.errorMessage
+      : submitCount > 0 && !phoneResult.isValid
+        ? phoneResult.errorMessage || ui.phoneHint
+        : null;
 
   function noteCheckout() {
     if (checkoutSent.current) return;
@@ -47,9 +61,16 @@ export function InlineOrderForm({
     trackEvent("InitiateCheckout", {
       value: offer.price,
       currency: "MAD",
-      contents: [{ id: product.slug, quantity: offer.units, item_price: offer.price, name: product.nameAr }],
+      contents: [
+        {
+          id: line.product_slug,
+          quantity: offer.units,
+          item_price: offer.price,
+          name: isBundleOffer(offer) ? offer.title : product.nameAr,
+        },
+      ],
     });
-    trackStore("checkout_started", { product_slug: product.slug, value_mad: offer.price });
+    trackStore("checkout_started", { product_slug: line.product_slug, value_mad: offer.price });
   }
 
   function markField(field: "name" | "phone" | "city" | "address", ok: boolean) {
@@ -61,28 +82,32 @@ export function InlineOrderForm({
     } catch {
       /* still send */
     }
-    trackStore("form_field_completed", { product_slug: product.slug, metadata: { field } });
+    trackStore("form_field_completed", { product_slug: line.product_slug, metadata: { field } });
   }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (lock.current) return;
     onBuyTap();
     noteCheckout();
-    trackStore("order_submit_attempt", { product_slug: product.slug, value_mad: offer.price });
+    trackStore("order_submit_attempt", { product_slug: line.product_slug, value_mad: offer.price });
     setError(null);
     if (!canSubmit) {
-      const message = !nameOk ? ui.fullName : !phoneResult.isValid ? phoneResult.errorMessage || ui.phoneHint : ui.city;
-      setError(message);
-      trackStore("order_submit_error", { product_slug: product.slug, metadata: { message: message.slice(0, 180) } });
+      setSubmitCount((count) => count + 1);
+      const message = !nameOk ? ui.nameError : !phoneResult.isValid ? phoneResult.errorMessage || ui.phoneHint : ui.cityError;
+      const focusId = !nameOk ? "order-name" : !phoneResult.isValid ? "order-phone" : "order-city";
+      document.getElementById(focusId)?.focus();
+      trackStore("order_submit_error", { product_slug: line.product_slug, metadata: { message: message.slice(0, 180) } });
       return;
     }
+    lock.current = true;
     setSubmitting(true);
     const eventId = makeEventId("Purchase");
     const fullName = name.trim();
-    const line = address.trim();
+    const addressLine = address.trim();
     let customerName = `${fullName} — ${city}`;
-    if (line) {
-      const withAddress = `${customerName} — ${line}`;
+    if (addressLine) {
+      const withAddress = `${customerName} — ${addressLine}`;
       customerName = withAddress.length <= 200 ? withAddress : customerName;
     }
     try {
@@ -90,7 +115,7 @@ export function InlineOrderForm({
       const order = await api.createOrder({
         customer_name: customerName,
         customer_phone: phone,
-        items: [{ product_slug: product.slug, offer_id: offer.id, quantity: 1, is_cross_sell: false }],
+        items: [{ product_slug: line.product_slug, offer_id: line.offer_id, quantity: 1, is_cross_sell: false }],
         event_id: eventId,
         tracking: getTrackingContext(),
       });
@@ -98,19 +123,21 @@ export function InlineOrderForm({
       firePurchaseOnce(settled);
       router.push(localePath(`/thank-you?order_id=${settled.id}`, locale));
     } catch (err) {
+      lock.current = false;
       setSubmitting(false);
       const message = err instanceof Error ? err.message : ui.orderError;
       setError(message);
-      trackStore("order_submit_error", { product_slug: product.slug, metadata: { message: message.slice(0, 180) } });
+      trackStore("order_submit_error", { product_slug: line.product_slug, metadata: { message: message.slice(0, 180) } });
     }
   }
 
   return (
-    <form id="order-form" className="scroll-mt-28 space-y-3 rounded-2xl bg-white p-4 shadow-card ring-1 ring-brand/10" onSubmit={onSubmit} onFocus={noteCheckout}>
-      <p className="text-sm font-bold text-brand">{ui.checkoutNote}</p>
-      <label className="block">
-        <span className="mb-1 block text-sm font-extrabold">{ui.fullName}</span>
+    <form id="order" className="scroll-mt-32 space-y-3 rounded-2xl border border-brand/10 bg-white p-4" onSubmit={onSubmit} onFocus={noteCheckout}>
+      <label className="block" htmlFor="order-name">
+        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldName}</span>
         <input
+          id="order-name"
+          name="name"
           value={name}
           onChange={(e) => {
             setName(e.target.value);
@@ -118,49 +145,43 @@ export function InlineOrderForm({
           }}
           placeholder={ui.namePlaceholder}
           autoComplete="name"
-          required
-          minLength={3}
-          className={cn(
-            "w-full rounded-xl border-2 bg-alabaster px-4 py-3 text-base outline-none",
-            name.length === 0 ? "border-brand/15" : nameOk ? "border-brand" : "border-coral",
-          )}
+          aria-invalid={showNameError}
+          className={cn(fieldClass, showNameError && "border-coral/40")}
         />
+        {showNameError ? <p className="mt-1 text-xs font-bold text-coral">{ui.nameError}</p> : null}
       </label>
-      <label className="block">
-        <span className="mb-1 block text-sm font-extrabold">{ui.phone}</span>
+      <label className="block" htmlFor="order-phone">
+        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldPhone}</span>
         <input
+          id="order-phone"
+          name="tel"
           value={phone}
           onChange={(e) => {
             setPhone(e.target.value);
             markField("phone", validateAndFormatPhone(e.target.value, locale).isValid);
           }}
-          placeholder={phonePlaceholder(locale)}
+          placeholder={ui.orderPhonePlaceholder}
           dir="ltr"
-          inputMode="numeric"
+          inputMode="tel"
           autoComplete="tel"
-          required
-          className={cn(
-            "w-full rounded-xl border-2 bg-alabaster px-4 py-3 text-left font-sans text-base tabular-nums outline-none",
-            phone.length === 0 ? "border-brand/15" : phoneResult.isValid ? "border-brand" : "border-coral",
-          )}
+          aria-invalid={Boolean(phoneError)}
+          className={cn(fieldClass, "text-left font-sans tabular-nums", phoneError && "border-coral/40")}
         />
-        <p className={cn("mt-1 text-xs font-bold", phone.length > 0 && !phoneResult.isValid ? "text-coral" : "text-muted")}>
-          {phone.length === 0 ? ui.phoneHint : phoneResult.isValid ? ui.phoneOk : phoneResult.errorMessage}
-        </p>
+        <p className="mt-1 text-xs leading-5 text-muted">{ui.phoneHint}</p>
+        {phoneError ? <p className="mt-1 text-xs font-bold text-coral">{phoneError}</p> : null}
       </label>
-      <label className="block">
-        <span className="mb-1 block text-sm font-extrabold">{ui.city}</span>
+      <label className="block" htmlFor="order-city">
+        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldCity}</span>
         <select
+          id="order-city"
+          name="city"
           value={city}
           onChange={(e) => {
             setCity(e.target.value);
             markField("city", (CITIES as readonly string[]).includes(e.target.value));
           }}
-          required
-          className={cn(
-            "w-full rounded-xl border-2 bg-alabaster px-4 py-3 text-base outline-none",
-            city.length === 0 ? "border-brand/15" : cityOk ? "border-brand" : "border-coral",
-          )}
+          aria-invalid={showCityError}
+          className={cn(fieldClass, showCityError && "border-coral/40")}
         >
           <option value="">{ui.chooseCity}</option>
           {CITIES.map((c) => (
@@ -169,10 +190,13 @@ export function InlineOrderForm({
             </option>
           ))}
         </select>
+        {showCityError ? <p className="mt-1 text-xs font-bold text-coral">{ui.cityError}</p> : null}
       </label>
-      <label className="block">
-        <span className="mb-1 block text-sm font-extrabold">{ui.address}</span>
+      <label className="block" htmlFor="order-address">
+        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldAddress}</span>
         <input
+          id="order-address"
+          name="street-address"
           value={address}
           onChange={(e) => {
             setAddress(e.target.value);
@@ -181,14 +205,19 @@ export function InlineOrderForm({
           placeholder={ui.addressPlaceholder}
           autoComplete="street-address"
           maxLength={120}
-          className="w-full rounded-xl border-2 border-brand/15 bg-alabaster px-4 py-3 text-base outline-none"
+          className={fieldClass}
         />
       </label>
-      {error ? <p className="rounded-xl bg-coral/10 p-3 text-sm font-bold text-coral">{error}</p> : null}
-      <button type="submit" className="kd-cta" disabled={submitting}>
-        {submitting ? ui.confirming : ui.addCta(money(offer.price, locale))}
+      {error ? <p className="text-sm font-bold text-coral">{error}</p> : null}
+      <button
+        type="submit"
+        className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-base font-bold text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={submitting}
+        aria-busy={submitting}
+      >
+        {submitting ? ui.confirming : ui.orderCta(money(offer.price, locale))}
       </button>
-      <p className="text-center text-xs leading-6 text-muted">{ui.checkoutFoot}</p>
+      <p className="text-center text-xs leading-5 text-muted">{ui.orderCallNote}</p>
     </form>
   );
 }

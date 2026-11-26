@@ -11,7 +11,7 @@ export type Offer = {
   compareAt: number;
   badge: string;
   isDefault?: boolean;
-  /** Full-kit row stays orderable from the home bundle, and stays off the product picker. */
+  /** The full kit stays stored on Calma. The product page adds it as the third tile and still submits this offer. */
   showInPicker?: boolean;
   /** Set on the Full Kit offer: product slugs physically included. */
   includes?: ProductSlug[];
@@ -20,6 +20,20 @@ export type Offer = {
 };
 
 export type MaterialCard = { title: string; latin: string; body: string };
+
+/**
+ * Real customer proof for one product.
+ * Add these on the product in this file. An empty list renders nothing.
+ * image: a file that already exists under /public. videoUrl: a real 9:16 clip.
+ */
+export type Testimonial = {
+  firstName: string;
+  city: string;
+  product: string;
+  text: string;
+  image?: string;
+  videoUrl?: string;
+};
 
 export type ProductSection = {
   kind: "emotional" | "science" | "materials";
@@ -64,6 +78,16 @@ export type Product = {
   scienceImageAlt?: string;
   /** Short description used in <meta> and JSON-LD. */
   metaDescription: string;
+  /** One line under the name. */
+  outcome: string;
+  /** Three short chips under the price. */
+  chips: string[];
+  /**
+   * Real reviews only. Leave [] until a real message exists.
+   * The product page does not render "شنو قالو الزبناء" while this is empty.
+   * Add: { firstName, city, product, text, image?, videoUrl? }
+   */
+  testimonials: Testimonial[];
 };
 
 const ALL: ProductSlug[] = ["kenidoux-lumba", "kenidoux-posta", "kenidoux-calma"];
@@ -87,6 +111,9 @@ const lumba: Product = {
   cardHeading: "كينيدو لومبا — حزام أسفل الظهر",
   cardSubheading:
     "دعم وتمدد خفيف بعد السياقة، الجلسة الطويلة أو الوقوف. تنتفخ الأعمدة الهوائية بضغطات بسيطة، وأنت جالس أو سايق.",
+  outcome: "ظهر مرتاح بعد السياقة والجلسة الطويلة",
+  chips: ["جالس أو سايق", "5 ضغطات", "70–130 سم"],
+  testimonials: [],
   scarcityBadge: "توصيل مجاني بعد التأكيد · الخلاص نقداً عند الباب",
   scarcityShort: "توصيل فابور",
   stock: 24,
@@ -250,6 +277,9 @@ const posta: Product = {
   cardHeading: "كينيدو بوسطا — وقفة ووسادة رقبة",
   cardSubheading:
     "منبّه اهتزاز لطيف بالنهار + وسادة تمدد للرقبة بالعشية. وقف بثقة، بلا أحزمة قاصحة تحت الإبط.",
+  outcome: "وقفة خفيفة بالنهار، وراحة للرقبة بالعشية",
+  chips: ["اهتزاز صامت", "وسادة رقبة", "بلا بلوتوث"],
+  testimonials: [],
   scarcityBadge: "الباقة كاملة: المنبّه + وسادة الرقبة + برنامج 14 يوم",
   scarcityShort: "باقة كاملة",
   stock: 24,
@@ -377,6 +407,9 @@ const calma: Product = {
   cardHeading: "كينيدو كالما — كاسات دافئة بلا جرح",
   cardSubheading:
     "النسخة العصرية ديال الكاسات: دفء مريح وشفط ناعم لكتافك وظهرك فـ 15 دقيقة، بلا نار وبلا فوضى.",
+  outcome: "دفء وشفط ناعم للكتاف قبل النعاس",
+  chips: ["بلا نار", "15 دقيقة", "زر تحرير"],
+  testimonials: [],
   scarcityBadge: "كتزاد مع لومبا فنفس الكولية، بلا توصيل زايد",
   scarcityShort: "بلا جرح",
   stock: 24,
@@ -515,6 +548,9 @@ const palma: Product = {
   cardHeading: "كينيدو بالما — تدليك الرقبة والكتاف",
   cardSubheading:
     "كيتبت بالحزام على الرقبة. يدين كيعجنو الكتاف، ودفء على الوجه الداخلي، وأنت جالس أو راقد.",
+  outcome: "تدليك للرقبة والكتاف وأنت جالس أو راقد",
+  chips: ["حزام ثابت", "يدين", "دفء"],
+  testimonials: [],
   scarcityBadge: "توصيل مجاني بعد التأكيد · الخلاص نقداً عند الباب",
   scarcityShort: "توصيل فابور",
   stock: 18,
@@ -672,6 +708,19 @@ export function singleOffer(product: Product): Offer {
 export function fullKitOffer(): { product: Product; offer: Offer } {
   const offer = calma.offers.find((o) => o.includes) as Offer;
   return { product: calma, offer };
+}
+
+export function isBundleOffer(offer: Offer): boolean {
+  return Boolean(offer.includes && offer.includes.length > 1);
+}
+
+/** The line the API already prices. The bundle is always kenidoux-calma / calma-3. */
+export function submitLine(page: Product, offer: Offer): { product_slug: ProductSlug; offer_id: string } {
+  if (isBundleOffer(offer)) {
+    const kit = fullKitOffer();
+    return { product_slug: kit.product.slug, offer_id: kit.offer.id };
+  }
+  return { product_slug: page.slug, offer_id: offer.id };
 }
 
 /** Cross-sell candidates for a cart: products not yet included, ordered by the doc-02 matrix. */

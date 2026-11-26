@@ -9,15 +9,17 @@ export function FaqAccordion({
   items,
   title,
   subtitle,
+  className,
 }: {
   items: readonly { q: string; a: string }[];
   title: string;
   subtitle: string;
+  className?: string;
 }) {
   const list = items;
   const [open, setOpen] = useState(0);
   return (
-    <section className="kd-section bg-alabaster" id="faq">
+    <section className={cn("kd-section bg-alabaster", className)} id="faq">
       <div className="kd-container">
       <p className="kd-kicker mb-2 text-center">FAQ</p>
       <h2 className="kd-h2 mb-2 text-center">{title}</h2>
