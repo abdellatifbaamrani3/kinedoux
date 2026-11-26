@@ -29,8 +29,8 @@ export function SectionImage({
   return (
     <div
       className={cn(
-        "kd-section-frame w-full overflow-hidden bg-sage",
-        bleed ? "-mx-4 w-[calc(100%+2rem)]" : "rounded-2xl border border-brand/10",
+        "kd-section-frame overflow-hidden bg-sage",
+        bleed ? "kd-section-bleed" : "w-full rounded-2xl",
         row && "kd-section-frame-row rounded-none border-0",
         className,
       )}

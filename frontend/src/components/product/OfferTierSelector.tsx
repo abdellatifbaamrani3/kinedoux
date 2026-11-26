@@ -1,66 +1,107 @@
 "use client";
 
-import type { Offer } from "@/data/products";
-import { isBundleOffer } from "@/data/products";
+import { Check, Flame, Truck, Wallet } from "lucide-react";
+
+import type { Offer, Product } from "@/data/products";
 import { useLocale } from "@/i18n/locale-context";
-import { money } from "@/i18n/money";
-import { uiCopy } from "@/i18n/ui";
 import { cn } from "@/lib/utils";
-import { offerTileLabel } from "./offer-label";
+import { formatOfferAmount, offerBlockCopy, offerCardView } from "./offer-card-copy";
 
 export function OfferTierSelector({
+  product,
   offers,
   selectedId,
   onSelect,
   name = "offer",
 }: {
+  product: Product;
   offers: Offer[];
   selectedId: string;
   onSelect: (offer: Offer) => void;
   name?: string;
 }) {
   const locale = useLocale();
-  const ui = uiCopy(locale);
-  const selected = offers.find((offer) => offer.id === selectedId) ?? offers[0];
+  const copy = offerBlockCopy(locale);
+  const thumb = product.gallery[0]?.src ?? product.image;
 
   return (
-    <fieldset className="min-w-0">
-      <legend className="mb-2 text-kd-label font-bold text-brand-dark">{ui.offerPick}</legend>
-      <div className="grid grid-cols-3 gap-1">
+    <fieldset className="min-w-0 border-0 p-0">
+      <legend className="mb-2 w-full text-kd-h3 font-bold text-brand-dark">{copy.header}</legend>
+      <ul className="flex flex-wrap gap-2">
+        <li className="inline-flex items-center gap-1 rounded-full bg-sage px-2.5 py-1 text-kd-small font-medium text-brand">
+          <Truck className="h-3.5 w-3.5" aria-hidden />
+          {copy.ship}
+        </li>
+        <li className="inline-flex items-center gap-1 rounded-full bg-sage px-2.5 py-1 text-kd-small font-medium text-brand">
+          <Wallet className="h-3.5 w-3.5" aria-hidden />
+          {copy.door}
+        </li>
+      </ul>
+      <div className="mt-3 grid gap-3.5">
         {offers.map((offer) => {
+          const card = offerCardView(product, offer, locale);
           const active = offer.id === selectedId;
-          const save = offer.compareAt - offer.price;
-          const bundle = isBundleOffer(offer);
           return (
             <label
               key={offer.id}
               className={cn(
-                "flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl border-2 bg-white px-1 py-2 text-center focus-within:ring-2 focus-within:ring-action",
-                active ? "border-action bg-action/10" : "border-brand/10",
+                "block cursor-pointer overflow-hidden rounded-[18px] border-2 bg-white",
+                active
+                  ? "border-action shadow-[0_0_0_4px_rgba(249,115,22,0.15)]"
+                  : "border-slate-200",
               )}
             >
-              <input
-                type="radio"
-                name={name}
-                value={offer.id}
-                checked={active}
-                onChange={() => onSelect(offer)}
-                aria-label={`${offer.title} — ${money(offer.price, locale)}`}
-                className="sr-only"
-              />
-              <span className="text-kd-small font-medium leading-5 text-brand-dark">{offerTileLabel(offer, ui)}</span>
-              {bundle ? <span className="mt-1 block whitespace-pre-line text-kd-small font-medium leading-5 text-muted">{ui.bundleNames}</span> : null}
-              <span className="mt-1 text-kd-small font-bold tabular-nums leading-5 text-brand-dark">{money(offer.price, locale)}</span>
-              {save > 0 ? (
-                <span className="mx-auto mt-1 rounded-full bg-sage px-1.5 py-0.5 text-kd-small font-medium leading-5 text-brand">
-                  {ui.offerSave(save.toLocaleString("en-US"))}
+              {active ? (
+                <span className="flex items-center justify-start gap-1.5 bg-action px-3 py-1.5 text-kd-small font-bold text-white">
+                  <Check className="h-4 w-4" strokeWidth={3} aria-hidden />
+                  {copy.chosen}
+                </span>
+              ) : null}
+              {card.ribbon ? (
+                <span className="inline-flex items-center gap-1 bg-sage px-2.5 py-1 text-kd-small font-bold text-brand">
+                  <Flame className="h-3.5 w-3.5 text-argan" aria-hidden />
+                  {copy.ribbon}
+                </span>
+              ) : null}
+              <span className="flex items-center gap-2.5 px-3 py-3">
+                <input
+                  type="radio"
+                  name={name}
+                  value={offer.id}
+                  checked={active}
+                  onChange={() => onSelect(offer)}
+                  aria-label={`${card.name} — ${formatOfferAmount(card.price)}`}
+                  className="kd-offer-radio"
+                />
+                <span className="relative h-16 w-16 shrink-0">
+                  <img src={thumb} alt="" width={64} height={64} className="h-16 w-16 rounded-[14px] object-cover" />
+                  <span className="absolute -bottom-1 -start-1 flex h-6 w-6 items-center justify-center rounded-full bg-brand-dark text-kd-small font-bold leading-none text-white">
+                    {card.qty}
+                  </span>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-kd-body font-bold leading-snug text-brand-dark">{card.name}</span>
+                  {card.detail ? <span className="mt-1 block text-kd-small font-medium leading-5 text-muted">{card.detail}</span> : null}
+                </span>
+                <span className="shrink-0 text-end">
+                  {card.oldPrice != null ? (
+                    <span className="block text-kd-small font-medium text-muted line-through">{formatOfferAmount(card.oldPrice)}</span>
+                  ) : null}
+                  <span className="block text-kd-name font-bold tabular-nums leading-none text-brand-dark">{formatOfferAmount(card.price)}</span>
+                  <span className="mt-1 block text-kd-small font-medium text-brand-dark">{locale === "ar" ? "درهم" : "DH"}</span>
+                </span>
+              </span>
+              {card.saveLabel ? (
+                <span className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-sage px-3 py-2">
+                  <span className="text-kd-small font-bold text-brand">{card.saveLabel}</span>
+                  {card.math ? <span className="text-end text-kd-small font-medium text-brand-dark">{card.math}</span> : null}
                 </span>
               ) : null}
             </label>
           );
         })}
       </div>
-      {selected ? <p className="mt-3 text-kd-small font-medium leading-6 text-muted">{selected.subtitle}</p> : null}
+      <p className="mt-3 text-center text-kd-small font-medium leading-6 text-muted">{copy.note}</p>
     </fieldset>
   );
 }

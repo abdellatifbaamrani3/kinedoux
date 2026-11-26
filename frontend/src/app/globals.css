@@ -140,6 +140,11 @@ body {
   max-height: 80vh;
   max-height: 80svh;
 }
+/* Width auto plus equal negative margins reaches both card edges in RTL and LTR. */
+.kd-section-bleed {
+  width: auto;
+  margin-inline: -1rem;
+}
 .kd-section-photo {
   display: block;
   width: 100%;
@@ -186,4 +191,54 @@ input,
 textarea,
 select {
   font-family: inherit;
+}
+
+.kd-offer-radio {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex: none;
+  appearance: none;
+  border-radius: 999px;
+  border: 2px solid rgb(30 41 59 / 0.25);
+  background: #fff;
+}
+.kd-offer-radio:checked {
+  border-color: #f97316;
+  background: radial-gradient(circle, #fff 0 4px, #f97316 5px);
+}
+.kd-offer-radio:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+.kd-order-shine {
+  position: relative;
+  overflow: hidden;
+}
+.kd-order-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 38%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-160%);
+  animation: kd-order-shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes kd-order-shine {
+  0%,
+  58% {
+    transform: translateX(-160%);
+  }
+  100% {
+    transform: translateX(420%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kd-order-shine::after {
+    animation: none;
+    display: none;
+  }
 }

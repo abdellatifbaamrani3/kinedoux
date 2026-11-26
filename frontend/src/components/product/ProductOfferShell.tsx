@@ -11,6 +11,7 @@ import { trackStore } from "@/lib/store-track";
 import { trackEvent } from "@/lib/tracking";
 import { useCartStore } from "@/store/useCartStore";
 import { ProductGallery } from "./ProductGallery";
+import { offerOrderText } from "./offer-card-copy";
 import { OfferTierSelector } from "./OfferTierSelector";
 import { StickyAddToCart } from "./StickyAddToCart";
 import { InlineOrderForm } from "./InlineOrderForm";
@@ -37,6 +38,7 @@ export function ProductOfferShell({
   const ui = uiCopy(locale);
   const offers = useMemo(() => {
     const own = product.offers.filter((item) => item.showInPicker !== false && !isBundleOffer(item)).slice(0, 2);
+    if (product.slug === "kenidoux-palma") return own;
     return [...own, bundleOffer];
   }, [product, bundleOffer]);
   const [offer, setOffer] = useState(() => defaultOffer(product));
@@ -97,8 +99,7 @@ export function ProductOfferShell({
   }
 
   function selectBundle() {
-    const kit = offers.find(isBundleOffer);
-    if (kit) choose(kit);
+    choose(bundleOffer);
     focusOrder();
   }
 
@@ -130,11 +131,10 @@ export function ProductOfferShell({
           </div>
 
           <div className="mt-3">
-            <OfferTierSelector offers={offers} selectedId={offer.id} onSelect={choose} />
+            <OfferTierSelector product={product} offers={offers} selectedId={offer.id} onSelect={choose} />
           </div>
 
-          <p className="mt-3 text-kd-small font-medium leading-6 text-muted">{ui.deliveryPromise}</p>
-          <div className="mt-2">
+          <div className="mt-3">
             <InlineOrderForm product={product} offer={offer} onBuyTap={() => trackAdd(offer)} />
           </div>
 
@@ -160,7 +160,7 @@ export function ProductOfferShell({
             className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-kd-button font-bold text-white hover:bg-action-hover sm:w-auto sm:px-10"
             onClick={scrollToForm}
           >
-            {ui.orderCta(money(offer.price, locale))}
+            {offerOrderText(product, offer, locale)}
           </button>
           <p className="mt-3 text-kd-small font-medium leading-6 text-muted">{finalNote}</p>
         </div>

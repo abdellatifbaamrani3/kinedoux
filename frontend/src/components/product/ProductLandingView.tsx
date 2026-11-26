@@ -110,9 +110,9 @@ export async function ProductLandingView({ product: source }: { product: Product
               src={kitSrc}
               alt={product.kitImageAlt ?? product.kitTitle}
               bleed
-              className="mt-3"
+              className="mt-3 mb-3"
             />
-            <ul className="mt-3 grid gap-3">
+            <ul className="grid gap-3">
               {product.kitContents.map((item) => (
                 <li key={item} className="text-kd-body text-brand-dark">
                   {item}

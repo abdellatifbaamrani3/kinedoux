@@ -7,7 +7,6 @@ import { CITIES } from "@/data/cities";
 import { isBundleOffer, submitLine, type Offer, type Product } from "@/data/products";
 import { useLocale } from "@/i18n/locale-context";
 import { localePath } from "@/i18n/locale";
-import { money } from "@/i18n/money";
 import { uiCopy } from "@/i18n/ui";
 import { api } from "@/lib/api";
 import { firePurchaseOnce, settleCodOrder } from "@/lib/confirm-order";
@@ -15,6 +14,7 @@ import { validateAndFormatPhone } from "@/lib/phone";
 import { trackStore } from "@/lib/store-track";
 import { getTrackingContext, identifyUserOnWebPixels, makeEventId, trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
+import { offerOrderText } from "./offer-card-copy";
 
 const fieldClass =
   "min-h-12 w-full rounded-[10px] border border-transparent bg-alabaster px-4 text-base text-brand-dark outline-none focus:border-brand/20";
@@ -211,11 +211,11 @@ export function InlineOrderForm({
       {error ? <p className="text-kd-secondary font-bold text-coral">{error}</p> : null}
       <button
         type="submit"
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-kd-button font-bold text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="kd-order-shine inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-4 text-center text-kd-button font-bold text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-60"
         disabled={submitting}
         aria-busy={submitting}
       >
-        {submitting ? ui.confirming : ui.orderCta(money(offer.price, locale))}
+        {submitting ? ui.confirming : offerOrderText(product, offer, locale)}
       </button>
       <p className="text-center text-kd-small font-medium leading-6 text-muted">{ui.orderCallNote}</p>
     </form>
