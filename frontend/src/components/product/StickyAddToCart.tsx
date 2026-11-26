@@ -45,10 +45,10 @@ export function StickyAddToCart({
     >
       <div className="flex items-center gap-3 px-4 py-2">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold text-brand-dark">{offerTileLabel(offer, ui)}</p>
-          <p className="text-sm font-bold tabular-nums text-brand-dark">{money(offer.price, locale)}</p>
+          <p className="truncate text-kd-small font-medium text-brand-dark">{offerTileLabel(offer, ui)}</p>
+          <p className="text-kd-secondary font-bold tabular-nums text-brand-dark">{money(offer.price, locale)}</p>
         </div>
-        <button type="button" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-action px-5 text-sm font-bold text-white hover:bg-action-hover" onClick={onAdd}>
+        <button type="button" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-action px-4 text-kd-button font-bold text-white hover:bg-action-hover" onClick={onAdd}>
           {ui.stickyAdd}
         </button>
       </div>

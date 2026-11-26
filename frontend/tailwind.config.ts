@@ -28,6 +28,17 @@ const config: Config = {
         sans: ["var(--font-jakarta)", "system-ui", "sans-serif"],
         arabic: ["var(--font-cairo)", "Tahoma", "system-ui", "sans-serif"],
       },
+      fontSize: {
+        "kd-body": ["17px", { lineHeight: "1.8" }],
+        "kd-secondary": ["15px", { lineHeight: "1.7" }],
+        "kd-small": ["13px", { lineHeight: "1.5" }],
+        "kd-h2": ["24px", { lineHeight: "1.4" }],
+        "kd-h3": ["19px", { lineHeight: "1.5" }],
+        "kd-name": ["24px", { lineHeight: "1.35" }],
+        "kd-price": ["28px", { lineHeight: "1.15" }],
+        "kd-button": ["17px", { lineHeight: "1.3" }],
+        "kd-label": ["15px", { lineHeight: "1.5" }],
+      },
       boxShadow: {
         card: "0 1px 2px rgba(30,41,59,.04), 0 12px 28px -14px rgba(30,41,59,.16)",
         lift: "0 18px 40px -14px rgba(249,115,22,.38)",

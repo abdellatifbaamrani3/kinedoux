@@ -117,12 +117,12 @@ export function ProductOfferShell({
 
         <div className="relative z-10 -mt-10 min-w-0 px-4 lg:sticky lg:top-32 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:max-h-[calc(100vh-9rem)] lg:self-start lg:overflow-y-auto lg:px-0">
           <div id="offer" className="scroll-mt-32 rounded-2xl border border-brand/10 bg-white p-4">
-            <h1 className="text-[18px] font-bold leading-snug text-brand-dark">{product.nameAr}</h1>
-            <p className="mt-1 text-sm leading-6 text-muted">{product.outcome}</p>
-            <p className="mt-2 text-[22px] font-bold tabular-nums leading-none text-brand-dark">{money(offer.price, locale)}</p>
+            <h1 className="text-kd-name font-bold text-brand-dark">{product.nameAr}</h1>
+            <p className="mt-3 text-kd-secondary text-muted">{product.outcome}</p>
+            <p className="mt-3 text-kd-price font-bold tabular-nums text-brand-dark">{money(offer.price, locale)}</p>
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {product.chips.map((chip) => (
-                <li key={chip} className="rounded-full bg-sage px-2 py-0.5 text-[11px] font-bold text-brand">
+                <li key={chip} className="rounded-full bg-sage px-2 py-0.5 text-kd-small font-medium text-brand">
                   {chip}
                 </li>
               ))}
@@ -133,7 +133,7 @@ export function ProductOfferShell({
             <OfferTierSelector offers={offers} selectedId={offer.id} onSelect={choose} />
           </div>
 
-          <p className="mt-3 text-xs leading-5 text-muted">{ui.deliveryPromise}</p>
+          <p className="mt-3 text-kd-small font-medium leading-6 text-muted">{ui.deliveryPromise}</p>
           <div className="mt-2">
             <InlineOrderForm product={product} offer={offer} onBuyTap={() => trackAdd(offer)} />
           </div>
@@ -142,7 +142,7 @@ export function ProductOfferShell({
             {trust.map((item) => (
               <li key={item.label} className="flex flex-col items-center gap-1 rounded-2xl border border-brand/10 bg-white px-1 py-3 text-center">
                 <item.icon className="h-4 w-4 text-brand" aria-hidden />
-                <span className="text-[11px] font-bold text-brand-dark">{item.label}</span>
+                <span className="text-kd-small font-medium text-brand-dark">{item.label}</span>
               </li>
             ))}
           </ul>
@@ -151,18 +151,18 @@ export function ProductOfferShell({
         <div className="min-w-0 lg:col-start-1 lg:row-start-2">{children}</div>
       </div>
 
-      <section className="px-4 py-6 lg:px-8">
+      <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-6xl rounded-2xl border border-brand/10 bg-white px-5 py-8 text-center">
-          <h2 className="text-xl font-bold text-brand-dark">{finalTitle}</h2>
-          <p className="mx-auto mt-2 max-w-lg text-sm leading-7 text-muted">{finalSub}</p>
+          <h2 className="text-kd-h2 font-bold text-brand-dark">{finalTitle}</h2>
+          <p className="mx-auto mt-3 max-w-[36em] text-kd-secondary text-muted">{finalSub}</p>
           <button
             type="button"
-            className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-base font-bold text-white hover:bg-action-hover sm:w-auto sm:px-10"
+            className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-kd-button font-bold text-white hover:bg-action-hover sm:w-auto sm:px-10"
             onClick={scrollToForm}
           >
             {ui.orderCta(money(offer.price, locale))}
           </button>
-          <p className="mt-3 text-xs leading-6 text-muted">{finalNote}</p>
+          <p className="mt-3 text-kd-small font-medium leading-6 text-muted">{finalNote}</p>
         </div>
       </section>
 

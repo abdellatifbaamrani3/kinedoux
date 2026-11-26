@@ -34,8 +34,9 @@ export async function ProductLandingView({ product: source }: { product: Product
 
   return (
     <>
+    <div className="kd-product">
       <div className="border-b border-brand/10 bg-alabaster">
-        <div className="kd-container py-2.5 text-sm text-muted">
+        <div className="kd-container py-2.5 text-kd-small font-medium text-muted">
           <Link href={localePath("/", locale)} className="hover:text-brand">
             {ui.home}
           </Link>
@@ -44,7 +45,7 @@ export async function ProductLandingView({ product: source }: { product: Product
             {ui.productsNav}
           </Link>
           <span className="mx-2">/</span>
-          <span className="font-bold text-brand-dark">{product.nameAr}</span>
+          <span className="text-kd-small font-medium text-brand-dark">{product.nameAr}</span>
         </div>
       </div>
 
@@ -55,64 +56,65 @@ export async function ProductLandingView({ product: source }: { product: Product
         finalSub={HOME.finalCta.sub}
         finalNote={HOME.finalCta.reassurance}
       >
-        <section className="px-4 py-6 lg:px-0">
+        <section className="px-4 py-4 lg:px-0">
           <div className="grid gap-3">
             <article className="rounded-2xl border border-brand/10 bg-white p-4">
-              <p className="text-xs font-bold text-coral">{ui.problem}</p>
-              <p className="mt-2 text-sm leading-6 text-brand-dark">{emotional?.title ?? product.heroHook.title}</p>
-              <p className="mt-2 text-sm leading-6 text-muted">{product.heroHook.body}</p>
+              <p className="text-kd-small font-medium text-coral">{ui.problem}</p>
+              <p className="kd-copy mt-3 text-kd-body text-brand-dark">{emotional?.title ?? product.heroHook.title}</p>
+              <p className="kd-copy mt-3 text-kd-secondary text-muted">{product.heroHook.body}</p>
             </article>
             <article className="rounded-2xl border border-brand/10 bg-white p-4">
-              <p className="text-xs font-bold text-brand">{ui.solution}</p>
-              <h2 className="mt-2 text-base font-bold text-brand-dark">{science?.title ?? product.nameAr}</h2>
-              <p className="mt-2 text-sm leading-6 text-muted">{science?.body}</p>
+              <p className="text-kd-small font-medium text-brand">{ui.solution}</p>
+              <h2 className="mt-3 text-kd-h2 font-bold text-brand-dark">{science?.title ?? product.nameAr}</h2>
+              <p className="kd-copy mt-3 text-kd-secondary text-muted">{science?.body}</p>
             </article>
           </div>
         </section>
 
-        <section id="how" className="px-4 py-6 lg:px-0">
-          <h2 className="text-lg font-bold text-brand-dark">{ui.howEyebrow}</h2>
+        <section id="how" className="px-4 py-4 lg:px-0">
+          <h2 className="text-kd-h2 font-bold text-brand-dark">{ui.howEyebrow}</h2>
           {howImage ? (
             <SectionImage {...sectionImageSize(howImage)} src={howImage} alt={howAlt} className="mt-3" />
           ) : null}
           <ol className="mt-3 grid gap-3">
             {product.steps.map((step, index) => (
               <li key={step.title} className="flex gap-3 rounded-2xl border border-brand/10 bg-white p-4">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-bold text-brand">{index + 1}</span>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage text-kd-small font-bold text-brand">{index + 1}</span>
                 <span>
-                  <span className="block font-bold text-brand-dark">{step.title}</span>
-                  <span className="mt-1 block text-sm leading-6 text-muted">{step.body}</span>
+                  <span className="block text-kd-h3 font-bold text-brand-dark">{step.title}</span>
+                  <span className="kd-copy mt-3 block text-kd-secondary text-muted">{step.body}</span>
                 </span>
               </li>
             ))}
           </ol>
         </section>
 
-        <section id="kit" className="px-4 py-6 lg:px-0">
-          <div className="rounded-2xl border border-brand/10 bg-white p-4">
-            <h2 className="text-lg font-bold text-brand-dark">{materials?.title ?? ui.materialsEyebrow}</h2>
-            {materials?.body ? <p className="mt-2 text-sm leading-6 text-muted">{materials.body}</p> : null}
+        <section id="kit" className="px-4 py-4 lg:px-0">
+          <div className="overflow-hidden rounded-2xl border border-brand/10 bg-white p-4">
+            <h2 className="text-kd-h2 font-bold text-brand-dark">{materials?.title ?? ui.materialsEyebrow}</h2>
+            {materials?.body ? <p className="kd-copy mt-3 text-kd-secondary text-muted">{materials.body}</p> : null}
             {materials?.cards ? (
               <ul className="mt-4 grid gap-3">
                 {materials.cards.map((card) => (
                   <li key={card.title}>
-                    <p className="font-bold text-brand-dark">{card.title}</p>
-                    <p className="text-xs font-bold text-brand">{card.latin}</p>
-                    <p className="mt-1 text-sm leading-6 text-muted">{card.body}</p>
+                    <p className="text-kd-h3 font-bold text-brand-dark">{card.title}</p>
+                    <p className="font-sans text-kd-small font-medium text-brand">{card.latin}</p>
+                    <p className="kd-copy mt-3 text-kd-secondary text-muted">{card.body}</p>
                   </li>
                 ))}
               </ul>
             ) : null}
-            <h3 className="mt-5 text-base font-bold text-brand-dark">{product.kitTitle}</h3>
+            <h3 className="mt-5 text-kd-h3 font-bold text-brand-dark">{product.kitTitle}</h3>
             <SectionImage
               {...sectionImageSize(kitSrc)}
               src={kitSrc}
               alt={product.kitImageAlt ?? product.kitTitle}
+              bleed
               className="mt-3"
             />
-            <ul className="mt-3 grid gap-2">
+            <ul className="mt-3 grid gap-3">
               {product.kitContents.map((item) => (
-                <li key={item} className="text-sm leading-6 text-brand-dark">
+                <li key={item} className="text-kd-body text-brand-dark">
                   {item}
                 </li>
               ))}
@@ -120,28 +122,28 @@ export async function ProductLandingView({ product: source }: { product: Product
           </div>
         </section>
 
-        <section id="comparison" className="px-4 py-6 lg:px-0">
-          <h2 className="text-lg font-bold text-brand-dark">{ui.compareTitle}</h2>
+        <section id="comparison" className="px-4 py-4 lg:px-0">
+          <h2 className="text-kd-h2 font-bold text-brand-dark">{ui.compareTitle}</h2>
           <ul className="mt-3 grid gap-3">
             {product.comparisonOriginal.map((row, index) => (
               <li key={row} className="rounded-2xl border border-brand/10 bg-white p-4">
-                <p className="text-xs font-bold text-brand">{ui.brand}</p>
-                <p className="mt-1 text-sm font-bold leading-6 text-brand-dark">{row}</p>
-                <p className="mt-3 text-xs font-bold text-muted">{ui.market}</p>
-                <p className="mt-1 text-sm leading-6 text-muted">{fake[index] ?? ""}</p>
+                <p className="text-kd-small font-medium text-brand">{ui.brand}</p>
+                <p className="kd-copy mt-3 text-kd-body font-bold text-brand-dark">{row}</p>
+                <p className="mt-3 text-kd-small font-medium text-muted">{ui.market}</p>
+                <p className="kd-copy mt-3 text-kd-secondary text-muted">{fake[index] ?? ""}</p>
               </li>
             ))}
           </ul>
         </section>
 
-        <section id="delivery" className="px-4 py-6 lg:px-0">
-          <h2 className="text-lg font-bold text-brand-dark">{ui.confirmTitle}</h2>
+        <section id="delivery" className="px-4 py-4 lg:px-0">
+          <h2 className="text-kd-h2 font-bold text-brand-dark">{ui.confirmTitle}</h2>
           <ol className="mt-3 grid gap-3">
             {ui.confirmSteps.map((step, index) => (
               <li key={step.title} className="rounded-2xl border border-brand/10 bg-white p-4">
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sage text-sm font-bold text-brand">{index + 1}</span>
-                <h3 className="mt-2 font-bold text-brand-dark">{step.title}</h3>
-                <p className="mt-1 text-sm leading-6 text-muted">{step.body}</p>
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sage text-kd-small font-bold text-brand">{index + 1}</span>
+                <h3 className="mt-3 text-kd-h3 font-bold text-brand-dark">{step.title}</h3>
+                <p className="kd-copy mt-3 text-kd-secondary text-muted">{step.body}</p>
               </li>
             ))}
           </ol>
@@ -151,7 +153,7 @@ export async function ProductLandingView({ product: source }: { product: Product
 
         <FaqAccordion className="!py-8 lg:!py-10" items={faqCopy(locale)} title={ui.faqTitle} subtitle={ui.faqSub} />
         <p className="bg-alabaster px-4 pb-8 text-center lg:px-0">
-          <a href={whatsappLink(ui.whatsappMessage)} className="text-sm font-bold text-brand">
+          <a href={whatsappLink(ui.whatsappMessage)} className="text-kd-secondary font-bold text-brand">
             {ui.faqWhatsapp}
           </a>
         </p>
@@ -170,6 +172,7 @@ export async function ProductLandingView({ product: source }: { product: Product
       </ProductOfferShell>
 
       <HonestyBox />
+    </div>
     </>
   );
 }
@@ -182,9 +185,9 @@ export async function HonestyBox() {
       <div className="mx-auto max-w-6xl rounded-2xl border border-brand/10 bg-white p-4">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-brand" aria-hidden />
-          <h2 className="text-base font-bold text-brand-dark">{ui.honestyTitle}</h2>
+          <h2 className="text-kd-h2 font-bold text-brand-dark">{ui.honestyTitle}</h2>
         </div>
-        <p className="mt-2 text-sm leading-6 text-muted">{ui.honestyBody}</p>
+        <p className="kd-copy mt-3 text-kd-secondary text-muted">{ui.honestyBody}</p>
       </div>
     </section>
   );

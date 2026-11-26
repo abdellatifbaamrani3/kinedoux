@@ -134,7 +134,7 @@ export function InlineOrderForm({
   return (
     <form id="order" className="scroll-mt-32 space-y-3 rounded-2xl border border-brand/10 bg-white p-4" onSubmit={onSubmit} onFocus={noteCheckout}>
       <label className="block" htmlFor="order-name">
-        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldName}</span>
+        <span className="mb-1 block text-kd-label font-bold text-brand-dark">{ui.fieldName}</span>
         <input
           id="order-name"
           name="name"
@@ -148,10 +148,10 @@ export function InlineOrderForm({
           aria-invalid={showNameError}
           className={cn(fieldClass, showNameError && "border-coral/40")}
         />
-        {showNameError ? <p className="mt-1 text-xs font-bold text-coral">{ui.nameError}</p> : null}
+        {showNameError ? <p className="mt-1 text-kd-small font-medium text-coral">{ui.nameError}</p> : null}
       </label>
       <label className="block" htmlFor="order-phone">
-        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldPhone}</span>
+        <span className="mb-1 block text-kd-label font-bold text-brand-dark">{ui.fieldPhone}</span>
         <input
           id="order-phone"
           name="tel"
@@ -167,11 +167,11 @@ export function InlineOrderForm({
           aria-invalid={Boolean(phoneError)}
           className={cn(fieldClass, "text-left font-sans tabular-nums", phoneError && "border-coral/40")}
         />
-        <p className="mt-1 text-xs leading-5 text-muted">{ui.phoneHint}</p>
-        {phoneError ? <p className="mt-1 text-xs font-bold text-coral">{phoneError}</p> : null}
+        <p className="mt-1 text-kd-small font-medium leading-6 text-muted">{ui.phoneHint}</p>
+        {phoneError ? <p className="mt-1 text-kd-small font-medium text-coral">{phoneError}</p> : null}
       </label>
       <label className="block" htmlFor="order-city">
-        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldCity}</span>
+        <span className="mb-1 block text-kd-label font-bold text-brand-dark">{ui.fieldCity}</span>
         <select
           id="order-city"
           name="city"
@@ -190,10 +190,10 @@ export function InlineOrderForm({
             </option>
           ))}
         </select>
-        {showCityError ? <p className="mt-1 text-xs font-bold text-coral">{ui.cityError}</p> : null}
+        {showCityError ? <p className="mt-1 text-kd-small font-medium text-coral">{ui.cityError}</p> : null}
       </label>
       <label className="block" htmlFor="order-address">
-        <span className="mb-1 block text-sm font-bold text-brand-dark">{ui.fieldAddress}</span>
+        <span className="mb-1 block text-kd-label font-bold text-brand-dark">{ui.fieldAddress}</span>
         <input
           id="order-address"
           name="street-address"
@@ -208,16 +208,16 @@ export function InlineOrderForm({
           className={fieldClass}
         />
       </label>
-      {error ? <p className="text-sm font-bold text-coral">{error}</p> : null}
+      {error ? <p className="text-kd-secondary font-bold text-coral">{error}</p> : null}
       <button
         type="submit"
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-base font-bold text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-action px-6 text-kd-button font-bold text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-60"
         disabled={submitting}
         aria-busy={submitting}
       >
         {submitting ? ui.confirming : ui.orderCta(money(offer.price, locale))}
       </button>
-      <p className="text-center text-xs leading-5 text-muted">{ui.orderCallNote}</p>
+      <p className="text-center text-kd-small font-medium leading-6 text-muted">{ui.orderCallNote}</p>
     </form>
   );
 }

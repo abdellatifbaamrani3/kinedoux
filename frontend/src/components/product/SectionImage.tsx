@@ -1,73 +1,55 @@
-import Image from "next/image";
-
+import { GALLERY_BLUR } from "@/data/gallery-blur";
 import { cn } from "@/lib/utils";
 
 const SIZES = "(min-width: 1024px) 50vw, 100vw";
 
 /**
- * Section photos keep the file's real ratio.
- * A portrait file is capped at 70svh and centered.
- * frame "4/3" is the cross-sell card: the whole photo sits on a blurred copy of the same file.
+ * Full-width section photo at the file's real ratio.
+ * The frame clips only when the photo would be taller than 80svh.
+ * row: side-by-side cards share a 4:3 crop from 640px up.
  */
 export function SectionImage({
   src,
   alt,
   width,
   height,
-  frame,
+  row = false,
+  bleed = false,
   className,
 }: {
   src: string;
   alt: string;
   width: number;
   height: number;
-  frame?: "4/3";
+  row?: boolean;
+  bleed?: boolean;
   className?: string;
 }) {
-  if (frame === "4/3") {
-    return (
-      <span className={cn("relative block aspect-[4/3] overflow-hidden bg-sage", className)}>
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 scale-[1.15] bg-cover bg-center blur-[24px] brightness-[.85]"
-          style={{ backgroundImage: `url(${src})` }}
-        />
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes={SIZES}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-contain"
-        />
-      </span>
-    );
-  }
-
-  const portrait = height > width;
-
+  const blur = GALLERY_BLUR[src];
   return (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      sizes={SIZES}
-      quality={70}
-      loading="lazy"
-      unoptimized={src.endsWith(".svg")}
+    <div
       className={cn(
-        "rounded-2xl border border-brand/10 object-contain",
-        portrait ? "kd-section-portrait" : "h-auto w-full",
+        "kd-section-frame w-full overflow-hidden bg-sage",
+        bleed ? "-mx-4 w-[calc(100%+2rem)]" : "rounded-2xl border border-brand/10",
+        row && "kd-section-frame-row rounded-none border-0",
         className,
       )}
-      style={
-        portrait
-          ? { width: "auto", height: "auto", maxWidth: "100%", aspectRatio: `${width} / ${height}` }
-          : { width: "100%", height: "auto", aspectRatio: `${width} / ${height}` }
-      }
-    />
+    >
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={SIZES}
+        loading="lazy"
+        decoding="async"
+        className={cn("kd-section-photo bg-sage", row && "kd-section-photo-row")}
+        style={{
+          backgroundImage: blur ? `url("${blur}")` : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+    </div>
   );
 }
