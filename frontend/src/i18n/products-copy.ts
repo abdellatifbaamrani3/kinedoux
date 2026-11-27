@@ -222,10 +222,10 @@ const FR = {
     chips: ["Sangle", "Mains", "Chaleur"],
     scarcityBadge: "Livraison offerte après confirmation · paiement à la porte",
     scarcityShort: free.fr,
-    crossSellNote: "au lieu de 299 DH",
+    crossSellNote: "au lieu de 287 DH",
     offers: offers("fr", [
       { title: "Un appareil", subtitle: "Kinédoux Palma + sangle + livraison offerte", badge: free.fr },
-      { title: "Deux appareils — pour vous et la maison", subtitle: "Un pour vous, un pour la maison. Le deuxième à 200 DH au lieu de 299, dans le même colis.", badge: popular.fr },
+      { title: "Deux appareils — pour vous et la maison", subtitle: "Un pour vous, un pour la maison. Le deuxième à 212 DH au lieu de 287, dans le même colis.", badge: popular.fr },
     ]),
     bonuses: [
       "Mains qui pétrissent la nuque et les épaules",
@@ -504,10 +504,10 @@ const EN = {
     chips: ["Strap", "Hands", "Warmth"],
     scarcityBadge: "Free delivery after confirmation · pay at the door",
     scarcityShort: free.en,
-    crossSellNote: "instead of 299 DH",
+    crossSellNote: "instead of 287 DH",
     offers: offers("en", [
       { title: "One device", subtitle: "Kinédoux Palma + strap + free delivery", badge: free.en },
-      { title: "Two devices — for you and home", subtitle: "One for you, one for the house. The second is 200 DH instead of 299, same box.", badge: popular.en },
+      { title: "Two devices — for you and home", subtitle: "One for you, one for the house. The second is 212 DH instead of 287, same box.", badge: popular.en },
     ]),
     bonuses: [
       "Hands that knead the neck and shoulders",
