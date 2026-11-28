@@ -2,7 +2,7 @@ import type { ProductSlug } from "./products";
 
 /**
  * TODO: the real phone that calls the customer to confirm the order.
- * Empty on purpose. Do not show the WhatsApp placeholder 212600000000 as this number.
+ * Empty on purpose. The store WhatsApp line is 0640392534. Do not reuse it here until this is the line that calls the customer.
  * When this is a real line, the "شكون حنا" card, the thank-you steps, and the vCard use it.
  */
 export const CONFIRMATION_PHONE = "";

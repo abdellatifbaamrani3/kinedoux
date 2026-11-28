@@ -16,10 +16,10 @@ export const site = {
   webhookUrl: '',
   pixelId: '',
   email: 'contact@kinedoux.com',
-  /** Digits only, country code, no plus. Example: 212612345678. Empty hides the WhatsApp link. */
-  whatsapp: '',
-  /** Shown on the contact page. Empty hides the phone line. */
-  phoneDisplay: '',
+  /** Digits only, country code, no plus. Local display: 0640392534. */
+  whatsapp: '212640392534',
+  /** Shown on the contact page. */
+  phoneDisplay: '0640392534',
   videoSrc: '/video/lumba.mp4',
 } as const;
 

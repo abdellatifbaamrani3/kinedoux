@@ -15,7 +15,8 @@ export function formatClock(totalSeconds: number): string {
 }
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://kinedoux.com").replace(/\/$/, "");
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
+/** Store WhatsApp. Local number 0640392534. wa.me uses country code, no plus, no leading 0. */
+export const WHATSAPP_NUMBER = "212640392534";
 export const UPSELL_SECONDS = Math.max(
   5,
   Number.parseInt(process.env.NEXT_PUBLIC_UPSELL_TIMER_SECONDS || "15", 10) || 15,
